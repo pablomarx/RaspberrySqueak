@@ -1,0 +1,17 @@
+double atan(double x);
+double exp(double arg);
+double frexp(double d, int *ep);
+double ldexp(double d, int e);
+double modf(double d, double *ip);
+double log(double arg);
+double log10(double arg);
+double cos(double arg);
+double sin(double arg);
+double sqrt(double arg);
+double floor(double d);
+double ceil(double d);
+double fabs(double x);
+double NaN(void);
+int isNaN(double d);
+double Inf(int sign);
+int isInf(double d, int sign);
