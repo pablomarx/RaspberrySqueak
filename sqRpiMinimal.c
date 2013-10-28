@@ -12,6 +12,7 @@
 #include "mouse.h"
 #include "memutils.h"
 #include "timer.h"
+#include "interrupts.h"
 
 extern void *end;
 
@@ -66,9 +67,13 @@ int ioFormPrint(int bitsAddr, int width, int height, int depth, double hScale, d
 
 // Number of milliseconds
 int ioMSecs(void) {
-    volatile uint64_t* timeStamp = (uint64_t*)(BCM2835_TIMER_PHYSADDR + 4);
-    uint64_t microseconds = *timeStamp;
+#if 1
+	return current_time();
+#else
+	volatile uint64_t* timeStamp = (uint64_t*)(BCM2835_TIMER_PHYSADDR + 4);
+	uint64_t microseconds = *timeStamp;
 	return ((uint32_t)microseconds) / 1000;
+#endif
 }
 
 int ioLowResMSecs(void)
@@ -686,6 +691,7 @@ void main(unsigned int r0, unsigned int machtype, unsigned int atagsaddr)
 	cpu_init();
 	dram_init();
 	fb_init(ScreenDepth);
+	interrupts_init();
 	timer_init();
 	
 	UsbInitialise();

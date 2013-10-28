@@ -58,8 +58,8 @@ CFLAGS=-DSQ_CONFIG_DONE=1 -fshort-wchar -DTYPE_LOWLEVEL -DTARGET_RPI -DLIB_HUB -
 COBJS=atags.o errors.o framebuffer.o mailbox.o memutils.o \
 	strings.o printf.o uart.o configuration.o hub.o \
 	hid.o keyboard.o mouse.o designware20.o platform.o \
-	roothub.o broadcom2835.o usbd.o timer.o sqRpiMinimal.o \
-	sqRpiStubs.o interp.o sqMiscPrims.o
+	roothub.o broadcom2835.o usbd.o timer.o interrupts.o \
+	sqRpiMinimal.o sqRpiStubs.o interp.o sqMiscPrims.o
 
 all: make.dep kernel.img
 
