@@ -2,6 +2,7 @@
 #include "printf.h"
 #include "memutils.h"
 #include "framebuffer.h"
+#include "mmu.h"
 
 extern uint32_t arm_read_cr1(void);
 extern void arm_write_cr1(uint32_t val);
@@ -10,10 +11,6 @@ extern void arm_write_dacr(uint32_t val);
 extern void arm_invalidate_tlb(void);
 
 #define MB (1024*1024)
-
-#define MMU_FLAG_CACHED 0x1
-#define MMU_FLAG_BUFFERED 0x2
-#define MMU_FLAG_READWRITE 0x4
 
 static uint32_t tt[4096]  __attribute__((aligned(16384))) __attribute((section((".bss.prebss.translation_table"))));
 

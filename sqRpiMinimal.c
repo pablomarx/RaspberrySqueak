@@ -696,13 +696,23 @@ void main(unsigned int r0, unsigned int machtype, unsigned int atagsaddr)
 
 	mmu_init();
 
-	arch_enable_cache(1/*ICACHE*/);
+	arch_enable_cache(1/*ICACHE*/ | 2 /*DCACHE*/);
 
 	interrupts_init();
 	timer_init();
-	
+
+	unsigned int orig_malloc_base = malloc_base;
+	unsigned int orig_malloc_size = malloc_size;
+
+	malloc_base = (malloc_size - malloc_base) - (1024 * 1024);
+	int usb_region = (malloc_base/1024/1024) * (1024 * 1024);
+	arm_mmu_map_section(usb_region, usb_region, MMU_FLAG_READWRITE | MMU_FLAG_BUFFERED);
+
 	UsbInitialise();
 	UsbCheckForChange();
+	
+	malloc_base = orig_malloc_base;
+	malloc_size = orig_malloc_size - (1024 * 1024);
 	
 	/* check the interpreter's size assumptions for basic data types */
 	if (sizeof(int) != 4) {
