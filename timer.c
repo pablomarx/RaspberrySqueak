@@ -3,10 +3,7 @@
 
 void  timer_init ( void )
 {
-    //0xF9+1 = 250
-    //250MHz/250 = 1MHz
-   //WRITE32(ARM_TIMER_CTL,0x00F90000);
-   //WRITE32(ARM_TIMER_CTL,0x00F90200);
+
 }
 
 void MicroDelay(uint32_t delay) {

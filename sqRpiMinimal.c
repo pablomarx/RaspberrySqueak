@@ -13,10 +13,12 @@
 #include "memutils.h"
 #include "timer.h"
 #include "interrupts.h"
+#include "mmu.h"
 
 extern void *end;
 
-
+extern void arch_enable_cache(uint flags);
+extern void arch_disable_cache(uint flags);
 
 /*** Variables -- image and path names ***/
 #define IMAGE_NAME_SIZE 300
@@ -691,6 +693,11 @@ void main(unsigned int r0, unsigned int machtype, unsigned int atagsaddr)
 	cpu_init();
 	dram_init();
 	fb_init(ScreenDepth);
+
+	mmu_init();
+
+	arch_enable_cache(1/*ICACHE*/);
+
 	interrupts_init();
 	timer_init();
 	
