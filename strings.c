@@ -45,11 +45,3 @@ strlen(char *s)
 
 	return strchr(s, 0) - s;
 }
-
-int
-abs(int a)
-{
-	if(a < 0)
-		return -a;
-	return a;
-}
