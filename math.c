@@ -238,6 +238,13 @@ modf(double d, double *ip)
 	return d - x.d;
 }
 
+#undef	p0
+#undef	p1
+#undef	p2
+#undef	q0
+#undef	q1
+#undef	q2
+
 #define	log2    0.693147180559945309e0
 #define	ln10o1  .4342944819032518276511
 #define	sqrto2  0.707106781186547524e0
@@ -284,6 +291,14 @@ log10(double arg)
 		return NaN();
 	return log(arg) * ln10o1;
 }
+
+#undef	p0
+#undef	p1
+#undef	p2
+#undef	p3
+#undef	q0
+#undef	q1
+#undef	q2
 
 #define p0      .1357884097877375669092680e8
 #define p1     -.4942908100902844161158627e7
@@ -484,3 +499,10 @@ isInf(double d, int sign)
 	return 0;
 }
 
+int
+abs(int a)
+{
+	if(a < 0)
+		return -a;
+	return a;
+}
