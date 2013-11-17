@@ -23,6 +23,8 @@ OBJCOPY:=$(shell $(CC) -print-prog-name=objcopy)
 # definitely work on anything other than arm-linux-gnueabihf-gcc 4.6, but
 # is likely to)
 
+LOCALLIBGCC:=1
+
 # If LOCALLIBGCC is set, use the libgcc.a supplied with the compiler
 ifdef LOCALLIBGCC
 	LIBGCC:=$(shell $(CC) -print-libgcc-file-name)
@@ -56,7 +58,7 @@ CFLAGS=-DSQ_CONFIG_DONE=1 -fshort-wchar -DTYPE_LOWLEVEL -DTARGET_RPI -DLIB_HUB -
 
 # Object files built from C
 COBJS=atags.o errors.o framebuffer.o mailbox.o memutils.o \
-	strings.o printf.o uart.o configuration.o hub.o \
+	math.o strings.o printf.o uart.o configuration.o hub.o \
 	hid.o keyboard.o mouse.o designware20.o platform.o \
 	roothub.o broadcom2835.o usbd.o timer.o interrupts.o \
 	mmu.o sqRpiMinimal.o sqRpiStubs.o interp.o sqMiscPrims.o
@@ -88,7 +90,7 @@ start.o: start.s
 kernel.elf: linkscript start.o memcpy.o $(COBJS)
 	$(LD) -T linkscript -nostdlib -nostartfiles -gc-sections -v \
 		-o kernel.elf \
-		start.o memcpy.o $(COBJS) $(LIBGCC) -L/usr/local/yagarto/arm-none-eabi/lib/ -lm
+		start.o memcpy.o $(COBJS) $(LIBGCC)
 
 # Turn the ELF kernel into a binary file. This could be combined with the
 # step above, but it's easier to disassemble the ELF version to see why
