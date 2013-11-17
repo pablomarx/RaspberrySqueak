@@ -683,9 +683,6 @@ void dram_init(void) {
 
 void main(unsigned int r0, unsigned int machtype, unsigned int atagsaddr)
 {
-	sqImageFile file;
-	unsigned char *testing;
-
 	uart_init();
 	printf("Welcome to Raspberry Squeak!\n");
 	printf("end=0x%08x\n", &end);
@@ -730,7 +727,7 @@ void main(unsigned int r0, unsigned int machtype, unsigned int atagsaddr)
 		error("Couldn't read ATAG_INITRD2.");
 	}
 	
-	file = malloc(sizeof(rpiImageFile));
+	sqImageFile file = malloc(sizeof(rpiImageFile));
 	file->base = (unsigned char *)ramdisk->address;
 	file->length = ramdisk->size;
 	file->current = file->base;
