@@ -29,3 +29,4 @@ void *      sqAllocateMemory(int minHeapSize, int desiredHeapSize);
 #undef ioLowResMSecs
 #undef ioMicroMSecs
 
+#define ScreenDepth       32
