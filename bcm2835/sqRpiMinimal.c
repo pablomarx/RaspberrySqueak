@@ -26,13 +26,6 @@ int ioExit(void) {
 	while(1) __asm__("nop");
 }
 
-
-/*** Directory ***/
-
-int dir_Delimitor(void) {
-	return '/';
-}
-
 /*** System Attributes ***/
 extern char vmPath[];
 extern char shortImageName[];

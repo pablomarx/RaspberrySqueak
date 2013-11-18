@@ -5,8 +5,12 @@
    functions listed or if you remove functions */
 #define VM_PROXY_MAJOR 1
 
+/* Note: You can define a different VM_PROXY_MINOR if the plugin
+   should work with older VMs. */
+#ifndef VM_PROXY_MINOR
 /* Increment the following number if you add functions at the end */
-#define VM_PROXY_MINOR 2
+#define VM_PROXY_MINOR 5
+#endif
 
 typedef int (*CompilerHook)();
 
@@ -130,16 +134,61 @@ typedef struct VirtualMachine {
 	int (*signalSemaphoreWithIndex)(int semaIndex);
 	int (*success)(int aBoolean);
 	int (*superclassOf)(int classPointer);
-	
-	/* InterpreterProxy methodsFor: 'compiler' */
 
+	/* InterpreterProxy methodsFor: 'compiler' */
 	CompilerHook *(*compilerHookVector)(void);
 	int (*setCompilerInitialized)(int initFlag);
 
+#if VM_PROXY_MINOR > 1
+	/* new for proxy 1.2 */
 	/* InterpreterProxy methodsFor: 'BitBlt support' */
 	int (*loadBitBltFrom)(int bbOop);
 	int (*copyBits)(void);
 	int (*copyBitsFromtoat)(int leftX, int rightX, int yValue);
+#endif
+
+#if VM_PROXY_MINOR > 2
+	/* New for proxy version 1.3 */
+	int (*classLargeNegativeInteger)(void);
+	int (*signed32BitIntegerFor)(int integerValue);
+	int (*signed32BitValueOf)(int oop);
+	int (*includesBehaviorThatOf)(int aClass, int aSuperClass);
+	int (*primitiveMethod) (void);
+
+	/* InterpreterProxy methodsFor: 'FFI support' */
+	int (*classExternalAddress)(void);
+	int (*classExternalData)(void);
+	int (*classExternalFunction)(void);
+	int (*classExternalLibrary)(void);
+	int (*classExternalStructure)(void);
+	int (*ioLoadModuleOfLength)(int modIndex, int modLength);
+	int (*ioLoadSymbolOfLengthFromModule)(int fnIndex, int fnLength, int handle);
+	int (*isInMemory)(int address);
+#endif
+
+#if VM_PROXY_MINOR > 3
+	/* New for proxy 1.4 */
+	int (*ioLoadFunctionFrom)(char *fnName, char *modName);
+	int (*ioMicroMSecs)(void);
+#endif
+
+#if VM_PROXY_MINOR > 4
+	/* New for proxy 1.5 */
+/* This is clearly a sub-optimal way to check for the ability to handle 64 bit
+ * long long types but it suffices for the moment
+ */
+#ifdef ACORN
+        #define squeakInt64 long int
+#elif _MSC_VER
+        #define squeakInt64 __int64
+#else
+        #define squeakInt64 long long
+#endif
+	int (*positive64BitIntegerFor)(squeakInt64 integerValue);
+	squeakInt64 (*positive64BitValueOf)(int oop);
+	int (*signed64BitIntegerFor)(squeakInt64 integerValue);
+	squeakInt64 (*signed64BitValueOf)(int oop);
+#endif
 
 } VirtualMachine;
 
