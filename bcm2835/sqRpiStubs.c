@@ -12,15 +12,14 @@ void *os_exports[][3]=
 int ioDisablePowerManager(int disableIfNonZero) { return true; }
 int ioSetInputSemaphore(int semaIndex) STUBBED_OUT
 int ioFindExternalFunctionIn(char *lookupName, int moduleHandle) {
-	printf("%s lookupName=%s\n", __PRETTY_FUNCTION__, lookupName);
+//	printf("%s lookupName=%s\n", __PRETTY_FUNCTION__, lookupName);
 	return 0;
 }
 int ioLoadModule(char *pluginName) {
-	printf("%s pluginName=%s\n", __PRETTY_FUNCTION__, pluginName);
+//	printf("%s pluginName=%s\n", __PRETTY_FUNCTION__, pluginName);
 	return 0;
 }
 int ioFreeModule(int moduleHandle) STUBBED_OUT
-int ioGetNextEvent(sqInputEvent *evt) STUBBED_OUT
 
 
 /*** Profiling Stubs ***/

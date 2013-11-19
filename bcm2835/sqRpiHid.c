@@ -1,4 +1,6 @@
 #include "sq.h"
+#include "sqRpiDisplay.h"
+
 #include "keyboard.h"
 #include "mouse.h"
 #include "timer.h" // watchdog
@@ -15,6 +17,18 @@ int keyBufOverflows = 0;        /* number of characters dropped */
 extern int interruptCheckCounter;
 extern int interruptKeycode;
 extern int interruptPending;  /* set to true by RecordKeystroke if interrupt key is pressed */
+
+/*** Variables -- Event Recording ***/
+#define MillisecondClockMask 536870911
+#define MAX_EVENT_BUFFER 64
+static sqInputEvent eventBuffer[MAX_EVENT_BUFFER];
+static int eventBufferGet = 0;
+static int eventBufferPut = 0;
+
+static char lastKeys[255];
+static int lastMouseX = 0;
+static int lastMouseY = 0;
+static int lastMouseButton = 0;
 
 void RecordKeystroke(unsigned char key, struct KeyboardModifiers modifiers) {
 	int keystate;
@@ -33,7 +47,7 @@ void RecordKeystroke(unsigned char key, struct KeyboardModifiers modifiers) {
 	if (modifiers.LeftGui || modifiers.RightGui) {
 		keyModifier = 1 << 11;
 	}
-	keystate = (keyModifier) | (key & 0xff);
+	keystate = (keyModifier << 8) | (key & 0xff);
 
 	if (keystate == interruptKeycode) {
 	/* Note: interrupt key is "meta"; it not reported as a keystroke */
@@ -76,6 +90,143 @@ int ioPeekKeystroke(void) {
 	return ioGetKeystrokeAndAdvance(false);
 }
 
+sqInputEvent *nextEventPut(void) {
+	sqInputEvent *evt;
+	evt = eventBuffer + eventBufferPut;
+	eventBufferPut = (eventBufferPut + 1) % MAX_EVENT_BUFFER;
+	if (eventBufferGet == eventBufferPut) {
+		/* buffer overflow; drop the last event */
+		eventBufferGet = (eventBufferGet + 1) % MAX_EVENT_BUFFER;
+	}
+	return evt;
+}
+
+void rpiProcessMouseEvents(void) {
+	int mouseCount = MouseCount();
+	if (mouseCount == 0) {
+		return;
+	}
+	
+	uint32_t mouse = MouseGetAddress(0);
+	int position = MouseGetPosition(mouse);
+	int posX = (position >> 16) & 0xffff;
+	int posY = position & 0xffff;
+
+	int mouseButtons = MouseGetButtons(mouse);
+	int buttonState = 0;
+	if (mouseButtons & 0x01) {
+		buttonState |= RedButtonBit;
+	}
+	if (mouseButtons & 0x02) {
+		buttonState |= BlueButtonBit;
+	}
+	if (mouseButtons & 0x04) {
+		buttonState |= YellowButtonBit;
+	}
+
+	if (posX != lastMouseX || posY != lastMouseY || buttonState != lastMouseButton) {
+		lastMouseX = posX;
+		lastMouseY = posY;
+		lastMouseButton = buttonState;
+		moveCursor(lastMouseX, lastMouseY);
+
+		sqMouseEvent *event = (sqMouseEvent*) nextEventPut();
+
+		/* first the basics */
+		event->type = EventTypeMouse;
+		event->timeStamp = ioMSecs() & MillisecondClockMask; 
+		event->x = lastMouseX;
+		event->y = lastMouseY;
+		/* then the buttons */
+		event->buttons = lastMouseButton & 0x07;
+		/* then the modifiers */
+		event->modifiers = 0; //buttonState >> 3;
+		/* clean up reserved */
+		event->reserved1 = 0;
+	}
+}
+
+void rpiRegisterKeyboardEvent(int keyCode, int pressCode, int modifiers) {
+	sqKeyboardEvent *evt = (sqKeyboardEvent*) nextEventPut();
+	/* first the basics */
+	evt->type = EventTypeKeyboard;
+	evt->timeStamp = ioMSecs() & MillisecondClockMask;
+	/* now the key code */
+	/* press code must differentiate */
+	evt->charCode = keyCode;
+	evt->pressCode = pressCode;
+	evt->modifiers = modifiers;
+
+	evt->reserved1=evt->reserved2=evt->reserved3= 0;
+}
+
+void rpiProcessKeyboardEvents(void) {
+	int keyboardCount = KeyboardCount();
+	if (keyboardCount == 0) {
+		return;
+	}
+
+	uint32_t keyboard = KeyboardGetAddress(0);
+	int keysDown = KeyboardGetKeyDownCount(keyboard);
+
+	struct KeyboardModifiers keyModifiers = KeyboardGetModifiers(keyboard);
+	int modifiers = 0;
+	if (keyModifiers.LeftControl || keyModifiers.RightControl) {
+		modifiers |= CtrlKeyBit;
+	}
+	if (keyModifiers.LeftShift || keyModifiers.RightShift) {
+		modifiers |= ShiftKeyBit;
+	}
+	if (keyModifiers.LeftAlt || keyModifiers.RightAlt) {
+		modifiers |= OptionKeyBit;
+	}
+	if (keyModifiers.LeftGui || keyModifiers.RightGui) {
+		modifiers |= CommandKeyBit;
+	}
+
+	char theseKeys[keysDown];
+	
+	for (int i=0; i<keysDown; i++) {
+		int keyCode = KeyboardGetKeyDown(keyboard, i);
+		unsigned char key = (keyModifiers.LeftShift || keyModifiers.RightShift ? KeysShift[keyCode] : KeysNormal[keyCode]);
+		theseKeys[i] = key;
+		
+		if (lastKeys[key] == 0) {
+			lastKeys[key] = 1;
+			rpiRegisterKeyboardEvent(key, EventKeyDown, modifiers);
+			rpiRegisterKeyboardEvent(key, EventKeyChar, modifiers);
+		}
+	}	
+
+	for (int i=0; i<255; i++) {
+		if (lastKeys[i] != 0) {
+			bool matched = false;
+			for (int j=0; j<keysDown; j++) {
+				if (theseKeys[j] == i) {
+					matched = true;
+				}
+			}
+			
+			if (matched == false) {
+				lastKeys[i] = 0;
+				rpiRegisterKeyboardEvent(i, EventKeyUp, modifiers);
+			}
+		}
+	}
+}
+
+int ioGetNextEvent(sqInputEvent *evt) {
+	ioProcessEvents();
+	rpiProcessMouseEvents();
+	rpiProcessKeyboardEvents();
+	
+	if (eventBufferGet == eventBufferPut) {
+		return false;
+	}
+	*evt = eventBuffer[eventBufferGet];
+	eventBufferGet = (eventBufferGet+1) % MAX_EVENT_BUFFER;
+	return true;
+}
 
 int ioProcessEvents(void) {
 	//printf("%s\n", __PRETTY_FUNCTION__);
@@ -109,8 +260,6 @@ int ioProcessEvents(void) {
 	for (int mouseIndex=0; mouseIndex<mouseCount; mouseIndex++) {
 		uint32_t mouse = MouseGetAddress(mouseIndex);
 		MousePoll(mouse);
-		//int position = MouseGetPosition(mouse);
-		//printf("mouse: x=%i, y=%i\n", ((position>>16)&0xffff), (position&0xffff));
 	}
 
 	watchdog_reset();

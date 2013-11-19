@@ -22,7 +22,6 @@ typedef struct {
 
 #include "sqNamedPrims.h"
 
-#define DEBUG 1
 #ifdef DEBUG
 #define dprintf(what) printf what
 #else
