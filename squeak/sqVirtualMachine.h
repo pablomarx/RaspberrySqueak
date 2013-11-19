@@ -9,7 +9,7 @@
    should work with older VMs. */
 #ifndef VM_PROXY_MINOR
 /* Increment the following number if you add functions at the end */
-#define VM_PROXY_MINOR 5
+#define VM_PROXY_MINOR 6
 #endif
 
 typedef int (*CompilerHook)();
@@ -177,9 +177,7 @@ typedef struct VirtualMachine {
 /* This is clearly a sub-optimal way to check for the ability to handle 64 bit
  * long long types but it suffices for the moment
  */
-#ifdef ACORN
-        #define squeakInt64 long int
-#elif _MSC_VER
+#ifdef  _MSC_VER
         #define squeakInt64 __int64
 #else
         #define squeakInt64 long long
@@ -190,6 +188,13 @@ typedef struct VirtualMachine {
 	squeakInt64 (*signed64BitValueOf)(int oop);
 #endif
 
+#if VM_PROXY_MINOR > 5
+	/* new for 1.6 */
+	int (*isArray)(int oop);
+	int (*forceInterruptCheck)(void);
+#endif
+
 } VirtualMachine;
 
 #endif /* _SqueakVM_H */
+

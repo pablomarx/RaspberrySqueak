@@ -6,7 +6,7 @@
 *   AUTHOR:  
 *   ADDRESS: 
 *   EMAIL:   
-*   RCSID:   $Id: FilePlugin.h,v 1.4 2002/01/29 05:18:38 rowledge Exp $
+*   RCSID:   $Id: FilePlugin.h 155 2002-01-29 05:19:04Z rowledge $
 *
 *	01/22/2002 JMM change off_t to squeakOffsetFileType
 */

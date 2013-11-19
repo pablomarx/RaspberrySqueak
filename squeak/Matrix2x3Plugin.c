@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:57 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:09 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -33,23 +33,7 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static double m23ArgX;
-static double m23ArgY;
-static double m23ResultX;
-static double m23ResultY;
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"Matrix2x3Plugin 4 March 2003 (i)"
-#else
-	"Matrix2x3Plugin 4 March 2003 (e)"
-#endif
-;
+/*** Constants ***/
 
 /*** Function Prototypes ***/
 #pragma export on
@@ -77,6 +61,24 @@ static int roundAndStoreResultRectx0y0x1y1(int dstOop, double x0, double y0, dou
 #pragma export on
 EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
 #pragma export off
+/*** Variables ***/
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static double m23ArgX;
+static double m23ArgY;
+static double m23ResultX;
+static double m23ResultY;
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"Matrix2x3Plugin 19 March 2005 (i)"
+#else
+	"Matrix2x3Plugin 19 March 2005 (e)"
+#endif
+;
+
 
 
 /*	Note: This is hardcoded so it can be run from Squeak.
@@ -145,11 +147,11 @@ static int loadArgumentPoint(int point) {
 /*	Multiply matrix m1 with m2 and store the result into m3. */
 
 static int matrix2x3ComposeMatrixwithinto(const float *m1, const float *m2, float *m3) {
-    double a11;
-    double a12;
     double a13;
-    double a21;
     double a22;
+    double a12;
+    double a21;
+    double a11;
     double a23;
 
 	a11 = ((m1[0]) * (m2[0])) + ((m1[1]) * (m2[3]));
@@ -170,11 +172,11 @@ static int matrix2x3ComposeMatrixwithinto(const float *m1, const float *m2, floa
 /*	Invert the pre-loaded argument point by the given matrix */
 
 static int matrix2x3InvertPoint(float *m) {
-    double det;
-    double x;
+    double detY;
     double y;
     double detX;
-    double detY;
+    double x;
+    double det;
 
 	x = m23ArgX - (m[2]);
 	y = m23ArgY - (m[5]);
@@ -208,8 +210,8 @@ static int okayIntValue(int value) {
 EXPORT(int) primitiveComposeMatrix(void) {
     int result;
     float * m3;
-    float * m1;
     float * m2;
+    float * m1;
     int matrix;
     int matrix1;
     int matrix2;
@@ -302,17 +304,17 @@ l1:	/* end loadArgumentMatrix: */;
 }
 
 EXPORT(int) primitiveInvertRectInto(void) {
-    int srcOop;
-    double cornerY;
     double minX;
-    double maxX;
-    double minY;
-    double maxY;
-    float * matrix;
     int dstOop;
-    double originX;
-    double originY;
+    double cornerY;
     double cornerX;
+    double originY;
+    double originX;
+    double maxY;
+    int srcOop;
+    double minY;
+    double maxX;
+    float * matrix;
     int matrix1;
 
 	dstOop = interpreterProxy->stackObjectValue(0);
@@ -481,17 +483,17 @@ l2:	/* end roundAndStoreResultPoint: */;
 }
 
 EXPORT(int) primitiveTransformRectInto(void) {
-    int srcOop;
-    double cornerY;
     double minX;
-    double maxX;
-    double minY;
-    double maxY;
-    float * matrix;
     int dstOop;
-    double originX;
-    double originY;
+    double cornerY;
     double cornerX;
+    double originY;
+    double originX;
+    double maxY;
+    int srcOop;
+    double minY;
+    double maxX;
+    float * matrix;
     int matrix1;
 
 	dstOop = interpreterProxy->stackObjectValue(0);
@@ -593,12 +595,12 @@ static int roundAndStoreResultPoint(int nItemsToPop) {
 
 static int roundAndStoreResultRectx0y0x1y1(int dstOop, double x0, double y0, double x1, double y1) {
     double maxX;
-    double minX;
+    int rectOop;
+    int cornerOop;
     double maxY;
     double minY;
-    int rectOop;
     int originOop;
-    int cornerOop;
+    double minX;
 
 	minX = x0 + 0.5;
 	if (!((minX >= (((double) -1073741824 ))) && (m23ResultX <= (((double) 1073741823 ))))) {

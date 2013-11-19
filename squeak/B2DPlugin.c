@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:42 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:08:47 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -33,35 +33,192 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-static int* aetBuffer;
-static char bbPluginName[256] = "BitBltPlugin";
-static int copyBitsFn;
-static int dispatchReturnValue;
-static int dispatchedValue;
-static int doProfileStats = 0;
-static int engine;
-static int engineStopped;
-static int formArray;
-static int geProfileTime;
-static int* getBuffer;
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static int loadBBFn;
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"B2DPlugin 4 March 2003 (i)"
-#else
-	"B2DPlugin 4 March 2003 (e)"
-#endif
-;
-static int* objBuffer;
-static int objUsed;
-static unsigned int* spanBuffer;
-static int* workBuffer;
+/*** Constants ***/
+#define BEBalloonEngineSize 12
+#define BEBitBltIndex 2
+#define BEFormsIndex 3
+#define BESpanIndex 1
+#define BEWorkBufferIndex 0
+#define ETBalloonEdgeDataSize 6
+#define ETIndexIndex 0
+#define ETLinesIndex 4
+#define ETXValueIndex 1
+#define ETYValueIndex 2
+#define ETZValueIndex 3
+#define FTBalloonFillDataSize 6
+#define FTIndexIndex 0
+#define FTMaxXIndex 2
+#define FTMinXIndex 1
+#define FTYValueIndex 3
+#define GBBaseSize 16
+#define GBBitmapDepth 12
+#define GBBitmapHeight 11
+#define GBBitmapRaster 14
+#define GBBitmapSize 13
+#define GBBitmapWidth 10
+#define GBColormapOffset 18
+#define GBColormapSize 15
+#define GBEndX 14
+#define GBEndY 15
+#define GBFinalX 21
+#define GBMBaseSize 18
+#define GBTileFlag 16
+#define GBUpdateDDX 4
+#define GBUpdateDDY 5
+#define GBUpdateDX 2
+#define GBUpdateDY 3
+#define GBUpdateData 10
+#define GBUpdateX 0
+#define GBUpdateY 1
+#define GBViaX 12
+#define GBViaY 13
+#define GBWideEntry 18
+#define GBWideExit 19
+#define GBWideExtent 20
+#define GBWideFill 16
+#define GBWideSize 28
+#define GBWideUpdateData 22
+#define GBWideWidth 17
+#define GEBaseEdgeSize 10
+#define GEBaseFillSize 4
+#define GEEdgeFillsInvalid 65536
+#define GEFillIndexLeft 8
+#define GEFillIndexRight 9
+#define GENumLines 7
+#define GEObjectIndex 2
+#define GEObjectLength 1
+#define GEObjectType 0
+#define GEPrimitiveBezier 6
+#define GEPrimitiveClippedBitmapFill 1024
+#define GEPrimitiveEdge 2
+#define GEPrimitiveEdgeMask 255
+#define GEPrimitiveFill 256
+#define GEPrimitiveFillMask 65280
+#define GEPrimitiveLine 4
+#define GEPrimitiveLinearGradientFill 512
+#define GEPrimitiveRadialGradientFill 768
+#define GEPrimitiveTypeMask 65535
+#define GEPrimitiveWide 1
+#define GEPrimitiveWideBezier 7
+#define GEPrimitiveWideLine 5
+#define GEPrimitiveWideMask 254
+#define GEStateAddingFromGET 1
+#define GEStateBlitBuffer 5
+#define GEStateCompleted 8
+#define GEStateScanningAET 3
+#define GEStateUnlocked 0
+#define GEStateUpdateEdges 6
+#define GEStateWaitingChange 7
+#define GEStateWaitingForEdge 2
+#define GEStateWaitingForFill 4
+#define GEXValue 4
+#define GEYValue 5
+#define GEZValue 6
+#define GErrorAETEntry 6
+#define GErrorBadState 2
+#define GErrorFillEntry 5
+#define GErrorGETEntry 4
+#define GErrorNeedFlush 3
+#define GErrorNoMoreSpace 1
+#define GFDirectionX 6
+#define GFDirectionY 7
+#define GFNormalX 8
+#define GFNormalY 9
+#define GFOriginX 4
+#define GFOriginY 5
+#define GFRampLength 10
+#define GFRampOffset 12
+#define GGBaseSize 12
+#define GLBaseSize 16
+#define GLEndX 14
+#define GLEndY 15
+#define GLError 13
+#define GLErrorAdjDown 15
+#define GLErrorAdjUp 14
+#define GLWideEntry 18
+#define GLWideExit 19
+#define GLWideExtent 20
+#define GLWideFill 16
+#define GLWideSize 21
+#define GLWideWidth 17
+#define GLXDirection 10
+#define GLXIncrement 12
+#define GLYDirection 11
+#define GWAAColorMask 51
+#define GWAAColorShift 50
+#define GWAAHalfPixel 53
+#define GWAALevel 48
+#define GWAAScanMask 52
+#define GWAAShift 49
+#define GWAETStart 13
+#define GWAETUsed 14
+#define GWBezierHeightSubdivisions 109
+#define GWBezierLineConversions 111
+#define GWBezierMonotonSubdivisions 108
+#define GWBezierOverflowSubdivisions 110
+#define GWBufferTop 10
+#define GWClearSpanBuffer 69
+#define GWClipMaxX 43
+#define GWClipMaxY 45
+#define GWClipMinX 42
+#define GWClipMinY 44
+#define GWColorTransform 24
+#define GWCountAddAETEntry 97
+#define GWCountChangeAETEntry 107
+#define GWCountDisplaySpan 103
+#define GWCountFinishTest 93
+#define GWCountInitializing 91
+#define GWCountMergeFill 101
+#define GWCountNextAETEntry 105
+#define GWCountNextFillEntry 99
+#define GWCountNextGETEntry 95
+#define GWCurrentY 88
+#define GWCurrentZ 113
+#define GWDestOffsetX 46
+#define GWDestOffsetY 47
+#define GWEdgeTransform 18
+#define GWFillMaxX 37
+#define GWFillMaxY 39
+#define GWFillMinX 36
+#define GWFillMinY 38
+#define GWFillOffsetX 40
+#define GWFillOffsetY 41
+#define GWGETStart 11
+#define GWGETUsed 12
+#define GWHasColorTransform 17
+#define GWHasEdgeTransform 16
+#define GWHeaderSize 128
+#define GWLastExportedEdge 65
+#define GWLastExportedFill 66
+#define GWLastExportedLeftX 67
+#define GWLastExportedRightX 68
+#define GWMagicIndex 0
+#define GWMagicNumber 1097753705
+#define GWMinimalSize 256
+#define GWNeedsFlush 63
+#define GWObjStart 8
+#define GWObjUsed 9
+#define GWPoint1 80
+#define GWPoint2 82
+#define GWPoint3 84
+#define GWPoint4 86
+#define GWPointListFirst 70
+#define GWSize 1
+#define GWSpanEnd 34
+#define GWSpanEndAA 35
+#define GWSpanSize 33
+#define GWSpanStart 32
+#define GWState 2
+#define GWStopReason 64
+#define GWTimeAddAETEntry 96
+#define GWTimeChangeAETEntry 106
+#define GWTimeDisplaySpan 102
+#define GWTimeFinishTest 92
+#define GWTimeInitializing 90
+#define GWTimeMergeFill 100
+#define GWTimeNextAETEntry 104
+#define GWTimeNextFillEntry 98
+#define GWTimeNextGETEntry 94
 
 /*** Function Prototypes ***/
 static int aaColorMaskGet(void);
@@ -552,21 +709,51 @@ static int wideLineFillOf(int line);
 static int wideLineFillOfput(int line, int value);
 static int wideLineWidthOf(int line);
 static int wideLineWidthOfput(int line, int value);
+/*** Variables ***/
+static int* aetBuffer;
+static char bbPluginName[256] = "BitBltPlugin";
+static int copyBitsFn;
+static int dispatchReturnValue;
+static int dispatchedValue;
+static int doProfileStats = 0;
+static int engine;
+static int engineStopped;
+static int formArray;
+static int geProfileTime;
+static int* getBuffer;
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static int loadBBFn;
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"B2DPlugin 19 March 2005 (i)"
+#else
+	"B2DPlugin 19 March 2005 (e)"
+#endif
+;
+static int* objBuffer;
+static int objUsed;
+static unsigned int* spanBuffer;
+static int* workBuffer;
+
 
 static int aaColorMaskGet(void) {
-	return workBuffer[51];
+	return workBuffer[GWAAColorMask];
 }
 
 static int aaColorMaskPut(int value) {
-	return workBuffer[51] = value;
+	return workBuffer[GWAAColorMask] = value;
 }
 
 static int aaColorShiftGet(void) {
-	return workBuffer[50];
+	return workBuffer[GWAAColorShift];
 }
 
 static int aaColorShiftPut(int value) {
-	return workBuffer[50] = value;
+	return workBuffer[GWAAColorShift] = value;
 }
 
 
@@ -575,7 +762,7 @@ static int aaColorShiftPut(int value) {
 static int aaFirstPixelFromto(int leftX, int rightX) {
     int firstPixel;
 
-	firstPixel = ((leftX + (workBuffer[48])) - 1) & (~((workBuffer[48]) - 1));
+	firstPixel = ((leftX + (workBuffer[GWAALevel])) - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (firstPixel > rightX) {
 		return rightX;
 	} else {
@@ -584,42 +771,42 @@ static int aaFirstPixelFromto(int leftX, int rightX) {
 }
 
 static int aaHalfPixelGet(void) {
-	return workBuffer[53];
+	return workBuffer[GWAAHalfPixel];
 }
 
 static int aaHalfPixelPut(int value) {
-	return workBuffer[53] = value;
+	return workBuffer[GWAAHalfPixel] = value;
 }
 
 
 /*	Common function to compute the last full pixel for AA drawing */
 
 static int aaLastPixelFromto(int leftX, int rightX) {
-	return (rightX - 1) & (~((workBuffer[48]) - 1));
+	return (rightX - 1) & (~((workBuffer[GWAALevel]) - 1));
 }
 
 static int aaLevelGet(void) {
-	return workBuffer[48];
+	return workBuffer[GWAALevel];
 }
 
 static int aaLevelPut(int value) {
-	return workBuffer[48] = value;
+	return workBuffer[GWAALevel] = value;
 }
 
 static int aaScanMaskGet(void) {
-	return workBuffer[52];
+	return workBuffer[GWAAScanMask];
 }
 
 static int aaScanMaskPut(int value) {
-	return workBuffer[52] = value;
+	return workBuffer[GWAAScanMask] = value;
 }
 
 static int aaShiftGet(void) {
-	return workBuffer[49];
+	return workBuffer[GWAAShift];
 }
 
 static int aaShiftPut(int value) {
-	return workBuffer[49] = value;
+	return workBuffer[GWAAShift] = value;
 }
 
 
@@ -627,8 +814,8 @@ static int aaShiftPut(int value) {
 	e.g., compute (value * value) bitShift: -24 */
 
 static int absoluteSquared8Dot24(int value) {
-    int word1;
     int word2;
+    int word1;
 
 	word1 = value & 65535;
 	word2 = (((unsigned) value >> 16)) & 255;
@@ -669,8 +856,8 @@ static int addEdgeToGET(int edge) {
 	if (!(allocateGETEntry(1))) {
 		return 0;
 	}
-	getBuffer[workBuffer[12]] = edge;
-	workBuffer[12] = ((workBuffer[12]) + 1);
+	getBuffer[workBuffer[GWGETUsed]] = edge;
+	workBuffer[GWGETUsed] = ((workBuffer[GWGETUsed]) + 1);
 }
 
 
@@ -680,16 +867,16 @@ static int addEdgeToGET(int edge) {
 	We do this by replicating the top bits of each color in the lower bits. The idea is that we can scale each color value uniquely from 0 to 255 and thus fill the entire range of colors. */
 
 static int adjustAALevel(void) {
-    int adjustShift;
-    int x0;
-    int x1;
     int pixelValue;
+    int x1;
+    int adjustShift;
     int adjustMask;
+    int x0;
 
-	adjustShift = 8 - (workBuffer[50]);
-	adjustMask = ~(workBuffer[51]);
-	x0 = ((unsigned) (workBuffer[32])) >> (workBuffer[49]);
-	x1 = ((unsigned) (workBuffer[34])) >> (workBuffer[49]);
+	adjustShift = 8 - (workBuffer[GWAAColorShift]);
+	adjustMask = ~(workBuffer[GWAAColorMask]);
+	x0 = ((unsigned) (workBuffer[GWSpanStart])) >> (workBuffer[GWAAShift]);
+	x1 = ((unsigned) (workBuffer[GWSpanEnd])) >> (workBuffer[GWAAShift]);
 	while (x0 < x1) {
 		pixelValue = spanBuffer[x0];
 		spanBuffer[x0] = (pixelValue | ((((unsigned) pixelValue) >> adjustShift) & adjustMask));
@@ -704,12 +891,12 @@ static int adjustWideBezierLeftwidthoffsetendX(int bezier, int lineWidth, int li
     int lastX;
     int lastY;
 
-	((objBuffer + bezier) + 10)[0] = ((((objBuffer + bezier) + 10)[0]) - (lineOffset * 256));
-	lastX = ((objBuffer + bezier) + 22)[0];
-	((objBuffer + bezier) + 22)[0] = (lastX + ((lineWidth - lineOffset) * 256));
-	lastY = ((objBuffer + bezier) + 22)[1];
-	((objBuffer + bezier) + 22)[1] = (lastY + (lineWidth * 256));
-	objBuffer[bezier + 21] = (endX - lineOffset);
+	((objBuffer + bezier) + GBUpdateData)[GBUpdateX] = ((((objBuffer + bezier) + GBUpdateData)[GBUpdateX]) - (lineOffset * 256));
+	lastX = ((objBuffer + bezier) + GBWideUpdateData)[GBUpdateX];
+	((objBuffer + bezier) + GBWideUpdateData)[GBUpdateX] = (lastX + ((lineWidth - lineOffset) * 256));
+	lastY = ((objBuffer + bezier) + GBWideUpdateData)[GBUpdateY];
+	((objBuffer + bezier) + GBWideUpdateData)[GBUpdateY] = (lastY + (lineWidth * 256));
+	objBuffer[bezier + GBFinalX] = (endX - lineOffset);
 }
 
 
@@ -719,15 +906,15 @@ static int adjustWideBezierRightwidthoffsetendX(int bezier, int lineWidth, int l
     int lastX;
     int lastY;
 
-	((objBuffer + bezier) + 10)[0] = ((((objBuffer + bezier) + 10)[0]) + (lineOffset * 256));
-	lastX = ((objBuffer + bezier) + 22)[0];
-	((objBuffer + bezier) + 22)[0] = (lastX - ((lineWidth - lineOffset) * 256));
+	((objBuffer + bezier) + GBUpdateData)[GBUpdateX] = ((((objBuffer + bezier) + GBUpdateData)[GBUpdateX]) + (lineOffset * 256));
+	lastX = ((objBuffer + bezier) + GBWideUpdateData)[GBUpdateX];
+	((objBuffer + bezier) + GBWideUpdateData)[GBUpdateX] = (lastX - ((lineWidth - lineOffset) * 256));
 
 	/* Set lineWidth pixels down */
 
-	lastY = ((objBuffer + bezier) + 22)[1];
-	((objBuffer + bezier) + 22)[1] = (lastY + (lineWidth * 256));
-	objBuffer[bezier + 21] = ((endX - lineOffset) + lineWidth);
+	lastY = ((objBuffer + bezier) + GBWideUpdateData)[GBUpdateY];
+	((objBuffer + bezier) + GBWideUpdateData)[GBUpdateY] = (lastY + (lineWidth * 256));
+	objBuffer[bezier + GBFinalX] = ((endX - lineOffset) + lineWidth);
 }
 
 
@@ -736,20 +923,20 @@ static int adjustWideBezierRightwidthoffsetendX(int bezier, int lineWidth, int l
 	to simulate a rectangular brush */
 
 static int adjustWideLineafterSteppingFromto(int line, int lastX, int nextX) {
+    int yEntry;
     int lineOffset;
     int lineWidth;
     int xDir;
+    int deltaX;
     int baseWidth;
     int yExit;
-    int deltaX;
-    int yEntry;
 
-	yEntry = objBuffer[line + 18];
-	yExit = objBuffer[line + 19];
-	baseWidth = objBuffer[line + 20];
+	yEntry = objBuffer[line + GLWideEntry];
+	yExit = objBuffer[line + GLWideExit];
+	baseWidth = objBuffer[line + GLWideExtent];
 	lineOffset = ((int) baseWidth >> 1);
-	lineWidth = objBuffer[line + 17];
-	xDir = objBuffer[line + 10];
+	lineWidth = objBuffer[line + GLWideWidth];
+	xDir = objBuffer[line + GLXDirection];
 
 	/* Adjust the start of the line to fill an entire rectangle */
 
@@ -762,18 +949,18 @@ static int adjustWideLineafterSteppingFromto(int line, int lastX, int nextX) {
 			lineWidth -= deltaX;
 		} else {
 			lineWidth += deltaX;
-			objBuffer[line + 4] = lastX;
+			objBuffer[line + GEXValue] = lastX;
 		}
 	}
 	if ((yExit + lineOffset) == 0) {
 		if (xDir > 0) {
-			lineWidth -= objBuffer[line + 12];
+			lineWidth -= objBuffer[line + GLXIncrement];
 		} else {
 
 			/* effectively subtracting */
 
-			lineWidth += objBuffer[line + 12];
-			objBuffer[line + 4] = lastX;
+			lineWidth += objBuffer[line + GLXIncrement];
+			objBuffer[line + GEXValue] = lastX;
 		}
 	}
 	if ((yExit + lineOffset) > 0) {
@@ -782,28 +969,28 @@ static int adjustWideLineafterSteppingFromto(int line, int lastX, int nextX) {
 			/* effectively subtracting */
 
 			lineWidth += deltaX;
-			objBuffer[line + 4] = lastX;
+			objBuffer[line + GEXValue] = lastX;
 		} else {
 			lineWidth -= deltaX;
 		}
 	}
-	objBuffer[line + 17] = lineWidth;
+	objBuffer[line + GLWideWidth] = lineWidth;
 }
 
 static int aetStartGet(void) {
-	return workBuffer[13];
+	return workBuffer[GWAETStart];
 }
 
 static int aetStartPut(int value) {
-	return workBuffer[13] = value;
+	return workBuffer[GWAETStart] = value;
 }
 
 static int aetUsedGet(void) {
-	return workBuffer[14];
+	return workBuffer[GWAETUsed];
 }
 
 static int aetUsedPut(int value) {
-	return workBuffer[14] = value;
+	return workBuffer[GWAETUsed] = value;
 }
 
 
@@ -811,9 +998,9 @@ static int aetUsedPut(int value) {
 
 static int allocateAETEntry(int nSlots) {
 	/* begin needAvailableSpace: */
-	if (((((128 + objUsed) + (workBuffer[12])) + (workBuffer[14])) + nSlots) > (workBuffer[10])) {
+	if (((((GWHeaderSize + objUsed) + (workBuffer[GWGETUsed])) + (workBuffer[GWAETUsed])) + nSlots) > (workBuffer[GWBufferTop])) {
 		/* begin stopBecauseOf: */
-		workBuffer[64] = 1;
+		workBuffer[GWStopReason] = GErrorNoMoreSpace;
 		engineStopped = 1;
 		return 0;
 	}
@@ -823,14 +1010,14 @@ static int allocateAETEntry(int nSlots) {
 static int allocateBezier(void) {
     int bezier;
 
-	if (!(allocateObjEntry(16))) {
+	if (!(allocateObjEntry(GBBaseSize))) {
 		return 0;
 	}
 	bezier = objUsed;
-	objUsed = bezier + 16;
-	objBuffer[bezier + 0] = 6;
-	objBuffer[bezier + 2] = 0;
-	objBuffer[bezier + 1] = 16;
+	objUsed = bezier + GBBaseSize;
+	objBuffer[bezier + GEObjectType] = GEPrimitiveBezier;
+	objBuffer[bezier + GEObjectIndex] = 0;
+	objBuffer[bezier + GEObjectLength] = GBBaseSize;
 	return bezier;
 }
 
@@ -839,28 +1026,28 @@ static int allocateBezierStackEntry(void) {
 	if (!(needAvailableSpace(6))) {
 		goto l1;
 	}
-	workBuffer[10] = ((workBuffer[10]) - 6);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) - 6);
 l1:	/* end wbStackPush: */;
-	return (workBuffer[1]) - (workBuffer[10]);
+	return (workBuffer[GWSize]) - (workBuffer[GWBufferTop]);
 }
 
 static int allocateBitmapFillcolormap(int cmSize, int *cmBits) {
-    int fillSize;
+    int i;
     int fill;
     int *cm;
-    int i;
+    int fillSize;
 
-	fillSize = 18 + cmSize;
+	fillSize = GBMBaseSize + cmSize;
 	if (!(allocateObjEntry(fillSize))) {
 		return 0;
 	}
 	fill = objUsed;
 	objUsed = fill + fillSize;
-	objBuffer[fill + 0] = 1024;
-	objBuffer[fill + 2] = 0;
-	objBuffer[fill + 1] = fillSize;
-	cm = (objBuffer + fill) + 18;
-	if ((workBuffer[17]) != 0) {
+	objBuffer[fill + GEObjectType] = GEPrimitiveClippedBitmapFill;
+	objBuffer[fill + GEObjectIndex] = 0;
+	objBuffer[fill + GEObjectLength] = fillSize;
+	cm = (objBuffer + fill) + GBColormapOffset;
+	if ((workBuffer[GWHasColorTransform]) != 0) {
 		for (i = 0; i <= (cmSize - 1); i += 1) {
 			cm[i] = (transformColor(cmBits[i]));
 		}
@@ -869,7 +1056,7 @@ static int allocateBitmapFillcolormap(int cmSize, int *cmBits) {
 			cm[i] = (cmBits[i]);
 		}
 	}
-	objBuffer[fill + 15] = cmSize;
+	objBuffer[fill + GBColormapSize] = cmSize;
 	return fill;
 }
 
@@ -884,10 +1071,10 @@ static int allocateGETEntry(int nSlots) {
 	if (!(needAvailableSpace(nSlots))) {
 		return 0;
 	}
-	if (!((workBuffer[14]) == 0)) {
-		srcIndex = workBuffer[14];
-		dstIndex = (workBuffer[14]) + nSlots;
-		for (i = 1; i <= (workBuffer[14]); i += 1) {
+	if (!((workBuffer[GWAETUsed]) == 0)) {
+		srcIndex = workBuffer[GWAETUsed];
+		dstIndex = (workBuffer[GWAETUsed]) + nSlots;
+		for (i = 1; i <= (workBuffer[GWAETUsed]); i += 1) {
 			aetBuffer[dstIndex -= 1] = (aetBuffer[srcIndex -= 1]);
 		}
 	}
@@ -897,25 +1084,25 @@ static int allocateGETEntry(int nSlots) {
 
 static int allocateGradientFillrampWidthisRadial(int *ramp, int rampWidth, int isRadial) {
     int fillSize;
-    int fill;
-    int *rampPtr;
     int i;
+    int *rampPtr;
+    int fill;
 
-	fillSize = 12 + rampWidth;
+	fillSize = GGBaseSize + rampWidth;
 	if (!(allocateObjEntry(fillSize))) {
 		return 0;
 	}
 	fill = objUsed;
 	objUsed = fill + fillSize;
 	if (isRadial) {
-		objBuffer[fill + 0] = 768;
+		objBuffer[fill + GEObjectType] = GEPrimitiveRadialGradientFill;
 	} else {
-		objBuffer[fill + 0] = 512;
+		objBuffer[fill + GEObjectType] = GEPrimitiveLinearGradientFill;
 	}
-	objBuffer[fill + 2] = 0;
-	objBuffer[fill + 1] = fillSize;
-	rampPtr = (objBuffer + fill) + 12;
-	if ((workBuffer[17]) != 0) {
+	objBuffer[fill + GEObjectIndex] = 0;
+	objBuffer[fill + GEObjectLength] = fillSize;
+	rampPtr = (objBuffer + fill) + GFRampOffset;
+	if ((workBuffer[GWHasColorTransform]) != 0) {
 		for (i = 0; i <= (rampWidth - 1); i += 1) {
 			rampPtr[i] = (transformColor(ramp[i]));
 		}
@@ -924,21 +1111,21 @@ static int allocateGradientFillrampWidthisRadial(int *ramp, int rampWidth, int i
 			rampPtr[i] = (ramp[i]);
 		}
 	}
-	objBuffer[fill + 10] = rampWidth;
+	objBuffer[fill + GFRampLength] = rampWidth;
 	return fill;
 }
 
 static int allocateLine(void) {
     int line;
 
-	if (!(allocateObjEntry(16))) {
+	if (!(allocateObjEntry(GLBaseSize))) {
 		return 0;
 	}
 	line = objUsed;
-	objUsed = line + 16;
-	objBuffer[line + 0] = 4;
-	objBuffer[line + 2] = 0;
-	objBuffer[line + 1] = 16;
+	objUsed = line + GLBaseSize;
+	objBuffer[line + GEObjectType] = GEPrimitiveLine;
+	objBuffer[line + GEObjectIndex] = 0;
+	objBuffer[line + GEObjectLength] = GLBaseSize;
 	return line;
 }
 
@@ -953,10 +1140,10 @@ static int allocateObjEntry(int nSlots) {
 	if (!(allocateGETEntry(nSlots))) {
 		return 0;
 	}
-	if (!((workBuffer[12]) == 0)) {
-		srcIndex = workBuffer[12];
-		dstIndex = (workBuffer[12]) + nSlots;
-		for (i = 1; i <= (workBuffer[12]); i += 1) {
+	if (!((workBuffer[GWGETUsed]) == 0)) {
+		srcIndex = workBuffer[GWGETUsed];
+		dstIndex = (workBuffer[GWGETUsed]) + nSlots;
+		for (i = 1; i <= (workBuffer[GWGETUsed]); i += 1) {
 			getBuffer[dstIndex -= 1] = (getBuffer[srcIndex -= 1]);
 		}
 	}
@@ -969,9 +1156,9 @@ static int allocateObjEntry(int nSlots) {
 
 static int allocateStackEntry(int nSlots) {
 	/* begin needAvailableSpace: */
-	if (((((128 + objUsed) + (workBuffer[12])) + (workBuffer[14])) + nSlots) > (workBuffer[10])) {
+	if (((((GWHeaderSize + objUsed) + (workBuffer[GWGETUsed])) + (workBuffer[GWAETUsed])) + nSlots) > (workBuffer[GWBufferTop])) {
 		/* begin stopBecauseOf: */
-		workBuffer[64] = 1;
+		workBuffer[GWStopReason] = GErrorNoMoreSpace;
 		engineStopped = 1;
 		return 0;
 	}
@@ -983,40 +1170,40 @@ static int allocateStackFillEntry(void) {
 	if (!(needAvailableSpace(3))) {
 		return 0;
 	}
-	workBuffer[10] = ((workBuffer[10]) - 3);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) - 3);
 	return 1;
 }
 
 static int allocateWideBezier(void) {
     int bezier;
 
-	if (!(allocateObjEntry(28))) {
+	if (!(allocateObjEntry(GBWideSize))) {
 		return 0;
 	}
 	bezier = objUsed;
-	objUsed = bezier + 28;
-	objBuffer[bezier + 0] = 7;
-	objBuffer[bezier + 2] = 0;
-	objBuffer[bezier + 1] = 28;
+	objUsed = bezier + GBWideSize;
+	objBuffer[bezier + GEObjectType] = GEPrimitiveWideBezier;
+	objBuffer[bezier + GEObjectIndex] = 0;
+	objBuffer[bezier + GEObjectLength] = GBWideSize;
 	return bezier;
 }
 
 static int allocateWideLine(void) {
     int line;
 
-	if (!(allocateObjEntry(21))) {
+	if (!(allocateObjEntry(GLWideSize))) {
 		return 0;
 	}
 	line = objUsed;
-	objUsed = line + 21;
-	objBuffer[line + 0] = 5;
-	objBuffer[line + 2] = 0;
-	objBuffer[line + 1] = 21;
+	objUsed = line + GLWideSize;
+	objBuffer[line + GEObjectType] = GEPrimitiveWideLine;
+	objBuffer[line + GEObjectIndex] = 0;
+	objBuffer[line + GEObjectLength] = GLWideSize;
 	return line;
 }
 
 static int areEdgeFillsValid(int edge) {
-	return ((objBuffer[edge + 0]) & 65536) == 0;
+	return ((objBuffer[edge + GEObjectType]) & GEEdgeFillsInvalid) == 0;
 }
 
 
@@ -1042,110 +1229,110 @@ static int assureValuebetweenand(int val1, int val2, int val3) {
 }
 
 static int bezierEndXOf(int bezier) {
-	return objBuffer[bezier + 14];
+	return objBuffer[bezier + GBEndX];
 }
 
 static int bezierEndXOfput(int bezier, int value) {
-	return objBuffer[bezier + 14] = value;
+	return objBuffer[bezier + GBEndX] = value;
 }
 
 static int bezierEndYOf(int bezier) {
-	return objBuffer[bezier + 15];
+	return objBuffer[bezier + GBEndY];
 }
 
 static int bezierEndYOfput(int bezier, int value) {
-	return objBuffer[bezier + 15] = value;
+	return objBuffer[bezier + GBEndY] = value;
 }
 
 static int bezierFinalXOf(int bezier) {
-	return objBuffer[bezier + 21];
+	return objBuffer[bezier + GBFinalX];
 }
 
 static int bezierFinalXOfput(int bezier, int value) {
-	return objBuffer[bezier + 21] = value;
+	return objBuffer[bezier + GBFinalX] = value;
 }
 
 static int * bezierUpdateDataOf(int bezier) {
-	return (objBuffer + bezier) + 10;
+	return (objBuffer + bezier) + GBUpdateData;
 }
 
 static int bezierViaXOf(int bezier) {
-	return objBuffer[bezier + 12];
+	return objBuffer[bezier + GBViaX];
 }
 
 static int bezierViaXOfput(int bezier, int value) {
-	return objBuffer[bezier + 12] = value;
+	return objBuffer[bezier + GBViaX] = value;
 }
 
 static int bezierViaYOf(int bezier) {
-	return objBuffer[bezier + 13];
+	return objBuffer[bezier + GBViaY];
 }
 
 static int bezierViaYOfput(int bezier, int value) {
-	return objBuffer[bezier + 13] = value;
+	return objBuffer[bezier + GBViaY] = value;
 }
 
 static int bitmapCmSizeOf(int bmFill) {
-	return objBuffer[bmFill + 15];
+	return objBuffer[bmFill + GBColormapSize];
 }
 
 static int bitmapCmSizeOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 15] = value;
+	return objBuffer[bmFill + GBColormapSize] = value;
 }
 
 static int bitmapDepthOf(int bmFill) {
-	return objBuffer[bmFill + 12];
+	return objBuffer[bmFill + GBBitmapDepth];
 }
 
 static int bitmapDepthOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 12] = value;
+	return objBuffer[bmFill + GBBitmapDepth] = value;
 }
 
 static int bitmapHeightOf(int bmFill) {
-	return objBuffer[bmFill + 11];
+	return objBuffer[bmFill + GBBitmapHeight];
 }
 
 static int bitmapHeightOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 11] = value;
+	return objBuffer[bmFill + GBBitmapHeight] = value;
 }
 
 static int bitmapRasterOf(int bmFill) {
-	return objBuffer[bmFill + 14];
+	return objBuffer[bmFill + GBBitmapRaster];
 }
 
 static int bitmapRasterOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 14] = value;
+	return objBuffer[bmFill + GBBitmapRaster] = value;
 }
 
 static int bitmapSizeOf(int bmFill) {
-	return objBuffer[bmFill + 13];
+	return objBuffer[bmFill + GBBitmapSize];
 }
 
 static int bitmapSizeOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 13] = value;
+	return objBuffer[bmFill + GBBitmapSize] = value;
 }
 
 static int bitmapTileFlagOf(int bmFill) {
-	return objBuffer[bmFill + 16];
+	return objBuffer[bmFill + GBTileFlag];
 }
 
 static int bitmapTileFlagOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 16] = value;
+	return objBuffer[bmFill + GBTileFlag] = value;
 }
 
 static int bitmapValuebitsatXy(int bmFill, int bits, int xp, int yp) {
-    int g;
-    int cMask;
     int bmDepth;
+    int a;
+    int cMask;
+    int bmRaster;
+    int g;
+    int b;
+    int value;
     int rShift;
     int r;
-    int bmRaster;
-    int value;
-    int b;
-    int a;
 
-	bmDepth = objBuffer[bmFill + 12];
-	bmRaster = objBuffer[bmFill + 14];
+	bmDepth = objBuffer[bmFill + GBBitmapDepth];
+	bmRaster = objBuffer[bmFill + GBBitmapRaster];
 	if (bmDepth == 32) {
 		value = (((int*) bits))[(bmRaster * yp) + xp];
 		if ((value != 0) && ((value & 4278190080U) == 0)) {
@@ -1176,69 +1363,69 @@ static int bitmapValuebitsatXy(int bmFill, int bits, int xp, int yp) {
 			value = ((b + (g << 8)) + (r << 16)) + (a << 24);
 		}
 	} else {
-		if ((objBuffer[bmFill + 15]) == 0) {
+		if ((objBuffer[bmFill + GBColormapSize]) == 0) {
 			value = 0;
 		} else {
-			value = ((objBuffer + bmFill) + 18)[value];
+			value = ((objBuffer + bmFill) + GBColormapOffset)[value];
 		}
 	}
 	return uncheckedTransformColor(value);
 }
 
 static int bitmapWidthOf(int bmFill) {
-	return objBuffer[bmFill + 10];
+	return objBuffer[bmFill + GBBitmapWidth];
 }
 
 static int bitmapWidthOfput(int bmFill, int value) {
-	return objBuffer[bmFill + 10] = value;
+	return objBuffer[bmFill + GBBitmapWidth] = value;
 }
 
 static int bzEndX(int index) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)];
 }
 
 static int bzEndXput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)] = value;
 }
 
 static int bzEndY(int index) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)];
 }
 
 static int bzEndYput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)] = value;
 }
 
 static int bzStartX(int index) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)];
 }
 
 static int bzStartXput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)] = value;
 }
 
 static int bzStartY(int index) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)];
 }
 
 static int bzStartYput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)] = value;
 }
 
 static int bzViaX(int index) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)];
 }
 
 static int bzViaXput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)] = value;
 }
 
 static int bzViaY(int index) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)];
 }
 
 static int bzViaYput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)] = value;
 }
 
 
@@ -1270,8 +1457,8 @@ static int checkCompressedFillIndexListmaxsegments(int fillList, int maxIndex, i
 /*	Check if the indexList (containing fill handles) is okay. */
 
 static int checkCompressedFills(int indexList) {
-    int length;
     int *fillPtr;
+    int length;
     int i;
     int fillIndex;
 
@@ -1297,11 +1484,11 @@ static int checkCompressedFills(int indexList) {
 /*	Check the run-length encoded lineWidthList matches nSegments */
 
 static int checkCompressedLineWidthssegments(int lineWidthList, int nSegments) {
-    int runLength;
-    int length;
     int *ptr;
-    int nItems;
+    int length;
     int i;
+    int nItems;
+    int runLength;
 
 	length = interpreterProxy->slotSizeOf(lineWidthList);
 	ptr = interpreterProxy->firstIndexableField(lineWidthList);
@@ -1370,15 +1557,15 @@ static int checkCompressedShapesegmentsleftFillsrightFillslineWidthslineFillsfil
 static int checkedAddBezierToGET(int bezier) {
     int lineWidth;
 
-	if ((((objBuffer[bezier + 0]) & 65535) & 1) != 0) {
-		lineWidth = objBuffer[bezier + 20];
+	if ((((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+		lineWidth = objBuffer[bezier + GBWideExtent];
 	} else {
 		lineWidth = 0;
 	}
-	if (((objBuffer[bezier + 15]) + lineWidth) < (workBuffer[38])) {
+	if (((objBuffer[bezier + GBEndY]) + lineWidth) < (workBuffer[GWFillMinY])) {
 		return 0;
 	}
-	if ((((objBuffer[bezier + 4]) - lineWidth) >= (workBuffer[37])) && (((objBuffer[bezier + 14]) - lineWidth) >= (workBuffer[37]))) {
+	if ((((objBuffer[bezier + GEXValue]) - lineWidth) >= (workBuffer[GWFillMaxX])) && (((objBuffer[bezier + GBEndX]) - lineWidth) >= (workBuffer[GWFillMaxX]))) {
 		return 0;
 	}
 	addEdgeToGET(bezier);
@@ -1392,33 +1579,33 @@ static int checkedAddEdgeToGET(int edge) {
     int lineWidth;
     int lineWidth1;
 
-	if ((((objBuffer[edge + 0]) & 65535) & 254) == 4) {
+	if ((((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveLine) {
 		/* begin checkedAddLineToGET: */
-		if ((((objBuffer[edge + 0]) & 65535) & 1) != 0) {
-			lineWidth = objBuffer[edge + 20];
+		if ((((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+			lineWidth = objBuffer[edge + GLWideExtent];
 		} else {
 			lineWidth = 0;
 		}
-		if (((objBuffer[edge + 15]) + lineWidth) < (workBuffer[38])) {
+		if (((objBuffer[edge + GLEndY]) + lineWidth) < (workBuffer[GWFillMinY])) {
 			return 0;
 		}
-		if ((((objBuffer[edge + 4]) - lineWidth) >= (workBuffer[37])) && (((objBuffer[edge + 14]) - lineWidth) >= (workBuffer[37]))) {
+		if ((((objBuffer[edge + GEXValue]) - lineWidth) >= (workBuffer[GWFillMaxX])) && (((objBuffer[edge + GLEndX]) - lineWidth) >= (workBuffer[GWFillMaxX]))) {
 			return 0;
 		}
 		addEdgeToGET(edge);
 		return null;
 	}
-	if ((((objBuffer[edge + 0]) & 65535) & 254) == 6) {
+	if ((((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveBezier) {
 		/* begin checkedAddBezierToGET: */
-		if ((((objBuffer[edge + 0]) & 65535) & 1) != 0) {
-			lineWidth1 = objBuffer[edge + 20];
+		if ((((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+			lineWidth1 = objBuffer[edge + GBWideExtent];
 		} else {
 			lineWidth1 = 0;
 		}
-		if (((objBuffer[edge + 15]) + lineWidth1) < (workBuffer[38])) {
+		if (((objBuffer[edge + GBEndY]) + lineWidth1) < (workBuffer[GWFillMinY])) {
 			return 0;
 		}
-		if ((((objBuffer[edge + 4]) - lineWidth1) >= (workBuffer[37])) && (((objBuffer[edge + 14]) - lineWidth1) >= (workBuffer[37]))) {
+		if ((((objBuffer[edge + GEXValue]) - lineWidth1) >= (workBuffer[GWFillMaxX])) && (((objBuffer[edge + GBEndX]) - lineWidth1) >= (workBuffer[GWFillMaxX]))) {
 			return 0;
 		}
 		addEdgeToGET(edge);
@@ -1433,15 +1620,15 @@ static int checkedAddEdgeToGET(int edge) {
 static int checkedAddLineToGET(int line) {
     int lineWidth;
 
-	if ((((objBuffer[line + 0]) & 65535) & 1) != 0) {
-		lineWidth = objBuffer[line + 20];
+	if ((((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+		lineWidth = objBuffer[line + GLWideExtent];
 	} else {
 		lineWidth = 0;
 	}
-	if (((objBuffer[line + 15]) + lineWidth) < (workBuffer[38])) {
+	if (((objBuffer[line + GLEndY]) + lineWidth) < (workBuffer[GWFillMinY])) {
 		return 0;
 	}
-	if ((((objBuffer[line + 4]) - lineWidth) >= (workBuffer[37])) && (((objBuffer[line + 14]) - lineWidth) >= (workBuffer[37]))) {
+	if ((((objBuffer[line + GEXValue]) - lineWidth) >= (workBuffer[GWFillMaxX])) && (((objBuffer[line + GLEndX]) - lineWidth) >= (workBuffer[GWFillMaxX]))) {
 		return 0;
 	}
 	addEdgeToGET(line);
@@ -1494,71 +1681,71 @@ static int clampValuemax(int value, int maxValue) {
 	The span buffer is only cleared in the area that has been used by the previous scan line. */
 
 static int clearSpanBuffer(void) {
-    int x0;
     int x1;
+    int x0;
 
-	x0 = ((unsigned) (workBuffer[32])) >> (workBuffer[49]);
-	x1 = (((unsigned) (workBuffer[34])) >> (workBuffer[49])) + 1;
+	x0 = ((unsigned) (workBuffer[GWSpanStart])) >> (workBuffer[GWAAShift]);
+	x1 = (((unsigned) (workBuffer[GWSpanEnd])) >> (workBuffer[GWAAShift])) + 1;
 	if (x0 < 0) {
 		x0 = 0;
 	}
-	if (x1 > (workBuffer[33])) {
-		x1 = workBuffer[33];
+	if (x1 > (workBuffer[GWSpanSize])) {
+		x1 = workBuffer[GWSpanSize];
 	}
 	while (x0 < x1) {
 		spanBuffer[x0] = 0;
 		x0 += 1;
 	}
-	workBuffer[32] = (workBuffer[33]);
-	workBuffer[34] = 0;
+	workBuffer[GWSpanStart] = (workBuffer[GWSpanSize]);
+	workBuffer[GWSpanEnd] = 0;
 }
 
 static int clearSpanBufferGet(void) {
-	return workBuffer[69];
+	return workBuffer[GWClearSpanBuffer];
 }
 
 static int clearSpanBufferPut(int value) {
-	return workBuffer[69] = value;
+	return workBuffer[GWClearSpanBuffer] = value;
 }
 
 static int clipMaxXGet(void) {
-	return workBuffer[43];
+	return workBuffer[GWClipMaxX];
 }
 
 static int clipMaxXPut(int value) {
-	return workBuffer[43] = value;
+	return workBuffer[GWClipMaxX] = value;
 }
 
 static int clipMaxYGet(void) {
-	return workBuffer[45];
+	return workBuffer[GWClipMaxY];
 }
 
 static int clipMaxYPut(int value) {
-	return workBuffer[45] = value;
+	return workBuffer[GWClipMaxY] = value;
 }
 
 static int clipMinXGet(void) {
-	return workBuffer[42];
+	return workBuffer[GWClipMinX];
 }
 
 static int clipMinXPut(int value) {
-	return workBuffer[42] = value;
+	return workBuffer[GWClipMinX] = value;
 }
 
 static int clipMinYGet(void) {
-	return workBuffer[44];
+	return workBuffer[GWClipMinY];
 }
 
 static int clipMinYPut(int value) {
-	return workBuffer[44] = value;
+	return workBuffer[GWClipMinY] = value;
 }
 
 static float * colorTransform(void) {
-	return ((float *) (workBuffer + 24));
+	return ((float *) (workBuffer + GWColorTransform));
 }
 
 static int * colormapOf(int bmFill) {
-	return (objBuffer + bmFill) + 18;
+	return (objBuffer + bmFill) + GBColormapOffset;
 }
 
 
@@ -1568,29 +1755,29 @@ static int * colormapOf(int bmFill) {
 		to be *really* between the start and end value. */
 
 static int computeBeziersplitAt(int index, double param) {
-    int rightViaX;
-    int rightViaY;
     int endX;
-    int sharedX;
-    int endY;
     int sharedY;
-    int newIndex;
-    int startX;
-    int startY;
-    int viaX;
-    int leftViaX;
-    int viaY;
     int leftViaY;
+    int rightViaX;
+    int viaY;
+    int startX;
+    int endY;
+    int rightViaY;
+    int sharedX;
+    int newIndex;
+    int startY;
+    int leftViaX;
+    int viaX;
 
-	leftViaX = startX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)];
-	leftViaY = startY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)];
-	rightViaX = viaX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)];
-	rightViaY = viaY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)];
-	endX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)];
+	leftViaX = startX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)];
+	leftViaY = startY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)];
+	rightViaX = viaX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)];
+	rightViaY = viaY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)];
+	endX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)];
 
 	/* Compute intermediate points */
 
-	endY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)];
+	endY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)];
 	sharedX = leftViaX += ((int) ((((double) (viaX - startX) )) * param) );
 	sharedY = leftViaY += ((int) ((((double) (viaY - startY) )) * param) );
 	rightViaX += ((int) ((((double) (endX - viaX) )) * param) );
@@ -1652,22 +1839,22 @@ l2:	/* end assureValue:between:and: */;
 	if (!(needAvailableSpace(6))) {
 		goto l3;
 	}
-	workBuffer[10] = ((workBuffer[10]) - 6);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) - 6);
 l3:	/* end wbStackPush: */;
-	newIndex = (workBuffer[1]) - (workBuffer[10]);
+	newIndex = (workBuffer[GWSize]) - (workBuffer[GWBufferTop]);
 	if (engineStopped) {
 		return 0;
 	}
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)] = leftViaX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)] = leftViaY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)] = sharedX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)] = sharedY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 0)] = sharedX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 1)] = sharedY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 2)] = rightViaX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 3)] = rightViaY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 4)] = endX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 5)] = endY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)] = leftViaX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)] = leftViaY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)] = sharedX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)] = sharedY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 0)] = sharedX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 1)] = sharedY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 2)] = rightViaX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 3)] = rightViaY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 4)] = endX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 5)] = endY;
 	return newIndex;
 }
 
@@ -1675,40 +1862,40 @@ l3:	/* end wbStackPush: */;
 /*	Split the bezier curve at 0.5. */
 
 static int computeBezierSplitAtHalf(int index) {
-    int rightViaX;
-    int rightViaY;
     int endX;
-    int sharedX;
-    int endY;
     int sharedY;
-    int newIndex;
-    int startX;
-    int startY;
-    int viaX;
-    int leftViaX;
     int leftViaY;
+    int rightViaX;
     int viaY;
+    int startX;
+    int endY;
+    int rightViaY;
+    int sharedX;
+    int newIndex;
+    int startY;
+    int leftViaX;
+    int viaX;
 
 	/* begin allocateBezierStackEntry */
 	/* begin wbStackPush: */
 	if (!(needAvailableSpace(6))) {
 		goto l1;
 	}
-	workBuffer[10] = ((workBuffer[10]) - 6);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) - 6);
 l1:	/* end wbStackPush: */;
-	newIndex = (workBuffer[1]) - (workBuffer[10]);
+	newIndex = (workBuffer[GWSize]) - (workBuffer[GWBufferTop]);
 	if (engineStopped) {
 		return 0;
 	}
-	leftViaX = startX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)];
-	leftViaY = startY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)];
-	rightViaX = viaX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)];
-	rightViaY = viaY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)];
-	endX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)];
+	leftViaX = startX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)];
+	leftViaY = startY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)];
+	rightViaX = viaX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)];
+	rightViaY = viaY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)];
+	endX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)];
 
 	/* Compute intermediate points */
 
-	endY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)];
+	endY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)];
 	leftViaX += ((int) (viaX - startX) >> 1);
 	leftViaY += ((int) (viaY - startY) >> 1);
 	sharedX = rightViaX += ((int) (endX - viaX) >> 1);
@@ -1721,16 +1908,16 @@ l1:	/* end wbStackPush: */;
 	/* Store the first part back */
 
 	sharedY += ((int) (leftViaY - rightViaY) >> 1);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)] = leftViaX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)] = leftViaY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)] = sharedX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)] = sharedY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 0)] = sharedX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 1)] = sharedY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 2)] = rightViaX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 3)] = rightViaY;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 4)] = endX;
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - newIndex) + 5)] = endY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)] = leftViaX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)] = leftViaY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)] = sharedX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)] = sharedY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 0)] = sharedX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 1)] = sharedY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 2)] = rightViaX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 3)] = rightViaY;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 4)] = endX;
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - newIndex) + 5)] = endY;
 	return newIndex;
 }
 
@@ -1743,18 +1930,18 @@ static int computeFinalWideBezierValueswidth(int bezier, int lineWidth) {
     int rightX;
     int temp;
 
-	leftX = ((int) (((objBuffer + bezier) + 10)[0]) >> 8);
-	rightX = ((int) (((objBuffer + bezier) + 22)[0]) >> 8);
+	leftX = ((int) (((objBuffer + bezier) + GBUpdateData)[GBUpdateX]) >> 8);
+	rightX = ((int) (((objBuffer + bezier) + GBWideUpdateData)[GBUpdateX]) >> 8);
 	if (leftX > rightX) {
 		temp = leftX;
 		leftX = rightX;
 		rightX = temp;
 	}
-	objBuffer[bezier + 4] = leftX;
+	objBuffer[bezier + GEXValue] = leftX;
 	if ((rightX - leftX) > lineWidth) {
-		objBuffer[bezier + 17] = (rightX - leftX);
+		objBuffer[bezier + GBWideWidth] = (rightX - leftX);
 	} else {
-		objBuffer[bezier + 17] = lineWidth;
+		objBuffer[bezier + GBWideWidth] = lineWidth;
 	}
 }
 
@@ -1779,8 +1966,8 @@ static int copyBitsFromtoat(int x0, int x1, int yValue) {
 /*	Create the global edge table */
 
 static int createGlobalEdgeTable(void) {
-    int end;
     int object;
+    int end;
     int lineWidth;
     int lineWidth1;
 
@@ -1788,36 +1975,36 @@ static int createGlobalEdgeTable(void) {
 	end = objUsed;
 	while (object < end) {
 		if (isEdge(object)) {
-			if (!((objBuffer[object + 5]) >= (workBuffer[39]))) {
+			if (!((objBuffer[object + GEYValue]) >= (workBuffer[GWFillMaxY]))) {
 				/* begin checkedAddEdgeToGET: */
-				if ((((objBuffer[object + 0]) & 65535) & 254) == 4) {
+				if ((((objBuffer[object + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveLine) {
 					/* begin checkedAddLineToGET: */
-					if ((((objBuffer[object + 0]) & 65535) & 1) != 0) {
-						lineWidth = objBuffer[object + 20];
+					if ((((objBuffer[object + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+						lineWidth = objBuffer[object + GLWideExtent];
 					} else {
 						lineWidth = 0;
 					}
-					if (((objBuffer[object + 15]) + lineWidth) < (workBuffer[38])) {
+					if (((objBuffer[object + GLEndY]) + lineWidth) < (workBuffer[GWFillMinY])) {
 						goto l2;
 					}
-					if ((((objBuffer[object + 4]) - lineWidth) >= (workBuffer[37])) && (((objBuffer[object + 14]) - lineWidth) >= (workBuffer[37]))) {
+					if ((((objBuffer[object + GEXValue]) - lineWidth) >= (workBuffer[GWFillMaxX])) && (((objBuffer[object + GLEndX]) - lineWidth) >= (workBuffer[GWFillMaxX]))) {
 						goto l2;
 					}
 					addEdgeToGET(object);
 				l2:	/* end checkedAddLineToGET: */;
 					goto l1;
 				}
-				if ((((objBuffer[object + 0]) & 65535) & 254) == 6) {
+				if ((((objBuffer[object + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveBezier) {
 					/* begin checkedAddBezierToGET: */
-					if ((((objBuffer[object + 0]) & 65535) & 1) != 0) {
-						lineWidth1 = objBuffer[object + 20];
+					if ((((objBuffer[object + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+						lineWidth1 = objBuffer[object + GBWideExtent];
 					} else {
 						lineWidth1 = 0;
 					}
-					if (((objBuffer[object + 15]) + lineWidth1) < (workBuffer[38])) {
+					if (((objBuffer[object + GBEndY]) + lineWidth1) < (workBuffer[GWFillMinY])) {
 						goto l3;
 					}
-					if ((((objBuffer[object + 4]) - lineWidth1) >= (workBuffer[37])) && (((objBuffer[object + 14]) - lineWidth1) >= (workBuffer[37]))) {
+					if ((((objBuffer[object + GEXValue]) - lineWidth1) >= (workBuffer[GWFillMaxX])) && (((objBuffer[object + GBEndX]) - lineWidth1) >= (workBuffer[GWFillMaxX]))) {
 						goto l3;
 					}
 					addEdgeToGET(object);
@@ -1828,60 +2015,60 @@ static int createGlobalEdgeTable(void) {
 			l1:	/* end checkedAddEdgeToGET: */;
 			}
 		}
-		object += objBuffer[object + 1];
+		object += objBuffer[object + GEObjectLength];
 	}
 }
 
 static int currentYGet(void) {
-	return workBuffer[88];
+	return workBuffer[GWCurrentY];
 }
 
 static int currentYPut(int value) {
-	return workBuffer[88] = value;
+	return workBuffer[GWCurrentY] = value;
 }
 
 static int currentZGet(void) {
-	return workBuffer[113];
+	return workBuffer[GWCurrentZ];
 }
 
 static int currentZPut(int value) {
-	return workBuffer[113] = value;
+	return workBuffer[GWCurrentZ] = value;
 }
 
 static int destOffsetXGet(void) {
-	return workBuffer[46];
+	return workBuffer[GWDestOffsetX];
 }
 
 static int destOffsetXPut(int value) {
-	return workBuffer[46] = value;
+	return workBuffer[GWDestOffsetX] = value;
 }
 
 static int destOffsetYGet(void) {
-	return workBuffer[47];
+	return workBuffer[GWDestOffsetY];
 }
 
 static int destOffsetYPut(int value) {
-	return workBuffer[47] = value;
+	return workBuffer[GWDestOffsetY] = value;
 }
 
 
 /*	Display the span buffer at the current scan line. */
 
 static int displaySpanBufferAt(int y) {
+    int targetX1;
     int targetY;
     int targetX0;
-    int targetX1;
 
-	targetX0 = ((unsigned) (workBuffer[32])) >> (workBuffer[49]);
-	if (targetX0 < (workBuffer[42])) {
-		targetX0 = workBuffer[42];
+	targetX0 = ((unsigned) (workBuffer[GWSpanStart])) >> (workBuffer[GWAAShift]);
+	if (targetX0 < (workBuffer[GWClipMinX])) {
+		targetX0 = workBuffer[GWClipMinX];
 	}
-	targetX1 = ((unsigned) (((workBuffer[34]) + (workBuffer[48])) - 1)) >> (workBuffer[49]);
-	if (targetX1 > (workBuffer[43])) {
-		targetX1 = workBuffer[43];
+	targetX1 = ((unsigned) (((workBuffer[GWSpanEnd]) + (workBuffer[GWAALevel])) - 1)) >> (workBuffer[GWAAShift]);
+	if (targetX1 > (workBuffer[GWClipMaxX])) {
+		targetX1 = workBuffer[GWClipMaxX];
 	}
-	targetY = ((unsigned) y) >> (workBuffer[49]);
-	if ((targetY < (workBuffer[44])) || ((targetY >= (workBuffer[45])) || ((targetX1 < (workBuffer[42])) || (targetX0 >= (workBuffer[43]))))) {
+	targetY = ((unsigned) y) >> (workBuffer[GWAAShift]);
+	if ((targetY < (workBuffer[GWClipMinY])) || ((targetY >= (workBuffer[GWClipMaxY])) || ((targetX1 < (workBuffer[GWClipMinX])) || (targetX0 >= (workBuffer[GWClipMaxX]))))) {
 		return 0;
 	}
 	copyBitsFromtoat(targetX0, targetX1, targetY);
@@ -1892,12 +2079,12 @@ static int displaySpanBufferAt(int y) {
 	Return the end value of the drawing operation. */
 
 static int drawWideEdgefrom(int edge, int leftX) {
-    int fill;
     int lineWidth;
     int rightX;
+    int fill;
     int type;
 
-	type = ((unsigned) ((objBuffer[edge + 0]) & 65535)) >> 1;
+	type = ((unsigned) ((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask)) >> 1;
 	dispatchedValue = edge;
 	switch (type) {
 	case 0:
@@ -1905,10 +2092,10 @@ static int drawWideEdgefrom(int edge, int leftX) {
 		errorWrongIndex();
 		break;
 	case 2:
-		dispatchReturnValue = objBuffer[dispatchedValue + 17];
+		dispatchReturnValue = objBuffer[dispatchedValue + GLWideWidth];
 		break;
 	case 3:
-		dispatchReturnValue = objBuffer[dispatchedValue + 17];
+		dispatchReturnValue = objBuffer[dispatchedValue + GBWideWidth];
 		break;
 	}
 	lineWidth = dispatchReturnValue;
@@ -1918,10 +2105,10 @@ static int drawWideEdgefrom(int edge, int leftX) {
 		errorWrongIndex();
 		break;
 	case 2:
-		dispatchReturnValue = objBuffer[dispatchedValue + 16];
+		dispatchReturnValue = objBuffer[dispatchedValue + GLWideFill];
 		break;
 	case 3:
-		dispatchReturnValue = objBuffer[dispatchedValue + 16];
+		dispatchReturnValue = objBuffer[dispatchedValue + GBWideFill];
 		break;
 	}
 	fill = dispatchReturnValue;
@@ -1934,70 +2121,70 @@ static int drawWideEdgefrom(int edge, int leftX) {
 }
 
 static int edgeFillsInvalidate(int edge) {
-	return objBuffer[edge + 0] = (((objBuffer[edge + 0]) & 65535) | 65536);
+	return objBuffer[edge + GEObjectType] = (((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 }
 
 static int edgeFillsValidate(int edge) {
-	return objBuffer[edge + 0] = (((objBuffer[edge + 0]) & 65535) & (~65536));
+	return objBuffer[edge + GEObjectType] = (((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 }
 
 static int edgeLeftFillOf(int edge) {
-	return objBuffer[edge + 8];
+	return objBuffer[edge + GEFillIndexLeft];
 }
 
 static int edgeLeftFillOfput(int edge, int value) {
-	return objBuffer[edge + 8] = value;
+	return objBuffer[edge + GEFillIndexLeft] = value;
 }
 
 static int edgeNumLinesOf(int edge) {
-	return objBuffer[edge + 7];
+	return objBuffer[edge + GENumLines];
 }
 
 static int edgeNumLinesOfput(int edge, int value) {
-	return objBuffer[edge + 7] = value;
+	return objBuffer[edge + GENumLines] = value;
 }
 
 static int edgeRightFillOf(int edge) {
-	return objBuffer[edge + 9];
+	return objBuffer[edge + GEFillIndexRight];
 }
 
 static int edgeRightFillOfput(int edge, int value) {
-	return objBuffer[edge + 9] = value;
+	return objBuffer[edge + GEFillIndexRight] = value;
 }
 
 static float * edgeTransform(void) {
-	return ((float *) (workBuffer + 18));
+	return ((float *) (workBuffer + GWEdgeTransform));
 }
 
 
 /*	Return the edge type (e.g., witout the wide edge flag) */
 
 static int edgeTypeOf(int edge) {
-	return ((unsigned) ((objBuffer[edge + 0]) & 65535)) >> 1;
+	return ((unsigned) ((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask)) >> 1;
 }
 
 static int edgeXValueOf(int edge) {
-	return objBuffer[edge + 4];
+	return objBuffer[edge + GEXValue];
 }
 
 static int edgeXValueOfput(int edge, int value) {
-	return objBuffer[edge + 4] = value;
+	return objBuffer[edge + GEXValue] = value;
 }
 
 static int edgeYValueOf(int edge) {
-	return objBuffer[edge + 5];
+	return objBuffer[edge + GEYValue];
 }
 
 static int edgeYValueOfput(int edge, int value) {
-	return objBuffer[edge + 5] = value;
+	return objBuffer[edge + GEYValue] = value;
 }
 
 static int edgeZValueOf(int edge) {
-	return objBuffer[edge + 6];
+	return objBuffer[edge + GEZValue];
 }
 
 static int edgeZValueOfput(int edge, int value) {
-	return objBuffer[edge + 6] = value;
+	return objBuffer[edge + GEZValue] = value;
 }
 
 
@@ -2040,38 +2227,38 @@ static int estimatedLengthOfwith(int deltaX, int deltaY) {
 
 static int fillAllFromto(int leftX, int rightX) {
     int startX;
-    int fill;
     int stopX;
+    int fill;
     int someIntegerValue;
     int someIntegerValue1;
 
 	/* begin topFill */
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		fill = 0;
 		goto l5;
 	} else {
-		fill = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+		fill = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 		goto l5;
 	}
 l5:	/* end topFill */;
 	startX = leftX;
 	/* begin topRightX */
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		stopX = 999999999;
 		goto l3;
 	} else {
-		stopX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+		stopX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 		goto l3;
 	}
 l3:	/* end topRightX */;
 	while (stopX < rightX) {
 		/* begin makeUnsignedFrom: */
 		/* begin topFill */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			someIntegerValue = 0;
 			goto l4;
 		} else {
-			someIntegerValue = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+			someIntegerValue = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 			goto l4;
 		}
 	l4:	/* end topFill */;
@@ -2082,34 +2269,34 @@ l3:	/* end topRightX */;
 			}
 		}
 		/* begin quickRemoveInvalidFillsAt: */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			goto l1;
 		}
 		while ((topRightX()) <= stopX) {
 			hideFilldepth(topFill(), topDepth());
-			if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+			if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 				goto l1;
 			}
 		}
 	l1:	/* end quickRemoveInvalidFillsAt: */;
 		startX = stopX;
 		/* begin topRightX */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			stopX = 999999999;
 			goto l2;
 		} else {
-			stopX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+			stopX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 			goto l2;
 		}
 	l2:	/* end topRightX */;
 	}
 	/* begin makeUnsignedFrom: */
 	/* begin topFill */
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		someIntegerValue1 = 0;
 		goto l6;
 	} else {
-		someIntegerValue1 = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+		someIntegerValue1 = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 		goto l6;
 	}
 l6:	/* end topFill */;
@@ -2121,7 +2308,7 @@ l6:	/* end topFill */;
 }
 
 static int fillBitmapSpan(void) {
-	return fillBitmapSpanfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+	return fillBitmapSpanfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 }
 
 
@@ -2129,14 +2316,14 @@ static int fillBitmapSpan(void) {
 	Note: We always start from zero - this avoids using huge bitmap buffers if the bitmap is to be displayed at the very far right hand side and also gives us a chance of using certain bitmaps (e.g., those with depth 32) directly. */
 
 static int fillBitmapSpanfromto(int *bits, int leftX, int rightX) {
-    int colorMask;
-    int x;
-    int x0;
+    int colorShift;
     int x1;
     int fillValue;
+    int x;
     int bitX;
-    int colorShift;
+    int x0;
     int baseShift;
+    int colorMask;
 
 	x0 = leftX;
 	x1 = rightX;
@@ -2144,16 +2331,16 @@ static int fillBitmapSpanfromto(int *bits, int leftX, int rightX) {
 	/* Hack for pre-increment */
 
 	bitX = -1;
-	if ((workBuffer[48]) == 1) {
+	if ((workBuffer[GWAALevel]) == 1) {
 		while (x0 < x1) {
 			fillValue = (((int *) bits))[bitX += 1];
 			spanBuffer[x0] = fillValue;
 			x0 += 1;
 		}
 	} else {
-		colorMask = workBuffer[51];
-		colorShift = workBuffer[50];
-		baseShift = workBuffer[49];
+		colorMask = workBuffer[GWAAColorMask];
+		colorShift = workBuffer[GWAAColorShift];
+		baseShift = workBuffer[GWAAShift];
 		while (x0 < x1) {
 			x = ((unsigned) x0) >> baseShift;
 			fillValue = (((int *) bits))[bitX += 1];
@@ -2162,58 +2349,58 @@ static int fillBitmapSpanfromto(int *bits, int leftX, int rightX) {
 			x0 += 1;
 		}
 	}
-	if (x1 > (workBuffer[34])) {
-		workBuffer[34] = x1;
+	if (x1 > (workBuffer[GWSpanEnd])) {
+		workBuffer[GWSpanEnd] = x1;
 	}
-	if (x1 > (workBuffer[35])) {
-		workBuffer[35] = x1;
+	if (x1 > (workBuffer[GWSpanEndAA])) {
+		workBuffer[GWSpanEndAA] = x1;
 	}
 }
 
 static int fillBitmapSpanfromtoat(int bmFill, int leftX, int rightX, int yValue) {
-    int *bits;
-    int ds;
-    int dt;
-    int x;
-    int x1;
     int dtX;
+    int x1;
+    int *bits;
     int fillValue;
+    int ds;
+    int x;
+    int deltaX;
+    int bmHeight;
     int yp;
     int tileFlag;
-    int deltaX;
-    int dsX;
-    int deltaY;
     int xp;
+    int dt;
+    int deltaY;
     int bmWidth;
-    int bmHeight;
+    int dsX;
     int newDelta;
     int newDelta1;
-    int g;
-    int cMask;
     int bmDepth;
+    int a;
+    int cMask;
+    int bmRaster;
+    int g;
+    int b;
+    int value;
     int rShift;
     int r;
-    int bmRaster;
-    int value;
-    int b;
-    int a;
 
-	if (!((workBuffer[48]) == 1)) {
+	if (!((workBuffer[GWAALevel]) == 1)) {
 		return fillBitmapSpanAAfromtoat(bmFill, leftX, rightX, yValue);
 	}
 	bits = loadBitsFrom(bmFill);
 	if (bits == null) {
 		return null;
 	}
-	bmWidth = objBuffer[bmFill + 10];
-	bmHeight = objBuffer[bmFill + 11];
-	tileFlag = (objBuffer[bmFill + 16]) == 1;
-	deltaX = leftX - (objBuffer[bmFill + 4]);
-	deltaY = yValue - (objBuffer[bmFill + 5]);
-	dsX = objBuffer[bmFill + 6];
-	dtX = objBuffer[bmFill + 8];
-	ds = (deltaX * dsX) + (deltaY * (objBuffer[bmFill + 7]));
-	dt = (deltaX * dtX) + (deltaY * (objBuffer[bmFill + 9]));
+	bmWidth = objBuffer[bmFill + GBBitmapWidth];
+	bmHeight = objBuffer[bmFill + GBBitmapHeight];
+	tileFlag = (objBuffer[bmFill + GBTileFlag]) == 1;
+	deltaX = leftX - (objBuffer[bmFill + GFOriginX]);
+	deltaY = yValue - (objBuffer[bmFill + GFOriginY]);
+	dsX = objBuffer[bmFill + GFDirectionX];
+	dtX = objBuffer[bmFill + GFNormalX];
+	ds = (deltaX * dsX) + (deltaY * (objBuffer[bmFill + GFDirectionY]));
+	dt = (deltaX * dtX) + (deltaY * (objBuffer[bmFill + GFNormalY]));
 	x = leftX;
 	x1 = rightX;
 	while (x < x1) {
@@ -2271,8 +2458,8 @@ static int fillBitmapSpanfromtoat(int bmFill, int leftX, int rightX, int yValue)
 		}
 		if ((xp >= 0) && ((yp >= 0) && ((xp < bmWidth) && (yp < bmHeight)))) {
 			/* begin bitmapValue:bits:atX:y: */
-			bmDepth = objBuffer[bmFill + 12];
-			bmRaster = objBuffer[bmFill + 14];
+			bmDepth = objBuffer[bmFill + GBBitmapDepth];
+			bmRaster = objBuffer[bmFill + GBBitmapRaster];
 			if (bmDepth == 32) {
 				value = (((int*) bits))[(bmRaster * yp) + xp];
 				if ((value != 0) && ((value & 4278190080U) == 0)) {
@@ -2298,10 +2485,10 @@ static int fillBitmapSpanfromtoat(int bmFill, int leftX, int rightX, int yValue)
 					value = ((b + (g << 8)) + (r << 16)) + (a << 24);
 				}
 			} else {
-				if ((objBuffer[bmFill + 15]) == 0) {
+				if ((objBuffer[bmFill + GBColormapSize]) == 0) {
 					value = 0;
 				} else {
-					value = ((objBuffer + bmFill) + 18)[value];
+					value = ((objBuffer + bmFill) + GBColormapOffset)[value];
 				}
 			}
 			fillValue = uncheckedTransformColor(value);
@@ -2315,27 +2502,27 @@ static int fillBitmapSpanfromtoat(int bmFill, int leftX, int rightX, int yValue)
 }
 
 static int fillBitmapSpanAAfromtoat(int bmFill, int leftX, int rightX, int yValue) {
-    int *bits;
-    int ds;
-    int idx;
-    int firstPixel;
-    int dt;
-    int x;
     int cShift;
     int dtX;
+    int firstPixel;
+    int *bits;
     int fillValue;
     int cMask;
+    int ds;
+    int x;
+    int deltaX;
+    int bmHeight;
+    int idx;
     int yp;
     int tileFlag;
-    int aaLevel;
-    int deltaX;
-    int lastPixel;
-    int dsX;
-    int deltaY;
     int xp;
+    int lastPixel;
+    int dt;
+    int deltaY;
     int bmWidth;
-    int bmHeight;
     int baseShift;
+    int dsX;
+    int aaLevel;
     int newDelta;
     int newDelta1;
     int newDelta2;
@@ -2343,50 +2530,50 @@ static int fillBitmapSpanAAfromtoat(int bmFill, int leftX, int rightX, int yValu
     int newDelta4;
     int newDelta5;
     int firstPixel1;
-    int g;
-    int cMask1;
     int bmDepth;
+    int a;
+    int cMask1;
+    int bmRaster;
+    int g;
+    int b;
+    int value;
     int rShift;
     int r;
-    int bmRaster;
-    int value;
-    int b;
-    int a;
-    int g1;
-    int cMask2;
     int bmDepth1;
+    int a1;
+    int cMask2;
+    int bmRaster1;
+    int g1;
+    int b1;
+    int value1;
     int rShift1;
     int r1;
-    int bmRaster1;
-    int value1;
-    int b1;
-    int a1;
-    int g2;
-    int cMask3;
     int bmDepth2;
+    int a2;
+    int cMask3;
+    int bmRaster2;
+    int g2;
+    int b2;
+    int value2;
     int rShift2;
     int r2;
-    int bmRaster2;
-    int value2;
-    int b2;
-    int a2;
 
 	bits = loadBitsFrom(bmFill);
 	if (bits == null) {
 		return null;
 	}
-	bmWidth = objBuffer[bmFill + 10];
-	bmHeight = objBuffer[bmFill + 11];
-	tileFlag = (objBuffer[bmFill + 16]) == 1;
-	deltaX = leftX - (objBuffer[bmFill + 4]);
-	deltaY = yValue - (objBuffer[bmFill + 5]);
-	dsX = objBuffer[bmFill + 6];
-	dtX = objBuffer[bmFill + 8];
-	ds = (deltaX * dsX) + (deltaY * (objBuffer[bmFill + 7]));
-	dt = (deltaX * dtX) + (deltaY * (objBuffer[bmFill + 9]));
-	aaLevel = workBuffer[48];
+	bmWidth = objBuffer[bmFill + GBBitmapWidth];
+	bmHeight = objBuffer[bmFill + GBBitmapHeight];
+	tileFlag = (objBuffer[bmFill + GBTileFlag]) == 1;
+	deltaX = leftX - (objBuffer[bmFill + GFOriginX]);
+	deltaY = yValue - (objBuffer[bmFill + GFOriginY]);
+	dsX = objBuffer[bmFill + GFDirectionX];
+	dtX = objBuffer[bmFill + GFNormalX];
+	ds = (deltaX * dsX) + (deltaY * (objBuffer[bmFill + GFDirectionY]));
+	dt = (deltaX * dtX) + (deltaY * (objBuffer[bmFill + GFNormalY]));
+	aaLevel = workBuffer[GWAALevel];
 	/* begin aaFirstPixelFrom:to: */
-	firstPixel1 = ((leftX + (workBuffer[48])) - 1) & (~((workBuffer[48]) - 1));
+	firstPixel1 = ((leftX + (workBuffer[GWAALevel])) - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (firstPixel1 > rightX) {
 		firstPixel = rightX;
 		goto l7;
@@ -2395,10 +2582,10 @@ static int fillBitmapSpanAAfromtoat(int bmFill, int leftX, int rightX, int yValu
 		goto l7;
 	}
 l7:	/* end aaFirstPixelFrom:to: */;
-	lastPixel = (rightX - 1) & (~((workBuffer[48]) - 1));
-	baseShift = workBuffer[49];
-	cMask = workBuffer[51];
-	cShift = workBuffer[50];
+	lastPixel = (rightX - 1) & (~((workBuffer[GWAALevel]) - 1));
+	baseShift = workBuffer[GWAAShift];
+	cMask = workBuffer[GWAAColorMask];
+	cShift = workBuffer[GWAAColorShift];
 	x = leftX;
 	while (x < firstPixel) {
 		if (tileFlag) {
@@ -2455,8 +2642,8 @@ l7:	/* end aaFirstPixelFrom:to: */;
 		}
 		if ((xp >= 0) && ((yp >= 0) && ((xp < bmWidth) && (yp < bmHeight)))) {
 			/* begin bitmapValue:bits:atX:y: */
-			bmDepth = objBuffer[bmFill + 12];
-			bmRaster = objBuffer[bmFill + 14];
+			bmDepth = objBuffer[bmFill + GBBitmapDepth];
+			bmRaster = objBuffer[bmFill + GBBitmapRaster];
 			if (bmDepth == 32) {
 				value = (((int*) bits))[(bmRaster * yp) + xp];
 				if ((value != 0) && ((value & 4278190080U) == 0)) {
@@ -2482,10 +2669,10 @@ l7:	/* end aaFirstPixelFrom:to: */;
 					value = ((b + (g << 8)) + (r << 16)) + (a << 24);
 				}
 			} else {
-				if ((objBuffer[bmFill + 15]) == 0) {
+				if ((objBuffer[bmFill + GBColormapSize]) == 0) {
 					value = 0;
 				} else {
-					value = ((objBuffer + bmFill) + 18)[value];
+					value = ((objBuffer + bmFill) + GBColormapOffset)[value];
 				}
 			}
 			fillValue = uncheckedTransformColor(value);
@@ -2498,8 +2685,8 @@ l7:	/* end aaFirstPixelFrom:to: */;
 		dt += dtX;
 		x += 1;
 	}
-	cMask = (((unsigned) (workBuffer[51])) >> (workBuffer[49])) | 4042322160U;
-	cShift = workBuffer[49];
+	cMask = (((unsigned) (workBuffer[GWAAColorMask])) >> (workBuffer[GWAAShift])) | 4042322160U;
+	cShift = workBuffer[GWAAShift];
 	while (x < lastPixel) {
 		if (tileFlag) {
 			/* begin repeatValue:max: */
@@ -2555,8 +2742,8 @@ l7:	/* end aaFirstPixelFrom:to: */;
 		}
 		if ((xp >= 0) && ((yp >= 0) && ((xp < bmWidth) && (yp < bmHeight)))) {
 			/* begin bitmapValue:bits:atX:y: */
-			bmDepth1 = objBuffer[bmFill + 12];
-			bmRaster1 = objBuffer[bmFill + 14];
+			bmDepth1 = objBuffer[bmFill + GBBitmapDepth];
+			bmRaster1 = objBuffer[bmFill + GBBitmapRaster];
 			if (bmDepth1 == 32) {
 				value1 = (((int*) bits))[(bmRaster1 * yp) + xp];
 				if ((value1 != 0) && ((value1 & 4278190080U) == 0)) {
@@ -2582,10 +2769,10 @@ l7:	/* end aaFirstPixelFrom:to: */;
 					value1 = ((b1 + (g1 << 8)) + (r1 << 16)) + (a1 << 24);
 				}
 			} else {
-				if ((objBuffer[bmFill + 15]) == 0) {
+				if ((objBuffer[bmFill + GBColormapSize]) == 0) {
 					value1 = 0;
 				} else {
-					value1 = ((objBuffer + bmFill) + 18)[value1];
+					value1 = ((objBuffer + bmFill) + GBColormapOffset)[value1];
 				}
 			}
 			fillValue = uncheckedTransformColor(value1);
@@ -2598,8 +2785,8 @@ l7:	/* end aaFirstPixelFrom:to: */;
 		dt += dtX << cShift;
 		x += aaLevel;
 	}
-	cMask = workBuffer[51];
-	cShift = workBuffer[50];
+	cMask = workBuffer[GWAAColorMask];
+	cShift = workBuffer[GWAAColorShift];
 	while (x < rightX) {
 		if (tileFlag) {
 			/* begin repeatValue:max: */
@@ -2655,8 +2842,8 @@ l7:	/* end aaFirstPixelFrom:to: */;
 		}
 		if ((xp >= 0) && ((yp >= 0) && ((xp < bmWidth) && (yp < bmHeight)))) {
 			/* begin bitmapValue:bits:atX:y: */
-			bmDepth2 = objBuffer[bmFill + 12];
-			bmRaster2 = objBuffer[bmFill + 14];
+			bmDepth2 = objBuffer[bmFill + GBBitmapDepth];
+			bmRaster2 = objBuffer[bmFill + GBBitmapRaster];
 			if (bmDepth2 == 32) {
 				value2 = (((int*) bits))[(bmRaster2 * yp) + xp];
 				if ((value2 != 0) && ((value2 & 4278190080U) == 0)) {
@@ -2682,10 +2869,10 @@ l7:	/* end aaFirstPixelFrom:to: */;
 					value2 = ((b2 + (g2 << 8)) + (r2 << 16)) + (a2 << 24);
 				}
 			} else {
-				if ((objBuffer[bmFill + 15]) == 0) {
+				if ((objBuffer[bmFill + GBColormapSize]) == 0) {
 					value2 = 0;
 				} else {
-					value2 = ((objBuffer + bmFill) + 18)[value2];
+					value2 = ((objBuffer + bmFill) + GBColormapOffset)[value2];
 				}
 			}
 			fillValue = uncheckedTransformColor(value2);
@@ -2704,10 +2891,10 @@ l7:	/* end aaFirstPixelFrom:to: */;
 /*	Fill the span buffer between leftEdge and rightEdge with the given pixel value. */
 
 static int fillColorSpanfromto(int pixelValue32, int leftX, int rightX) {
-    int x0;
     int x1;
+    int x0;
 
-	if (!((workBuffer[48]) == 1)) {
+	if (!((workBuffer[GWAALevel]) == 1)) {
 		return fillColorSpanAAx0x1(pixelValue32, leftX, rightX);
 	}
 	x0 = leftX;
@@ -2737,17 +2924,17 @@ static int fillColorSpanfromto(int pixelValue32, int leftX, int rightX) {
 
 static int fillColorSpanAAx0x1(int pixelValue32, int leftX, int rightX) {
     int firstPixel;
-    int idx;
-    int colorMask;
     int x;
+    int idx;
     int pv32;
-    int aaLevel;
     int lastPixel;
     int baseShift;
+    int colorMask;
+    int aaLevel;
     int firstPixel1;
 
 	/* begin aaFirstPixelFrom:to: */
-	firstPixel1 = ((leftX + (workBuffer[48])) - 1) & (~((workBuffer[48]) - 1));
+	firstPixel1 = ((leftX + (workBuffer[GWAALevel])) - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (firstPixel1 > rightX) {
 		firstPixel = rightX;
 		goto l1;
@@ -2756,15 +2943,15 @@ static int fillColorSpanAAx0x1(int pixelValue32, int leftX, int rightX) {
 		goto l1;
 	}
 l1:	/* end aaFirstPixelFrom:to: */;
-	lastPixel = (rightX - 1) & (~((workBuffer[48]) - 1));
-	aaLevel = workBuffer[48];
-	baseShift = workBuffer[49];
+	lastPixel = (rightX - 1) & (~((workBuffer[GWAALevel]) - 1));
+	aaLevel = workBuffer[GWAALevel];
+	baseShift = workBuffer[GWAAShift];
 
 	/* Part a: Deal with the first n sub-pixels */
 
 	x = leftX;
 	if (x < firstPixel) {
-		pv32 = ((unsigned) (pixelValue32 & (workBuffer[51]))) >> (workBuffer[50]);
+		pv32 = ((unsigned) (pixelValue32 & (workBuffer[GWAAColorMask]))) >> (workBuffer[GWAAColorShift]);
 		while (x < firstPixel) {
 			idx = ((unsigned) x) >> baseShift;
 			spanBuffer[idx] = ((spanBuffer[idx]) + pv32);
@@ -2772,8 +2959,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 	}
 	if (x < lastPixel) {
-		colorMask = (((unsigned) (workBuffer[51])) >> (workBuffer[49])) | 4042322160U;
-		pv32 = ((unsigned) (pixelValue32 & colorMask)) >> (workBuffer[49]);
+		colorMask = (((unsigned) (workBuffer[GWAAColorMask])) >> (workBuffer[GWAAShift])) | 4042322160U;
+		pv32 = ((unsigned) (pixelValue32 & colorMask)) >> (workBuffer[GWAAShift]);
 		while (x < lastPixel) {
 			idx = ((unsigned) x) >> baseShift;
 			spanBuffer[idx] = ((spanBuffer[idx]) + pv32);
@@ -2781,7 +2968,7 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 	}
 	if (x < rightX) {
-		pv32 = ((unsigned) (pixelValue32 & (workBuffer[51]))) >> (workBuffer[50]);
+		pv32 = ((unsigned) (pixelValue32 & (workBuffer[GWAAColorMask]))) >> (workBuffer[GWAAColorShift]);
 		while (x < rightX) {
 			idx = ((unsigned) x) >> baseShift;
 			spanBuffer[idx] = ((spanBuffer[idx]) + pv32);
@@ -2791,46 +2978,46 @@ l1:	/* end aaFirstPixelFrom:to: */;
 }
 
 static int fillDirectionXOf(int fill) {
-	return objBuffer[fill + 6];
+	return objBuffer[fill + GFDirectionX];
 }
 
 static int fillDirectionXOfput(int fill, int value) {
-	return objBuffer[fill + 6] = value;
+	return objBuffer[fill + GFDirectionX] = value;
 }
 
 static int fillDirectionYOf(int fill) {
-	return objBuffer[fill + 7];
+	return objBuffer[fill + GFDirectionY];
 }
 
 static int fillDirectionYOfput(int fill, int value) {
-	return objBuffer[fill + 7] = value;
+	return objBuffer[fill + GFDirectionY] = value;
 }
 
 static int fillLinearGradient(void) {
-	return fillLinearGradientfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+	return fillLinearGradientfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 }
 
 
 /*	Draw a linear gradient fill. */
 
 static int fillLinearGradientfromtoat(int fill, int leftX, int rightX, int yValue) {
+    int x1;
     int ds;
     int x;
-    int x0;
-    int x1;
-    int *ramp;
-    int rampSize;
-    int dsX;
     int rampIndex;
-    int x01;
+    int rampSize;
+    int x0;
+    int *ramp;
+    int dsX;
     int x11;
-    int x02;
+    int x01;
     int x12;
+    int x02;
 
-	ramp = (objBuffer + fill) + 12;
-	rampSize = objBuffer[fill + 10];
-	dsX = objBuffer[fill + 6];
-	ds = ((leftX - (objBuffer[fill + 4])) * dsX) + ((yValue - (objBuffer[fill + 5])) * (objBuffer[fill + 7]));
+	ramp = (objBuffer + fill) + GFRampOffset;
+	rampSize = objBuffer[fill + GFRampLength];
+	dsX = objBuffer[fill + GFDirectionX];
+	ds = ((leftX - (objBuffer[fill + GFOriginX])) * dsX) + ((yValue - (objBuffer[fill + GFOriginY])) * (objBuffer[fill + GFDirectionY]));
 	x = x0 = leftX;
 
 	/* Note: The inner loop has been divided into three parts for speed */
@@ -2849,7 +3036,7 @@ static int fillLinearGradientfromtoat(int fill, int leftX, int rightX, int yValu
 			rampIndex = rampSize - 1;
 		}
 		/* begin fillColorSpan:from:to: */
-		if (!((workBuffer[48]) == 1)) {
+		if (!((workBuffer[GWAALevel]) == 1)) {
 			fillColorSpanAAx0x1(ramp[rampIndex], x0, x);
 			goto l1;
 		}
@@ -2868,7 +3055,7 @@ static int fillLinearGradientfromtoat(int fill, int leftX, int rightX, int yValu
 		}
 	l1:	/* end fillColorSpan:from:to: */;
 	}
-	if ((workBuffer[48]) == 1) {
+	if ((workBuffer[GWAALevel]) == 1) {
 		while ((((rampIndex = ((int) ds >> 16)) < rampSize) && (rampIndex >= 0)) && (x < x1)) {
 			spanBuffer[x] = (ramp[rampIndex]);
 			x += 1;
@@ -2885,7 +3072,7 @@ static int fillLinearGradientfromtoat(int fill, int leftX, int rightX, int yValu
 			rampIndex = rampSize - 1;
 		}
 		/* begin fillColorSpan:from:to: */
-		if (!((workBuffer[48]) == 1)) {
+		if (!((workBuffer[GWAALevel]) == 1)) {
 			fillColorSpanAAx0x1(ramp[rampIndex], x, x1);
 			goto l2;
 		}
@@ -2910,28 +3097,28 @@ static int fillLinearGradientfromtoat(int fill, int leftX, int rightX, int yValu
 /*	This is the AA version of linear gradient filling. */
 
 static int fillLinearGradientAArampdsdsXfromto(int fill, int *ramp, int deltaS, int dsX, int leftX, int rightX) {
-    int firstPixel;
-    int ds;
-    int idx;
-    int colorMask;
-    int x;
-    int rampValue;
     int aaLevel;
-    int rampSize;
-    int lastPixel;
+    int firstPixel;
     int colorShift;
-    int baseShift;
+    int ds;
+    int x;
+    int idx;
     int rampIndex;
+    int lastPixel;
+    int rampSize;
+    int rampValue;
+    int baseShift;
+    int colorMask;
     int firstPixel1;
 
-	aaLevel = workBuffer[48];
-	baseShift = workBuffer[49];
-	rampSize = objBuffer[fill + 10];
+	aaLevel = workBuffer[GWAALevel];
+	baseShift = workBuffer[GWAAShift];
+	rampSize = objBuffer[fill + GFRampLength];
 	ds = deltaS;
 	x = leftX;
 	rampIndex = ((int) ds >> 16);
 	/* begin aaFirstPixelFrom:to: */
-	firstPixel1 = ((leftX + (workBuffer[48])) - 1) & (~((workBuffer[48]) - 1));
+	firstPixel1 = ((leftX + (workBuffer[GWAALevel])) - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (firstPixel1 > rightX) {
 		firstPixel = rightX;
 		goto l1;
@@ -2943,9 +3130,9 @@ l1:	/* end aaFirstPixelFrom:to: */;
 
 	/* Deal with the first n sub-pixels */
 
-	lastPixel = (rightX - 1) & (~((workBuffer[48]) - 1));
-	colorMask = workBuffer[51];
-	colorShift = workBuffer[50];
+	lastPixel = (rightX - 1) & (~((workBuffer[GWAALevel]) - 1));
+	colorMask = workBuffer[GWAAColorMask];
+	colorShift = workBuffer[GWAAColorShift];
 	while ((x < firstPixel) && ((rampIndex < rampSize) && (rampIndex >= 0))) {
 		rampValue = (((int *) ramp))[rampIndex];
 
@@ -2960,8 +3147,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 		rampIndex = ((int) ds >> 16);
 	}
-	colorMask = (((unsigned) (workBuffer[51])) >> (workBuffer[49])) | 4042322160U;
-	colorShift = workBuffer[49];
+	colorMask = (((unsigned) (workBuffer[GWAAColorMask])) >> (workBuffer[GWAAShift])) | 4042322160U;
+	colorShift = workBuffer[GWAAShift];
 	while ((x < lastPixel) && ((rampIndex < rampSize) && (rampIndex >= 0))) {
 		rampValue = (((int *) ramp))[rampIndex];
 
@@ -2976,8 +3163,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 		rampIndex = ((int) ds >> 16);
 	}
-	colorMask = workBuffer[51];
-	colorShift = workBuffer[50];
+	colorMask = workBuffer[GWAAColorMask];
+	colorShift = workBuffer[GWAAColorShift];
 	while ((x < rightX) && ((rampIndex < rampSize) && (rampIndex >= 0))) {
 		rampValue = (((int *) ramp))[rampIndex];
 
@@ -2996,97 +3183,97 @@ l1:	/* end aaFirstPixelFrom:to: */;
 }
 
 static int fillMaxXGet(void) {
-	return workBuffer[37];
+	return workBuffer[GWFillMaxX];
 }
 
 static int fillMaxXPut(int value) {
-	return workBuffer[37] = value;
+	return workBuffer[GWFillMaxX] = value;
 }
 
 static int fillMaxYGet(void) {
-	return workBuffer[39];
+	return workBuffer[GWFillMaxY];
 }
 
 static int fillMaxYPut(int value) {
-	return workBuffer[39] = value;
+	return workBuffer[GWFillMaxY] = value;
 }
 
 static int fillMinXGet(void) {
-	return workBuffer[36];
+	return workBuffer[GWFillMinX];
 }
 
 static int fillMinXPut(int value) {
-	return workBuffer[36] = value;
+	return workBuffer[GWFillMinX] = value;
 }
 
 static int fillMinYGet(void) {
-	return workBuffer[38];
+	return workBuffer[GWFillMinY];
 }
 
 static int fillMinYPut(int value) {
-	return workBuffer[38] = value;
+	return workBuffer[GWFillMinY] = value;
 }
 
 static int fillNormalXOf(int fill) {
-	return objBuffer[fill + 8];
+	return objBuffer[fill + GFNormalX];
 }
 
 static int fillNormalXOfput(int fill, int value) {
-	return objBuffer[fill + 8] = value;
+	return objBuffer[fill + GFNormalX] = value;
 }
 
 static int fillNormalYOf(int fill) {
-	return objBuffer[fill + 9];
+	return objBuffer[fill + GFNormalY];
 }
 
 static int fillNormalYOfput(int fill, int value) {
-	return objBuffer[fill + 9] = value;
+	return objBuffer[fill + GFNormalY] = value;
 }
 
 static int fillOffsetXGet(void) {
-	return workBuffer[40];
+	return workBuffer[GWFillOffsetX];
 }
 
 static int fillOffsetXPut(int value) {
-	return workBuffer[40] = value;
+	return workBuffer[GWFillOffsetX] = value;
 }
 
 static int fillOffsetYGet(void) {
-	return workBuffer[41];
+	return workBuffer[GWFillOffsetY];
 }
 
 static int fillOffsetYPut(int value) {
-	return workBuffer[41] = value;
+	return workBuffer[GWFillOffsetY] = value;
 }
 
 static int fillOriginXOf(int fill) {
-	return objBuffer[fill + 4];
+	return objBuffer[fill + GFOriginX];
 }
 
 static int fillOriginXOfput(int fill, int value) {
-	return objBuffer[fill + 4] = value;
+	return objBuffer[fill + GFOriginX] = value;
 }
 
 static int fillOriginYOf(int fill) {
-	return objBuffer[fill + 5];
+	return objBuffer[fill + GFOriginY];
 }
 
 static int fillOriginYOfput(int fill, int value) {
-	return objBuffer[fill + 5] = value;
+	return objBuffer[fill + GFOriginY] = value;
 }
 
 
 /*	Part 2a) Compute the decreasing part of the ramp */
 
 static int fillRadialDecreasingrampdeltaSTdsXdtXfromto(int fill, int ramp, int deltaST, int dsX, int dtX, int leftX, int rightX) {
-    int ds;
-    int dt;
-    int x;
     int x1;
-    int rampValue;
-    int length2;
-    int nextLength;
+    int ds;
+    int x;
     int rampIndex;
+    int dt;
+    int length2;
+    int rampValue;
+    int nextLength;
 
 	ds = (((int*) deltaST))[0];
 	dt = (((int*) deltaST))[1];
@@ -3095,8 +3282,8 @@ static int fillRadialDecreasingrampdeltaSTdsXdtXfromto(int fill, int ramp, int d
 	length2 = (rampIndex - 1) * (rampIndex - 1);
 	x = leftX;
 	x1 = rightX;
-	if (x1 > (objBuffer[fill + 4])) {
-		x1 = objBuffer[fill + 4];
+	if (x1 > (objBuffer[fill + GFOriginX])) {
+		x1 = objBuffer[fill + GFOriginX];
 	}
 	while (x < x1) {
 		while ((x < x1) && ((((((int) ds >> 16)) * (((int) ds >> 16))) + ((((int) dt >> 16)) * (((int) dt >> 16)))) >= length2)) {
@@ -3121,36 +3308,36 @@ static int fillRadialDecreasingrampdeltaSTdsXdtXfromto(int fill, int ramp, int d
 /*	Part 2a) Compute the decreasing part of the ramp */
 
 static int fillRadialDecreasingAArampdeltaSTdsXdtXfromto(int fill, int *ramp,  int *deltaST, int dsX, int dtX, int leftX, int rightX) {
+    int colorShift;
+    int baseShift;
+    int x1;
     int firstPixel;
     int ds;
-    int dt;
     int x;
-    int colorMask;
-    int x1;
-    int rampValue;
     int index;
-    int aaLevel;
-    int lastPixel;
-    int length2;
-    int nextLength;
-    int colorShift;
     int rampIndex;
-    int baseShift;
+    int lastPixel;
+    int dt;
+    int length2;
+    int rampValue;
+    int nextLength;
+    int aaLevel;
+    int colorMask;
     int firstPixel1;
 
 	ds = (((int*) deltaST))[0];
 	dt = (((int*) deltaST))[1];
-	aaLevel = workBuffer[48];
-	baseShift = workBuffer[49];
+	aaLevel = workBuffer[GWAALevel];
+	baseShift = workBuffer[GWAAShift];
 	rampIndex = accurateLengthOfwith(((int) ds >> 16), ((int) dt >> 16));
 	length2 = (rampIndex - 1) * (rampIndex - 1);
 	x = leftX;
-	x1 = objBuffer[fill + 4];
+	x1 = objBuffer[fill + GFOriginX];
 	if (x1 > rightX) {
 		x1 = rightX;
 	}
 	/* begin aaFirstPixelFrom:to: */
-	firstPixel1 = ((leftX + (workBuffer[48])) - 1) & (~((workBuffer[48]) - 1));
+	firstPixel1 = ((leftX + (workBuffer[GWAALevel])) - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (firstPixel1 > x1) {
 		firstPixel = x1;
 		goto l1;
@@ -3162,10 +3349,10 @@ l1:	/* end aaFirstPixelFrom:to: */;
 
 	/* Deal with the first n sub-pixels */
 
-	lastPixel = (x1 - 1) & (~((workBuffer[48]) - 1));
+	lastPixel = (x1 - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (x < firstPixel) {
-		colorMask = workBuffer[51];
-		colorShift = workBuffer[50];
+		colorMask = workBuffer[GWAAColorMask];
+		colorShift = workBuffer[GWAAColorShift];
 		rampValue = (((int *) ramp))[rampIndex];
 		rampValue = ((unsigned) (rampValue & colorMask)) >> colorShift;
 		while (x < firstPixel) {
@@ -3186,8 +3373,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 	}
 	if (x < lastPixel) {
-		colorMask = (((unsigned) (workBuffer[51])) >> (workBuffer[49])) | 4042322160U;
-		colorShift = workBuffer[49];
+		colorMask = (((unsigned) (workBuffer[GWAAColorMask])) >> (workBuffer[GWAAShift])) | 4042322160U;
+		colorShift = workBuffer[GWAAShift];
 		rampValue = (((int *) ramp))[rampIndex];
 		rampValue = ((unsigned) (rampValue & colorMask)) >> colorShift;
 		while (x < lastPixel) {
@@ -3208,8 +3395,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 	}
 	if (x < x1) {
-		colorMask = workBuffer[51];
-		colorShift = workBuffer[50];
+		colorMask = workBuffer[GWAAColorMask];
+		colorShift = workBuffer[GWAAColorShift];
 		rampValue = (((int *) ramp))[rampIndex];
 		rampValue = ((unsigned) (rampValue & colorMask)) >> colorShift;
 		while (x < x1) {
@@ -3235,56 +3422,56 @@ l1:	/* end aaFirstPixelFrom:to: */;
 }
 
 static int fillRadialGradient(void) {
-	return fillRadialGradientfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+	return fillRadialGradientfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 }
 
 
 /*	Draw a radial gradient fill. */
 
 static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValue) {
-    int ds;
-    int dt;
-    int x;
-    int x1;
+    int *deltaST;
     int dtX;
-    int *ramp;
+    int x1;
+    int ds;
+    int x;
+    int deltaX;
+    int dt;
+    int deltaY;
     int rampSize;
     int length2;
-    int deltaX;
+    int *ramp;
     int dsX;
-    int deltaY;
-    int *deltaST;
-    int x0;
     int x11;
-    int ds1;
-    int dt1;
-    int x2;
+    int x0;
     int x12;
-    int rampValue;
-    int length21;
-    int nextLength;
+    int ds1;
+    int x2;
     int rampIndex;
-    int ds2;
-    int dt2;
-    int x3;
+    int dt1;
+    int length21;
+    int rampValue;
+    int nextLength;
     int x13;
-    int rampValue1;
     int lastLength;
+    int ds2;
+    int x3;
+    int rampIndex1;
+    int dt2;
     int rampSize1;
     int length22;
+    int rampValue1;
     int nextLength1;
-    int rampIndex1;
-    int x01;
     int x14;
+    int x01;
 
-	ramp = (objBuffer + fill) + 12;
-	rampSize = objBuffer[fill + 10];
-	deltaX = leftX - (objBuffer[fill + 4]);
-	deltaY = yValue - (objBuffer[fill + 5]);
-	dsX = objBuffer[fill + 6];
-	dtX = objBuffer[fill + 8];
-	ds = (deltaX * dsX) + (deltaY * (objBuffer[fill + 7]));
-	dt = (deltaX * dtX) + (deltaY * (objBuffer[fill + 9]));
+	ramp = (objBuffer + fill) + GFRampOffset;
+	rampSize = objBuffer[fill + GFRampLength];
+	deltaX = leftX - (objBuffer[fill + GFOriginX]);
+	deltaY = yValue - (objBuffer[fill + GFOriginY]);
+	dsX = objBuffer[fill + GFDirectionX];
+	dtX = objBuffer[fill + GFNormalX];
+	ds = (deltaX * dsX) + (deltaY * (objBuffer[fill + GFDirectionY]));
+	dt = (deltaX * dtX) + (deltaY * (objBuffer[fill + GFNormalY]));
 	x = leftX;
 
 	/* Note: The inner loop has been divided into three parts for speed */
@@ -3302,7 +3489,7 @@ static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValu
 	}
 	if (x > leftX) {
 		/* begin fillColorSpan:from:to: */
-		if (!((workBuffer[48]) == 1)) {
+		if (!((workBuffer[GWAALevel]) == 1)) {
 			fillColorSpanAAx0x1(ramp[rampSize - 1], leftX, x);
 			goto l1;
 		}
@@ -3321,11 +3508,11 @@ static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValu
 		}
 	l1:	/* end fillColorSpan:from:to: */;
 	}
-	deltaST = ((int *) (workBuffer + 80));
+	deltaST = ((int *) (workBuffer + GWPoint1));
 	deltaST[0] = ds;
 	deltaST[1] = dt;
-	if (x < (objBuffer[fill + 4])) {
-		if ((workBuffer[48]) == 1) {
+	if (x < (objBuffer[fill + GFOriginX])) {
+		if ((workBuffer[GWAALevel]) == 1) {
 			/* begin fillRadialDecreasing:ramp:deltaST:dsX:dtX:from:to: */
 			ds1 = (((int*) deltaST))[0];
 			dt1 = (((int*) deltaST))[1];
@@ -3334,8 +3521,8 @@ static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValu
 			length21 = (rampIndex - 1) * (rampIndex - 1);
 			x2 = x;
 			x12 = x1;
-			if (x12 > (objBuffer[fill + 4])) {
-				x12 = objBuffer[fill + 4];
+			if (x12 > (objBuffer[fill + GFOriginX])) {
+				x12 = objBuffer[fill + GFOriginX];
 			}
 			while (x2 < x12) {
 				while ((x2 < x12) && ((((((int) ds1 >> 16)) * (((int) ds1 >> 16))) + ((((int) dt1 >> 16)) * (((int) dt1 >> 16)))) >= length21)) {
@@ -3359,13 +3546,13 @@ static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValu
 		}
 	}
 	if (x < x1) {
-		if ((workBuffer[48]) == 1) {
+		if ((workBuffer[GWAALevel]) == 1) {
 			/* begin fillRadialIncreasing:ramp:deltaST:dsX:dtX:from:to: */
 			ds2 = (((int*) deltaST))[0];
 			dt2 = (((int*) deltaST))[1];
 			rampIndex1 = accurateLengthOfwith(((int) ds2 >> 16), ((int) dt2 >> 16));
 			rampValue1 = (((int *) ramp))[rampIndex1];
-			rampSize1 = objBuffer[fill + 10];
+			rampSize1 = objBuffer[fill + GFRampLength];
 			length22 = (rampSize1 - 1) * (rampSize1 - 1);
 			nextLength1 = (rampIndex1 + 1) * (rampIndex1 + 1);
 			lastLength = ((((int) ds2 >> 16)) * (((int) ds2 >> 16))) + ((((int) dt2 >> 16)) * (((int) dt2 >> 16)));
@@ -3394,7 +3581,7 @@ static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValu
 	}
 	if (x < rightX) {
 		/* begin fillColorSpan:from:to: */
-		if (!((workBuffer[48]) == 1)) {
+		if (!((workBuffer[GWAALevel]) == 1)) {
 			fillColorSpanAAx0x1(ramp[rampSize - 1], x, rightX);
 			goto l2;
 		}
@@ -3419,22 +3606,22 @@ static int fillRadialGradientfromtoat(int fill, int leftX, int rightX, int yValu
 /*	Part 2b) Compute the increasing part of the ramp */
 
 static int fillRadialIncreasingrampdeltaSTdsXdtXfromto(int fill, int ramp, int deltaST, int dsX, int dtX, int leftX, int rightX) {
-    int ds;
-    int dt;
-    int x;
     int x1;
-    int rampValue;
     int lastLength;
+    int ds;
+    int x;
+    int rampIndex;
+    int dt;
     int rampSize;
     int length2;
+    int rampValue;
     int nextLength;
-    int rampIndex;
 
 	ds = (((int*) deltaST))[0];
 	dt = (((int*) deltaST))[1];
 	rampIndex = accurateLengthOfwith(((int) ds >> 16), ((int) dt >> 16));
 	rampValue = (((int *) ramp))[rampIndex];
-	rampSize = objBuffer[fill + 10];
+	rampSize = objBuffer[fill + GFRampLength];
 
 	/* This is the upper bound */
 
@@ -3466,30 +3653,30 @@ static int fillRadialIncreasingrampdeltaSTdsXdtXfromto(int fill, int ramp, int d
 /*	Part 2b) Compute the increasing part of the ramp */
 
 static int fillRadialIncreasingAArampdeltaSTdsXdtXfromto(int fill, int *ramp,  int *deltaST, int dsX, int dtX, int leftX, int rightX) {
+    int colorShift;
+    int baseShift;
+    int lastLength;
     int firstPixel;
     int ds;
-    int dt;
     int x;
-    int colorMask;
-    int rampValue;
     int index;
-    int lastLength;
-    int aaLevel;
+    int rampIndex;
+    int lastPixel;
+    int dt;
     int rampSize;
     int length2;
-    int lastPixel;
+    int rampValue;
     int nextLength;
-    int colorShift;
-    int rampIndex;
-    int baseShift;
+    int aaLevel;
+    int colorMask;
     int firstPixel1;
 
 	ds = (((int*) deltaST))[0];
 	dt = (((int*) deltaST))[1];
-	aaLevel = workBuffer[48];
-	baseShift = workBuffer[49];
+	aaLevel = workBuffer[GWAALevel];
+	baseShift = workBuffer[GWAAShift];
 	rampIndex = accurateLengthOfwith(((int) ds >> 16), ((int) dt >> 16));
-	rampSize = objBuffer[fill + 10];
+	rampSize = objBuffer[fill + GFRampLength];
 
 	/* This is the upper bound */
 
@@ -3498,7 +3685,7 @@ static int fillRadialIncreasingAArampdeltaSTdsXdtXfromto(int fill, int *ramp,  i
 	lastLength = ((((int) ds >> 16)) * (((int) ds >> 16))) + ((((int) dt >> 16)) * (((int) dt >> 16)));
 	x = leftX;
 	/* begin aaFirstPixelFrom:to: */
-	firstPixel1 = ((leftX + (workBuffer[48])) - 1) & (~((workBuffer[48]) - 1));
+	firstPixel1 = ((leftX + (workBuffer[GWAALevel])) - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if (firstPixel1 > rightX) {
 		firstPixel = rightX;
 		goto l1;
@@ -3510,10 +3697,10 @@ l1:	/* end aaFirstPixelFrom:to: */;
 
 	/* Deal with the first n subPixels */
 
-	lastPixel = (rightX - 1) & (~((workBuffer[48]) - 1));
+	lastPixel = (rightX - 1) & (~((workBuffer[GWAALevel]) - 1));
 	if ((x < firstPixel) && (lastLength < length2)) {
-		colorMask = workBuffer[51];
-		colorShift = workBuffer[50];
+		colorMask = workBuffer[GWAAColorMask];
+		colorShift = workBuffer[GWAAColorShift];
 		rampValue = (((int *) ramp))[rampIndex];
 		rampValue = ((unsigned) (rampValue & colorMask)) >> colorShift;
 		while ((x < firstPixel) && (lastLength < length2)) {
@@ -3534,8 +3721,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 	}
 	if ((x < lastPixel) && (lastLength < length2)) {
-		colorMask = (((unsigned) (workBuffer[51])) >> (workBuffer[49])) | 4042322160U;
-		colorShift = workBuffer[49];
+		colorMask = (((unsigned) (workBuffer[GWAAColorMask])) >> (workBuffer[GWAAShift])) | 4042322160U;
+		colorShift = workBuffer[GWAAShift];
 		rampValue = (((int *) ramp))[rampIndex];
 		rampValue = ((unsigned) (rampValue & colorMask)) >> colorShift;
 		while ((x < lastPixel) && (lastLength < length2)) {
@@ -3556,8 +3743,8 @@ l1:	/* end aaFirstPixelFrom:to: */;
 		}
 	}
 	if ((x < rightX) && (lastLength < length2)) {
-		colorMask = workBuffer[51];
-		colorShift = workBuffer[50];
+		colorMask = workBuffer[GWAAColorMask];
+		colorShift = workBuffer[GWAAColorShift];
 		rampValue = (((int *) ramp))[rampIndex];
 		rampValue = ((unsigned) (rampValue & colorMask)) >> colorShift;
 		while ((x < rightX) && (lastLength < length2)) {
@@ -3588,11 +3775,11 @@ l1:	/* end aaFirstPixelFrom:to: */;
 static int fillSortsbefore(int fillEntry1, int fillEntry2) {
     int diff;
 
-	diff = (workBuffer[(workBuffer[10]) + (fillEntry1 + 1)]) - (workBuffer[(workBuffer[10]) + (fillEntry2 + 1)]);
+	diff = (workBuffer[(workBuffer[GWBufferTop]) + (fillEntry1 + 1)]) - (workBuffer[(workBuffer[GWBufferTop]) + (fillEntry2 + 1)]);
 	if (!(diff == 0)) {
 		return diff > 0;
 	}
-	return (((unsigned) (workBuffer[(workBuffer[10]) + fillEntry1]))) < (((unsigned) (workBuffer[(workBuffer[10]) + fillEntry2])));
+	return (((unsigned) (workBuffer[(workBuffer[GWBufferTop]) + fillEntry1]))) < (((unsigned) (workBuffer[(workBuffer[GWBufferTop]) + fillEntry2])));
 }
 
 
@@ -3601,46 +3788,46 @@ static int fillSortsbefore(int fillEntry1, int fillEntry2) {
 	be handled by some Smalltalk code. */
 
 static int fillSpanfromto(int fill, int leftX, int rightX) {
-    int x0;
     int x1;
+    int x0;
     int type;
-    int x01;
     int x11;
+    int x01;
 
 	if (fill == 0) {
 		return 0;
 	}
-	if (leftX < (workBuffer[35])) {
-		x0 = workBuffer[35];
+	if (leftX < (workBuffer[GWSpanEndAA])) {
+		x0 = workBuffer[GWSpanEndAA];
 	} else {
 		x0 = leftX;
 	}
-	if (rightX > ((workBuffer[33]) << (workBuffer[49]))) {
-		x1 = (workBuffer[33]) << (workBuffer[49]);
+	if (rightX > ((workBuffer[GWSpanSize]) << (workBuffer[GWAAShift]))) {
+		x1 = (workBuffer[GWSpanSize]) << (workBuffer[GWAAShift]);
 	} else {
 		x1 = rightX;
 	}
-	if (x0 < (workBuffer[36])) {
-		x0 = workBuffer[36];
+	if (x0 < (workBuffer[GWFillMinX])) {
+		x0 = workBuffer[GWFillMinX];
 	}
-	if (x1 > (workBuffer[37])) {
-		x1 = workBuffer[37];
+	if (x1 > (workBuffer[GWFillMaxX])) {
+		x1 = workBuffer[GWFillMaxX];
 	}
-	if (x0 < (workBuffer[32])) {
-		workBuffer[32] = x0;
+	if (x0 < (workBuffer[GWSpanStart])) {
+		workBuffer[GWSpanStart] = x0;
 	}
-	if (x1 > (workBuffer[34])) {
-		workBuffer[34] = x1;
+	if (x1 > (workBuffer[GWSpanEnd])) {
+		workBuffer[GWSpanEnd] = x1;
 	}
-	if (x1 > (workBuffer[35])) {
-		workBuffer[35] = x1;
+	if (x1 > (workBuffer[GWSpanEndAA])) {
+		workBuffer[GWSpanEndAA] = x1;
 	}
 	if (x0 >= x1) {
 		return 0;
 	}
 	if ((fill & 4278190080U) != 0) {
 		/* begin fillColorSpan:from:to: */
-		if (!((workBuffer[48]) == 1)) {
+		if (!((workBuffer[GWAALevel]) == 1)) {
 			fillColorSpanAAx0x1(fill, x0, x1);
 			goto l1;
 		}
@@ -3659,10 +3846,10 @@ static int fillSpanfromto(int fill, int leftX, int rightX) {
 		}
 	l1:	/* end fillColorSpan:from:to: */;
 	} else {
-		workBuffer[66] = fill;
-		workBuffer[67] = x0;
-		workBuffer[68] = x1;
-		type = ((unsigned) (((objBuffer[fill + 0]) & 65535) & 65280)) >> 8;
+		workBuffer[GWLastExportedFill] = fill;
+		workBuffer[GWLastExportedLeftX] = x0;
+		workBuffer[GWLastExportedRightX] = x1;
+		type = ((unsigned) (((objBuffer[fill + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveFillMask)) >> 8;
 		if (type <= 1) {
 			return 1;
 		}
@@ -3672,14 +3859,14 @@ static int fillSpanfromto(int fill, int leftX, int rightX) {
 			errorWrongIndex();
 			break;
 		case 2:
-			fillLinearGradientfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+			fillLinearGradientfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 			break;
 		case 3:
-			fillRadialGradientfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+			fillRadialGradientfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 			break;
 		case 4:
 		case 5:
-			fillBitmapSpanfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+			fillBitmapSpanfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 			break;
 		}
 	}
@@ -3692,49 +3879,49 @@ static int fillSpanfromto(int fill, int leftX, int rightX) {
 	be handled by some Smalltalk code. */
 
 static int fillSpanfromtomax(int fill, int leftX, int rightX, int maxRightX) {
-    int x0;
     int x1;
+    int x0;
     int type;
-    int x01;
     int x11;
+    int x01;
 
 	if (fill == 0) {
 		return 0;
 	}
-	if (leftX < (workBuffer[35])) {
-		x0 = workBuffer[35];
+	if (leftX < (workBuffer[GWSpanEndAA])) {
+		x0 = workBuffer[GWSpanEndAA];
 	} else {
 		x0 = leftX;
 	}
-	if (rightX > ((workBuffer[33]) << (workBuffer[49]))) {
-		x1 = (workBuffer[33]) << (workBuffer[49]);
+	if (rightX > ((workBuffer[GWSpanSize]) << (workBuffer[GWAAShift]))) {
+		x1 = (workBuffer[GWSpanSize]) << (workBuffer[GWAAShift]);
 	} else {
 		x1 = rightX;
 	}
 	if (maxRightX < x1) {
 		x1 = maxRightX;
 	}
-	if (x0 < (workBuffer[36])) {
-		x0 = workBuffer[36];
+	if (x0 < (workBuffer[GWFillMinX])) {
+		x0 = workBuffer[GWFillMinX];
 	}
-	if (x1 > (workBuffer[37])) {
-		x1 = workBuffer[37];
+	if (x1 > (workBuffer[GWFillMaxX])) {
+		x1 = workBuffer[GWFillMaxX];
 	}
-	if (x0 < (workBuffer[32])) {
-		workBuffer[32] = x0;
+	if (x0 < (workBuffer[GWSpanStart])) {
+		workBuffer[GWSpanStart] = x0;
 	}
-	if (x1 > (workBuffer[34])) {
-		workBuffer[34] = x1;
+	if (x1 > (workBuffer[GWSpanEnd])) {
+		workBuffer[GWSpanEnd] = x1;
 	}
-	if (x1 > (workBuffer[35])) {
-		workBuffer[35] = x1;
+	if (x1 > (workBuffer[GWSpanEndAA])) {
+		workBuffer[GWSpanEndAA] = x1;
 	}
 	if (x0 >= x1) {
 		return 0;
 	}
 	if ((fill & 4278190080U) != 0) {
 		/* begin fillColorSpan:from:to: */
-		if (!((workBuffer[48]) == 1)) {
+		if (!((workBuffer[GWAALevel]) == 1)) {
 			fillColorSpanAAx0x1(fill, x0, x1);
 			goto l1;
 		}
@@ -3753,10 +3940,10 @@ static int fillSpanfromtomax(int fill, int leftX, int rightX, int maxRightX) {
 		}
 	l1:	/* end fillColorSpan:from:to: */;
 	} else {
-		workBuffer[66] = fill;
-		workBuffer[67] = x0;
-		workBuffer[68] = x1;
-		type = ((unsigned) (((objBuffer[fill + 0]) & 65535) & 65280)) >> 8;
+		workBuffer[GWLastExportedFill] = fill;
+		workBuffer[GWLastExportedLeftX] = x0;
+		workBuffer[GWLastExportedRightX] = x1;
+		type = ((unsigned) (((objBuffer[fill + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveFillMask)) >> 8;
 		if (type <= 1) {
 			return 1;
 		}
@@ -3766,14 +3953,14 @@ static int fillSpanfromtomax(int fill, int leftX, int rightX, int maxRightX) {
 			errorWrongIndex();
 			break;
 		case 2:
-			fillLinearGradientfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+			fillLinearGradientfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 			break;
 		case 3:
-			fillRadialGradientfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+			fillRadialGradientfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 			break;
 		case 4:
 		case 5:
-			fillBitmapSpanfromtoat(workBuffer[66], workBuffer[67], workBuffer[68], workBuffer[88]);
+			fillBitmapSpanfromtoat(workBuffer[GWLastExportedFill], workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX], workBuffer[GWCurrentY]);
 			break;
 		}
 	}
@@ -3781,20 +3968,20 @@ static int fillSpanfromtomax(int fill, int leftX, int rightX, int maxRightX) {
 }
 
 static int fillTypeOf(int fill) {
-	return ((unsigned) (((objBuffer[fill + 0]) & 65535) & 65280)) >> 8;
+	return ((unsigned) (((objBuffer[fill + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveFillMask)) >> 8;
 }
 
 static int findNextAETEdgeFrom(int leftEdge) {
-    int depth;
     int rightEdge;
+    int depth;
 
-	depth = objBuffer[leftEdge + 6];
-	while ((workBuffer[13]) < (workBuffer[14])) {
-		rightEdge = aetBuffer[workBuffer[13]];
-		if ((objBuffer[rightEdge + 6]) >= depth) {
+	depth = objBuffer[leftEdge + GEZValue];
+	while ((workBuffer[GWAETStart]) < (workBuffer[GWAETUsed])) {
+		rightEdge = aetBuffer[workBuffer[GWAETStart]];
+		if ((objBuffer[rightEdge + GEZValue]) >= depth) {
 			return rightEdge;
 		}
-		workBuffer[13] = ((workBuffer[13]) + 1);
+		workBuffer[GWAETStart] = ((workBuffer[GWAETStart]) + 1);
 	}
 	return null;
 }
@@ -3804,21 +3991,21 @@ static int findNextAETEdgeFrom(int leftEdge) {
 	If there are any, return true. Otherwise, initialize the the edge and add it to the AET */
 
 static int findNextExternalEntryFromGET(void) {
+    int yValue;
     int edge;
     int type;
-    int yValue;
 
 
 	/* As long as we have entries in the GET */
 
-	yValue = workBuffer[88];
-	while ((workBuffer[11]) < (workBuffer[12])) {
-		edge = getBuffer[workBuffer[11]];
-		if ((objBuffer[edge + 5]) > yValue) {
+	yValue = workBuffer[GWCurrentY];
+	while ((workBuffer[GWGETStart]) < (workBuffer[GWGETUsed])) {
+		edge = getBuffer[workBuffer[GWGETStart]];
+		if ((objBuffer[edge + GEYValue]) > yValue) {
 			return 0;
 		}
-		type = (objBuffer[edge + 0]) & 65535;
-		if ((type & 254) == 2) {
+		type = (objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask;
+		if ((type & GEPrimitiveWideMask) == GEPrimitiveEdge) {
 			return 1;
 		}
 		if (!(needAvailableSpace(1))) {
@@ -3832,20 +4019,20 @@ static int findNextExternalEntryFromGET(void) {
 			errorWrongIndex();
 			break;
 		case 4:
-			stepToFirstLineInat(getBuffer[workBuffer[11]], workBuffer[88]);
+			stepToFirstLineInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 			break;
 		case 5:
-			stepToFirstWideLineInat(getBuffer[workBuffer[11]], workBuffer[88]);
+			stepToFirstWideLineInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 			break;
 		case 6:
-			stepToFirstBezierInat(getBuffer[workBuffer[11]], workBuffer[88]);
+			stepToFirstBezierInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 			break;
 		case 7:
-			stepToFirstWideBezierInat(getBuffer[workBuffer[11]], workBuffer[88]);
+			stepToFirstWideBezierInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 			break;
 		}
 		insertEdgeIntoAET(edge);
-		workBuffer[11] = ((workBuffer[11]) + 1);
+		workBuffer[GWGETStart] = ((workBuffer[GWGETStart]) + 1);
 	}
 	return 0;
 }
@@ -3858,88 +4045,88 @@ self halt.
 ]. */
 
 static int findNextExternalFillFromAET(void) {
-    int leftEdge;
-    int leftX;
     int rightEdge;
+    int leftX;
     int rightX;
+    int leftEdge;
     int startX;
-    int fill;
     int stopX;
+    int fill;
     int someIntegerValue;
     int someIntegerValue1;
     int rightX1;
     int startX1;
-    int fill1;
     int stopX1;
+    int fill1;
     int someIntegerValue2;
     int someIntegerValue11;
 
-	leftX = rightX = workBuffer[37];
-	while ((workBuffer[13]) < (workBuffer[14])) {
+	leftX = rightX = workBuffer[GWFillMaxX];
+	while ((workBuffer[GWAETStart]) < (workBuffer[GWAETUsed])) {
 
 		/* TODO: We should check if leftX from last operation 
 			is  greater than leftX from next edge.
 			Currently, we rely here on spanEndAA
 			from the span buffer fill. */
 
-		leftEdge = rightEdge = aetBuffer[workBuffer[13]];
-		leftX = rightX = objBuffer[leftEdge + 4];
-		if (leftX >= (workBuffer[37])) {
+		leftEdge = rightEdge = aetBuffer[workBuffer[GWAETStart]];
+		leftX = rightX = objBuffer[leftEdge + GEXValue];
+		if (leftX >= (workBuffer[GWFillMaxX])) {
 			return 0;
 		}
 		/* begin quickRemoveInvalidFillsAt: */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			goto l3;
 		}
 		while ((topRightX()) <= leftX) {
 			hideFilldepth(topFill(), topDepth());
-			if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+			if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 				goto l3;
 			}
 		}
 	l3:	/* end quickRemoveInvalidFillsAt: */;
-		if ((((objBuffer[leftEdge + 0]) & 65535) & 1) != 0) {
+		if ((((objBuffer[leftEdge + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
 			toggleWideFillOf(leftEdge);
 		}
-		if (((objBuffer[leftEdge + 0]) & 65536) == 0) {
+		if (((objBuffer[leftEdge + GEObjectType]) & GEEdgeFillsInvalid) == 0) {
 			toggleFillsOf(leftEdge);
 			if (engineStopped) {
 				return 0;
 			}
 		}
-		workBuffer[13] = ((workBuffer[13]) + 1);
-		if ((workBuffer[13]) < (workBuffer[14])) {
-			rightEdge = aetBuffer[workBuffer[13]];
-			rightX = objBuffer[rightEdge + 4];
-			if (rightX >= (workBuffer[36])) {
+		workBuffer[GWAETStart] = ((workBuffer[GWAETStart]) + 1);
+		if ((workBuffer[GWAETStart]) < (workBuffer[GWAETUsed])) {
+			rightEdge = aetBuffer[workBuffer[GWAETStart]];
+			rightX = objBuffer[rightEdge + GEXValue];
+			if (rightX >= (workBuffer[GWFillMinX])) {
 				/* begin fillAllFrom:to: */
 				/* begin topFill */
-				if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+				if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 					fill = 0;
 					goto l8;
 				} else {
-					fill = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+					fill = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 					goto l8;
 				}
 			l8:	/* end topFill */;
 				startX = leftX;
 				/* begin topRightX */
-				if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+				if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 					stopX = 999999999;
 					goto l9;
 				} else {
-					stopX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+					stopX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 					goto l9;
 				}
 			l9:	/* end topRightX */;
 				while (stopX < rightX) {
 					/* begin makeUnsignedFrom: */
 					/* begin topFill */
-					if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+					if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 						someIntegerValue = 0;
 						goto l6;
 					} else {
-						someIntegerValue = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+						someIntegerValue = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 						goto l6;
 					}
 				l6:	/* end topFill */;
@@ -3950,34 +4137,34 @@ static int findNextExternalFillFromAET(void) {
 						}
 					}
 					/* begin quickRemoveInvalidFillsAt: */
-					if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+					if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 						goto l1;
 					}
 					while ((topRightX()) <= stopX) {
 						hideFilldepth(topFill(), topDepth());
-						if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+						if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 							goto l1;
 						}
 					}
 				l1:	/* end quickRemoveInvalidFillsAt: */;
 					startX = stopX;
 					/* begin topRightX */
-					if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+					if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 						stopX = 999999999;
 						goto l7;
 					} else {
-						stopX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+						stopX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 						goto l7;
 					}
 				l7:	/* end topRightX */;
 				}
 				/* begin makeUnsignedFrom: */
 				/* begin topFill */
-				if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+				if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 					someIntegerValue1 = 0;
 					goto l10;
 				} else {
-					someIntegerValue1 = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+					someIntegerValue1 = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 					goto l10;
 				}
 			l10:	/* end topFill */;
@@ -3990,36 +4177,36 @@ static int findNextExternalFillFromAET(void) {
 			}
 		}
 	}
-	if (rightX < (workBuffer[37])) {
+	if (rightX < (workBuffer[GWFillMaxX])) {
 		/* begin fillAllFrom:to: */
-		rightX1 = workBuffer[37];
+		rightX1 = workBuffer[GWFillMaxX];
 		/* begin topFill */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			fill1 = 0;
 			goto l13;
 		} else {
-			fill1 = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+			fill1 = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 			goto l13;
 		}
 	l13:	/* end topFill */;
 		startX1 = rightX;
 		/* begin topRightX */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			stopX1 = 999999999;
 			goto l14;
 		} else {
-			stopX1 = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+			stopX1 = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 			goto l14;
 		}
 	l14:	/* end topRightX */;
 		while (stopX1 < rightX1) {
 			/* begin makeUnsignedFrom: */
 			/* begin topFill */
-			if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+			if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 				someIntegerValue2 = 0;
 				goto l11;
 			} else {
-				someIntegerValue2 = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+				someIntegerValue2 = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 				goto l11;
 			}
 		l11:	/* end topFill */;
@@ -4030,34 +4217,34 @@ static int findNextExternalFillFromAET(void) {
 				}
 			}
 			/* begin quickRemoveInvalidFillsAt: */
-			if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+			if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 				goto l4;
 			}
 			while ((topRightX()) <= stopX1) {
 				hideFilldepth(topFill(), topDepth());
-				if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+				if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 					goto l4;
 				}
 			}
 		l4:	/* end quickRemoveInvalidFillsAt: */;
 			startX1 = stopX1;
 			/* begin topRightX */
-			if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+			if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 				stopX1 = 999999999;
 				goto l12;
 			} else {
-				stopX1 = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+				stopX1 = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 				goto l12;
 			}
 		l12:	/* end topRightX */;
 		}
 		/* begin makeUnsignedFrom: */
 		/* begin topFill */
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			someIntegerValue11 = 0;
 			goto l15;
 		} else {
-			someIntegerValue11 = workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+			someIntegerValue11 = workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 			goto l15;
 		}
 	l15:	/* end topFill */;
@@ -4080,15 +4267,15 @@ static int findNextExternalUpdateFromAET(void) {
     int count;
     int type;
 
-	while ((workBuffer[13]) < (workBuffer[14])) {
-		edge = aetBuffer[workBuffer[13]];
-		count = (objBuffer[edge + 7]) - 1;
+	while ((workBuffer[GWAETStart]) < (workBuffer[GWAETUsed])) {
+		edge = aetBuffer[workBuffer[GWAETStart]];
+		count = (objBuffer[edge + GENumLines]) - 1;
 		if (count == 0) {
 			removeFirstAETEntry();
 		} else {
-			objBuffer[edge + 7] = count;
-			type = (objBuffer[edge + 0]) & 65535;
-			if ((type & 254) == 2) {
+			objBuffer[edge + GENumLines] = count;
+			type = (objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask;
+			if ((type & GEPrimitiveWideMask) == GEPrimitiveEdge) {
 				return 1;
 			}
 			switch (type) {
@@ -4099,20 +4286,20 @@ static int findNextExternalUpdateFromAET(void) {
 				errorWrongIndex();
 				break;
 			case 4:
-				stepToNextLineInat(aetBuffer[workBuffer[13]], workBuffer[88]);
+				stepToNextLineInat(aetBuffer[workBuffer[GWAETStart]], workBuffer[GWCurrentY]);
 				break;
 			case 5:
-				stepToNextWideLineInat(aetBuffer[workBuffer[13]], workBuffer[88]);
+				stepToNextWideLineInat(aetBuffer[workBuffer[GWAETStart]], workBuffer[GWCurrentY]);
 				break;
 			case 6:
-				stepToNextBezierInat(aetBuffer[workBuffer[13]], workBuffer[88]);
+				stepToNextBezierInat(aetBuffer[workBuffer[GWAETStart]], workBuffer[GWCurrentY]);
 				break;
 			case 7:
 				stepToNextWideBezier();
 				break;
 			}
 			resortFirstAETEntry();
-			workBuffer[13] = ((workBuffer[13]) + 1);
+			workBuffer[GWAETStart] = ((workBuffer[GWAETStart]) + 1);
 		}
 	}
 	return 0;
@@ -4122,10 +4309,10 @@ static int findStackFilldepth(int fillIndex, int depth) {
     int index;
 
 	index = 0;
-	while ((index < ((workBuffer[1]) - (workBuffer[10]))) && (((workBuffer[(workBuffer[10]) + index]) != fillIndex) || ((workBuffer[(workBuffer[10]) + (index + 1)]) != depth))) {
+	while ((index < ((workBuffer[GWSize]) - (workBuffer[GWBufferTop]))) && (((workBuffer[(workBuffer[GWBufferTop]) + index]) != fillIndex) || ((workBuffer[(workBuffer[GWBufferTop]) + (index + 1)]) != depth))) {
 		index += 3;
 	}
-	if (index >= ((workBuffer[1]) - (workBuffer[10]))) {
+	if (index >= ((workBuffer[GWSize]) - (workBuffer[GWBufferTop]))) {
 		return -1;
 	} else {
 		return index;
@@ -4136,20 +4323,20 @@ static int findStackFilldepth(int fillIndex, int depth) {
 /*	Return true if processing is finished */
 
 static int finishedProcessing(void) {
-	return (workBuffer[2]) == 8;
+	return (workBuffer[GWState]) == GEStateCompleted;
 }
 
 static int firstPointListGet(void) {
-	return workBuffer[70];
+	return workBuffer[GWPointListFirst];
 }
 
 static int firstPointListPut(int value) {
-	return workBuffer[70] = value;
+	return workBuffer[GWPointListFirst] = value;
 }
 
 static int freeStackFillEntry(void) {
 	/* begin wbStackPop: */
-	workBuffer[10] = ((workBuffer[10]) + 3);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) + 3);
 }
 
 
@@ -4171,40 +4358,40 @@ static int getSortsbefore(int edge1, int edge2) {
 	if (edge1 == edge2) {
 		return 1;
 	}
-	diff = (objBuffer[edge1 + 5]) - (objBuffer[edge2 + 5]);
+	diff = (objBuffer[edge1 + GEYValue]) - (objBuffer[edge2 + GEYValue]);
 	if (!(diff == 0)) {
 		return diff < 0;
 	}
-	diff = (objBuffer[edge1 + 4]) - (objBuffer[edge2 + 4]);
+	diff = (objBuffer[edge1 + GEXValue]) - (objBuffer[edge2 + GEXValue]);
 	return diff < 0;
 }
 
 static int getStartGet(void) {
-	return workBuffer[11];
+	return workBuffer[GWGETStart];
 }
 
 static int getStartPut(int value) {
-	return workBuffer[11] = value;
+	return workBuffer[GWGETStart] = value;
 }
 
 static int getUsedGet(void) {
-	return workBuffer[12];
+	return workBuffer[GWGETUsed];
 }
 
 static int getUsedPut(int value) {
-	return workBuffer[12] = value;
+	return workBuffer[GWGETUsed] = value;
 }
 
 static int gradientRampLengthOf(int fill) {
-	return objBuffer[fill + 10];
+	return objBuffer[fill + GFRampLength];
 }
 
 static int gradientRampLengthOfput(int fill, int value) {
-	return objBuffer[fill + 10] = value;
+	return objBuffer[fill + GFRampLength] = value;
 }
 
 static int * gradientRampOf(int fill) {
-	return (objBuffer + fill) + 12;
+	return (objBuffer + fill) + GFRampOffset;
 }
 
 static int halt(void) {
@@ -4212,38 +4399,38 @@ static int halt(void) {
 }
 
 static int hasColorTransform(void) {
-	return (workBuffer[17]) != 0;
+	return (workBuffer[GWHasColorTransform]) != 0;
 }
 
 static int hasColorTransformGet(void) {
-	return workBuffer[17];
+	return workBuffer[GWHasColorTransform];
 }
 
 static int hasColorTransformPut(int value) {
-	return workBuffer[17] = value;
+	return workBuffer[GWHasColorTransform] = value;
 }
 
 static int hasEdgeTransform(void) {
-	return (workBuffer[16]) != 0;
+	return (workBuffer[GWHasEdgeTransform]) != 0;
 }
 
 static int hasEdgeTransformGet(void) {
-	return workBuffer[16];
+	return workBuffer[GWHasEdgeTransform];
 }
 
 static int hasEdgeTransformPut(int value) {
-	return workBuffer[16] = value;
+	return workBuffer[GWHasEdgeTransform] = value;
 }
 
 
 /*	Make the fill style with the given index invisible */
 
 static int hideFilldepth(int fillIndex, int depth) {
-    int newTopIndex;
-    int newDepth;
-    int newTop;
-    int newRightX;
     int index;
+    int newTop;
+    int newTopIndex;
+    int newRightX;
+    int newDepth;
 
 	index = findStackFilldepth(fillIndex, depth);
 	if (index == -1) {
@@ -4252,38 +4439,38 @@ static int hideFilldepth(int fillIndex, int depth) {
 	if (index == 0) {
 		/* begin freeStackFillEntry */
 		/* begin wbStackPop: */
-		workBuffer[10] = ((workBuffer[10]) + 3);
+		workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) + 3);
 		return 1;
 	}
-	workBuffer[(workBuffer[10]) + index] = (workBuffer[(workBuffer[10]) + 0]);
-	workBuffer[(workBuffer[10]) + (index + 1)] = (workBuffer[(workBuffer[10]) + (0 + 1)]);
-	workBuffer[(workBuffer[10]) + (index + 2)] = (workBuffer[(workBuffer[10]) + (0 + 2)]);
+	workBuffer[(workBuffer[GWBufferTop]) + index] = (workBuffer[(workBuffer[GWBufferTop]) + 0]);
+	workBuffer[(workBuffer[GWBufferTop]) + (index + 1)] = (workBuffer[(workBuffer[GWBufferTop]) + (0 + 1)]);
+	workBuffer[(workBuffer[GWBufferTop]) + (index + 2)] = (workBuffer[(workBuffer[GWBufferTop]) + (0 + 2)]);
 	/* begin freeStackFillEntry */
 	/* begin wbStackPop: */
-	workBuffer[10] = ((workBuffer[10]) + 3);
-	if (((workBuffer[1]) - (workBuffer[10])) <= 3) {
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) + 3);
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) <= 3) {
 		return 1;
 	}
 	newTopIndex = 0;
 	index = 3;
-	while (index < ((workBuffer[1]) - (workBuffer[10]))) {
+	while (index < ((workBuffer[GWSize]) - (workBuffer[GWBufferTop]))) {
 		if (fillSortsbefore(index, newTopIndex)) {
 			newTopIndex = index;
 		}
 		index += 3;
 	}
-	if ((newTopIndex + 3) == ((workBuffer[1]) - (workBuffer[10]))) {
+	if ((newTopIndex + 3) == ((workBuffer[GWSize]) - (workBuffer[GWBufferTop]))) {
 		return 1;
 	}
-	newTop = workBuffer[(workBuffer[10]) + newTopIndex];
-	workBuffer[(workBuffer[10]) + newTopIndex] = (workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)]);
-	workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)] = newTop;
-	newDepth = workBuffer[(workBuffer[10]) + (newTopIndex + 1)];
-	workBuffer[(workBuffer[10]) + (newTopIndex + 1)] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)] = newDepth;
-	newRightX = workBuffer[(workBuffer[10]) + (newTopIndex + 2)];
-	workBuffer[(workBuffer[10]) + (newTopIndex + 2)] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)] = newRightX;
+	newTop = workBuffer[(workBuffer[GWBufferTop]) + newTopIndex];
+	workBuffer[(workBuffer[GWBufferTop]) + newTopIndex] = (workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)]);
+	workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)] = newTop;
+	newDepth = workBuffer[(workBuffer[GWBufferTop]) + (newTopIndex + 1)];
+	workBuffer[(workBuffer[GWBufferTop]) + (newTopIndex + 1)] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)] = newDepth;
+	newRightX = workBuffer[(workBuffer[GWBufferTop]) + (newTopIndex + 2)];
+	workBuffer[(workBuffer[GWBufferTop]) + (newTopIndex + 2)] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)] = newRightX;
 	return 1;
 }
 
@@ -4303,12 +4490,12 @@ static int indexForInsertingIntoAET(int edge) {
     int initialX;
     int index;
 
-	initialX = objBuffer[edge + 4];
+	initialX = objBuffer[edge + GEXValue];
 	index = 0;
-	while ((index < (workBuffer[14])) && ((objBuffer[(aetBuffer[index]) + 4]) < initialX)) {
+	while ((index < (workBuffer[GWAETUsed])) && ((objBuffer[(aetBuffer[index]) + GEXValue]) < initialX)) {
 		index += 1;
 	}
-	while ((index < (workBuffer[14])) && (((objBuffer[(aetBuffer[index]) + 4]) == initialX) && (getSortsbefore(aetBuffer[index], edge)))) {
+	while ((index < (workBuffer[GWAETUsed])) && (((objBuffer[(aetBuffer[index]) + GEXValue]) == initialX) && (getSortsbefore(aetBuffer[index], edge)))) {
 		index += 1;
 	}
 	return index;
@@ -4317,7 +4504,7 @@ static int indexForInsertingIntoAET(int edge) {
 static int initColorTransform(void) {
     float *transform;
 
-	transform = ((float *) (workBuffer + 24));
+	transform = ((float *) (workBuffer + GWColorTransform));
 	transform[0] = (((float) 1.0));
 	transform[1] = (((float) 0.0));
 	transform[2] = (((float) 1.0));
@@ -4326,20 +4513,20 @@ static int initColorTransform(void) {
 	transform[5] = (((float) 0.0));
 	transform[6] = (((float) 1.0));
 	transform[7] = (((float) 0.0));
-	workBuffer[17] = 0;
+	workBuffer[GWHasColorTransform] = 0;
 }
 
 static int initEdgeTransform(void) {
     float *transform;
 
-	transform = ((float *) (workBuffer + 18));
+	transform = ((float *) (workBuffer + GWEdgeTransform));
 	transform[0] = (((float) 1.0));
 	transform[1] = (((float) 0.0));
 	transform[2] = (((float) 0.0));
 	transform[3] = (((float) 0.0));
 	transform[4] = (((float) 1.0));
 	transform[5] = (((float) 0.0));
-	workBuffer[16] = 0;
+	workBuffer[GWHasEdgeTransform] = 0;
 }
 
 EXPORT(int) initialiseModule(void) {
@@ -4352,19 +4539,19 @@ EXPORT(int) initialiseModule(void) {
 /*	Initialization stuff that needs to be done before any processing can take place. */
 
 static int initializeGETProcessing(void) {
-	setAALevel(workBuffer[48]);
-	if ((workBuffer[42]) < 0) {
-		workBuffer[42] = 0;
+	setAALevel(workBuffer[GWAALevel]);
+	if ((workBuffer[GWClipMinX]) < 0) {
+		workBuffer[GWClipMinX] = 0;
 	}
-	if ((workBuffer[43]) > (workBuffer[33])) {
-		workBuffer[43] = (workBuffer[33]);
+	if ((workBuffer[GWClipMaxX]) > (workBuffer[GWSpanSize])) {
+		workBuffer[GWClipMaxX] = (workBuffer[GWSpanSize]);
 	}
-	workBuffer[36] = ((workBuffer[42]) << (workBuffer[49]));
-	workBuffer[38] = ((workBuffer[44]) << (workBuffer[49]));
-	workBuffer[37] = ((workBuffer[43]) << (workBuffer[49]));
-	workBuffer[39] = ((workBuffer[45]) << (workBuffer[49]));
-	workBuffer[12] = 0;
-	workBuffer[14] = 0;
+	workBuffer[GWFillMinX] = ((workBuffer[GWClipMinX]) << (workBuffer[GWAAShift]));
+	workBuffer[GWFillMinY] = ((workBuffer[GWClipMinY]) << (workBuffer[GWAAShift]));
+	workBuffer[GWFillMaxX] = ((workBuffer[GWClipMaxX]) << (workBuffer[GWAAShift]));
+	workBuffer[GWFillMaxY] = ((workBuffer[GWClipMaxY]) << (workBuffer[GWAAShift]));
+	workBuffer[GWGETUsed] = 0;
+	workBuffer[GWAETUsed] = 0;
 
 	/* Create the global edge table */
 
@@ -4373,18 +4560,18 @@ static int initializeGETProcessing(void) {
 	if (engineStopped) {
 		return null;
 	}
-	if ((workBuffer[12]) == 0) {
-		workBuffer[88] = (workBuffer[39]);
+	if ((workBuffer[GWGETUsed]) == 0) {
+		workBuffer[GWCurrentY] = (workBuffer[GWFillMaxY]);
 		return 0;
 	}
 	/* begin sortGlobalEdgeTable */
-	quickSortGlobalEdgeTablefromto(getBuffer, 0, (workBuffer[12]) - 1);
-	workBuffer[88] = (objBuffer[(getBuffer[0]) + 5]);
-	if ((workBuffer[88]) < (workBuffer[38])) {
-		workBuffer[88] = (workBuffer[38]);
+	quickSortGlobalEdgeTablefromto(getBuffer, 0, (workBuffer[GWGETUsed]) - 1);
+	workBuffer[GWCurrentY] = (objBuffer[(getBuffer[0]) + GEYValue]);
+	if ((workBuffer[GWCurrentY]) < (workBuffer[GWFillMinY])) {
+		workBuffer[GWCurrentY] = (workBuffer[GWFillMinY]);
 	}
-	workBuffer[32] = 0;
-	workBuffer[34] = (((workBuffer[33]) << (workBuffer[49])) - 1);
+	workBuffer[GWSpanStart] = 0;
+	workBuffer[GWSpanEnd] = (((workBuffer[GWSpanSize]) << (workBuffer[GWAAShift])) - 1);
 	clearSpanBuffer();
 }
 
@@ -4396,7 +4583,7 @@ static int initializeGETProcessing(void) {
 static int insertEdgeIntoAET(int edge) {
     int index;
 
-	if ((objBuffer[edge + 7]) <= 0) {
+	if ((objBuffer[edge + GENumLines]) <= 0) {
 		return null;
 	}
 
@@ -4415,31 +4602,31 @@ static int insertToAETbeforeIndex(int edge, int index) {
 	if (!(needAvailableSpace(1))) {
 		return null;
 	}
-	i = (workBuffer[14]) - 1;
+	i = (workBuffer[GWAETUsed]) - 1;
 	while (!(i < index)) {
 		aetBuffer[i + 1] = (aetBuffer[i]);
 		i -= 1;
 	}
 	aetBuffer[index] = edge;
-	workBuffer[14] = ((workBuffer[14]) + 1);
+	workBuffer[GWAETUsed] = ((workBuffer[GWAETUsed]) + 1);
 }
 
 static int isBezier(int bezier) {
-	return (((objBuffer[bezier + 0]) & 65535) & 254) == 6;
+	return (((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveBezier;
 }
 
 static int isEdge(int edge) {
     int type;
 
-	type = (objBuffer[edge + 0]) & 65535;
-	if (type > 255) {
+	type = (objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask;
+	if (type > GEPrimitiveEdgeMask) {
 		return 0;
 	}
-	return (((objBuffer[edge + 0]) & 65535) & 255) != 0;
+	return (((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveEdgeMask) != 0;
 }
 
 static int isFill(int fill) {
-	return ((fill & 4278190080U) != 0) || ((((objBuffer[fill + 0]) & 65535) & 65280) != 0);
+	return ((fill & 4278190080U) != 0) || ((((objBuffer[fill + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveFillMask) != 0);
 }
 
 static int isFillColor(int fill) {
@@ -4447,11 +4634,11 @@ static int isFillColor(int fill) {
 }
 
 static int isFillOkay(int fill) {
-	return (fill == 0) || (((fill & 4278190080U) != 0) || (((fill >= 0) && (fill < objUsed)) && (((fill & 4278190080U) != 0) || ((((objBuffer[fill + 0]) & 65535) & 65280) != 0))));
+	return (fill == 0) || (((fill & 4278190080U) != 0) || (((fill >= 0) && (fill < objUsed)) && (((fill & 4278190080U) != 0) || ((((objBuffer[fill + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveFillMask) != 0))));
 }
 
 static int isLine(int line) {
-	return (((objBuffer[line + 0]) & 65535) & 254) == 4;
+	return (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveLine;
 }
 
 static int isObject(int obj) {
@@ -4459,123 +4646,123 @@ static int isObject(int obj) {
 }
 
 static int isRealFill(int fill) {
-	return (((objBuffer[fill + 0]) & 65535) & 65280) != 0;
+	return (((objBuffer[fill + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveFillMask) != 0;
 }
 
 static int isStackEntry(int entry) {
-	return (entry >= (workBuffer[10])) && (entry < (workBuffer[1]));
+	return (entry >= (workBuffer[GWBufferTop])) && (entry < (workBuffer[GWSize]));
 }
 
 static int isStackIndex(int index) {
-	return (index >= 0) && (index < ((workBuffer[1]) - (workBuffer[10])));
+	return (index >= 0) && (index < ((workBuffer[GWSize]) - (workBuffer[GWBufferTop])));
 }
 
 static int isWide(int object) {
-	return (((objBuffer[object + 0]) & 65535) & 1) != 0;
+	return (((objBuffer[object + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0;
 }
 
 static int isWideBezier(int bezier) {
-	return ((((objBuffer[bezier + 0]) & 65535) & 254) == 6) && ((((objBuffer[bezier + 0]) & 65535) & 1) != 0);
+	return ((((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveBezier) && ((((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0);
 }
 
 static int isWideLine(int line) {
-	return ((((objBuffer[line + 0]) & 65535) & 254) == 4) && ((((objBuffer[line + 0]) & 65535) & 1) != 0);
+	return ((((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWideMask) == GEPrimitiveLine) && ((((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0);
 }
 
 static int lastExportedEdgeGet(void) {
-	return workBuffer[65];
+	return workBuffer[GWLastExportedEdge];
 }
 
 static int lastExportedEdgePut(int value) {
-	return workBuffer[65] = value;
+	return workBuffer[GWLastExportedEdge] = value;
 }
 
 static int lastExportedFillGet(void) {
-	return workBuffer[66];
+	return workBuffer[GWLastExportedFill];
 }
 
 static int lastExportedFillPut(int value) {
-	return workBuffer[66] = value;
+	return workBuffer[GWLastExportedFill] = value;
 }
 
 static int lastExportedLeftXGet(void) {
-	return workBuffer[67];
+	return workBuffer[GWLastExportedLeftX];
 }
 
 static int lastExportedLeftXPut(int value) {
-	return workBuffer[67] = value;
+	return workBuffer[GWLastExportedLeftX] = value;
 }
 
 static int lastExportedRightXGet(void) {
-	return workBuffer[68];
+	return workBuffer[GWLastExportedRightX];
 }
 
 static int lastExportedRightXPut(int value) {
-	return workBuffer[68] = value;
+	return workBuffer[GWLastExportedRightX] = value;
 }
 
 static int lineEndXOf(int line) {
-	return objBuffer[line + 14];
+	return objBuffer[line + GLEndX];
 }
 
 static int lineEndXOfput(int line, int value) {
-	return objBuffer[line + 14] = value;
+	return objBuffer[line + GLEndX] = value;
 }
 
 static int lineEndYOf(int line) {
-	return objBuffer[line + 15];
+	return objBuffer[line + GLEndY];
 }
 
 static int lineEndYOfput(int line, int value) {
-	return objBuffer[line + 15] = value;
+	return objBuffer[line + GLEndY] = value;
 }
 
 static int lineErrorAdjDownOf(int line) {
-	return objBuffer[line + 15];
+	return objBuffer[line + GLErrorAdjDown];
 }
 
 static int lineErrorAdjDownOfput(int line, int value) {
-	return objBuffer[line + 15] = value;
+	return objBuffer[line + GLErrorAdjDown] = value;
 }
 
 static int lineErrorAdjUpOf(int line) {
-	return objBuffer[line + 14];
+	return objBuffer[line + GLErrorAdjUp];
 }
 
 static int lineErrorAdjUpOfput(int line, int value) {
-	return objBuffer[line + 14] = value;
+	return objBuffer[line + GLErrorAdjUp] = value;
 }
 
 static int lineErrorOf(int line) {
-	return objBuffer[line + 13];
+	return objBuffer[line + GLError];
 }
 
 static int lineErrorOfput(int line, int value) {
-	return objBuffer[line + 13] = value;
+	return objBuffer[line + GLError] = value;
 }
 
 static int lineXDirectionOf(int line) {
-	return objBuffer[line + 10];
+	return objBuffer[line + GLXDirection];
 }
 
 static int lineXDirectionOfput(int line, int value) {
-	return objBuffer[line + 10] = value;
+	return objBuffer[line + GLXDirection] = value;
 }
 
 static int lineXIncrementOf(int line) {
-	return objBuffer[line + 12];
+	return objBuffer[line + GLXIncrement];
 }
 
 static int lineXIncrementOfput(int line, int value) {
-	return objBuffer[line + 12] = value;
+	return objBuffer[line + GLXIncrement] = value;
 }
 
 static int lineYDirectionOf(int line) {
-	return objBuffer[line + 11];
+	return objBuffer[line + GLYDirection];
 }
 
 static int lineYDirectionOfput(int line, int value) {
-	return objBuffer[line + 11] = value;
+	return objBuffer[line + GLYDirection] = value;
 }
 
 
@@ -4585,8 +4772,8 @@ static int lineYDirectionOfput(int line, int value) {
 static int loadAndSubdivideBezierFromviatoisWide(int *point1, int *point2, int *point3, int wideFlag) {
     int index2;
     int index;
-    int index1;
     int bz1;
+    int index1;
     int bz2;
 
 	/* begin allocateBezierStackEntry */
@@ -4594,18 +4781,18 @@ static int loadAndSubdivideBezierFromviatoisWide(int *point1, int *point2, int *
 	if (!(needAvailableSpace(6))) {
 		goto l1;
 	}
-	workBuffer[10] = ((workBuffer[10]) - 6);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) - 6);
 l1:	/* end wbStackPush: */;
-	bz1 = (workBuffer[1]) - (workBuffer[10]);
+	bz1 = (workBuffer[GWSize]) - (workBuffer[GWBufferTop]);
 	if (engineStopped) {
 		return 0;
 	}
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - bz1) + 0)] = (point1[0]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - bz1) + 1)] = (point1[1]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - bz1) + 2)] = (point2[0]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - bz1) + 3)] = (point2[1]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - bz1) + 4)] = (point3[0]);
-	workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - bz1) + 5)] = (point3[1]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - bz1) + 0)] = (point1[0]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - bz1) + 1)] = (point1[1]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - bz1) + 2)] = (point2[0]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - bz1) + 3)] = (point2[1]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - bz1) + 4)] = (point3[0]);
+	workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - bz1) + 5)] = (point3[1]);
 	index2 = bz2 = subdivideToBeMonotoninX(bz1, wideFlag);
 	for (index = bz1; index <= bz2; index += 6) {
 		index1 = subdivideBezierFrom(index);
@@ -4620,43 +4807,43 @@ l1:	/* end wbStackPush: */;
 }
 
 static int loadArrayPolygonnPointsfilllineWidthlineFill(int points, int nPoints, int fillIndex, int lineWidth, int lineFill) {
-    int x0;
     int x1;
     int i;
-    int y0;
     int y1;
+    int x0;
+    int y0;
 
-	loadPointfrom(((int *) (workBuffer + 80)), interpreterProxy->fetchPointerofObject(0, points));
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), interpreterProxy->fetchPointerofObject(0, points));
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	x0 = (((int *) (workBuffer + 80)))[0];
-	y0 = (((int *) (workBuffer + 80)))[1];
+	x0 = (((int *) (workBuffer + GWPoint1)))[0];
+	y0 = (((int *) (workBuffer + GWPoint1)))[1];
 	for (i = 1; i <= (nPoints - 1); i += 1) {
-		loadPointfrom(((int *) (workBuffer + 80)), interpreterProxy->fetchPointerofObject(i, points));
+		loadPointfrom(((int *) (workBuffer + GWPoint1)), interpreterProxy->fetchPointerofObject(i, points));
 		if (interpreterProxy->failed()) {
 			return null;
 		}
-		x1 = (((int *) (workBuffer + 80)))[0];
-		y1 = (((int *) (workBuffer + 80)))[1];
-		(((int *) (workBuffer + 80)))[0] = x0;
-		(((int *) (workBuffer + 80)))[1] = y0;
-		(((int *) (workBuffer + 82)))[0] = x1;
-		(((int *) (workBuffer + 82)))[1] = y1;
+		x1 = (((int *) (workBuffer + GWPoint1)))[0];
+		y1 = (((int *) (workBuffer + GWPoint1)))[1];
+		(((int *) (workBuffer + GWPoint1)))[0] = x0;
+		(((int *) (workBuffer + GWPoint1)))[1] = y0;
+		(((int *) (workBuffer + GWPoint2)))[0] = x1;
+		(((int *) (workBuffer + GWPoint2)))[1] = y1;
 		/* begin transformPoints: */
 		if (2 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (2 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (2 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (2 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFill, fillIndex, 0);
+		loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFill, fillIndex, 0);
 		if (engineStopped) {
 			return null;
 		}
@@ -4666,52 +4853,52 @@ static int loadArrayPolygonnPointsfilllineWidthlineFill(int points, int nPoints,
 }
 
 static int loadArrayShapenSegmentsfilllineWidthlineFill(int points, int nSegments, int fillIndex, int lineWidth, int lineFill) {
+    int pointOop;
+    int x1;
+    int i;
+    int y1;
+    int x2;
+    int y2;
     int x0;
     int segs;
-    int x1;
-    int x2;
-    int i;
-    int pointOop;
     int y0;
-    int y1;
-    int y2;
 
 	for (i = 0; i <= (nSegments - 1); i += 1) {
 		pointOop = interpreterProxy->fetchPointerofObject(i * 3, points);
-		loadPointfrom(((int *) (workBuffer + 80)), pointOop);
+		loadPointfrom(((int *) (workBuffer + GWPoint1)), pointOop);
 		pointOop = interpreterProxy->fetchPointerofObject((i * 3) + 1, points);
-		loadPointfrom(((int *) (workBuffer + 82)), pointOop);
+		loadPointfrom(((int *) (workBuffer + GWPoint2)), pointOop);
 		pointOop = interpreterProxy->fetchPointerofObject((i * 3) + 2, points);
-		loadPointfrom(((int *) (workBuffer + 84)), pointOop);
+		loadPointfrom(((int *) (workBuffer + GWPoint3)), pointOop);
 		if (interpreterProxy->failed()) {
 			return null;
 		}
 		/* begin transformPoints: */
 		if (3 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (3 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (3 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (3 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		x0 = (((int *) (workBuffer + 80)))[0];
-		y0 = (((int *) (workBuffer + 80)))[1];
-		x1 = (((int *) (workBuffer + 82)))[0];
-		y1 = (((int *) (workBuffer + 82)))[1];
-		x2 = (((int *) (workBuffer + 84)))[0];
+		x0 = (((int *) (workBuffer + GWPoint1)))[0];
+		y0 = (((int *) (workBuffer + GWPoint1)))[1];
+		x1 = (((int *) (workBuffer + GWPoint2)))[0];
+		y1 = (((int *) (workBuffer + GWPoint2)))[1];
+		x2 = (((int *) (workBuffer + GWPoint3)))[0];
 
 		/* Check if we can use a line */
 
-		y2 = (((int *) (workBuffer + 84)))[1];
+		y2 = (((int *) (workBuffer + GWPoint3)))[1];
 		if (((x0 == y0) && (x1 == y1)) || ((x1 == x2) && (y1 == y2))) {
-			loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 84)), lineFill, fillIndex, 0);
+			loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint3)), lineFill, fillIndex, 0);
 		} else {
-			segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), (lineWidth != 0) && (lineFill != 0));
+			segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), (lineWidth != 0) && (lineFill != 0));
 			if (engineStopped) {
 				return null;
 			}
@@ -4727,8 +4914,8 @@ static int loadArrayShapenSegmentsfilllineWidthlineFill(int points, int nSegment
 /*	Load a transformation from the given array. */
 
 static int loadArrayTransformFromintolength(int transformOop, float *destPtr, int n) {
-    int value;
     int i;
+    int value;
 
 	for (i = 0; i <= (n - 1); i += 1) {
 		value = interpreterProxy->fetchPointerofObject(i, transformOop);
@@ -4747,24 +4934,24 @@ static int loadArrayTransformFromintolength(int transformOop, float *destPtr, in
 /*	Initialize the bezier segment stored on the stack */
 
 static int loadBeziersegmentleftFillrightFilloffset(int bezier, int index, int leftFillIndex, int rightFillIndex, int yOffset) {
-	if ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)]) >= (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)])) {
-		objBuffer[bezier + 4] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)]);
-		objBuffer[bezier + 5] = ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)]) - yOffset);
-		objBuffer[bezier + 12] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)]);
-		objBuffer[bezier + 13] = ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)]) - yOffset);
-		objBuffer[bezier + 14] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)]);
-		objBuffer[bezier + 15] = ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)]) - yOffset);
+	if ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)]) >= (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)])) {
+		objBuffer[bezier + GEXValue] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)]);
+		objBuffer[bezier + GEYValue] = ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)]) - yOffset);
+		objBuffer[bezier + GBViaX] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)]);
+		objBuffer[bezier + GBViaY] = ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)]) - yOffset);
+		objBuffer[bezier + GBEndX] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)]);
+		objBuffer[bezier + GBEndY] = ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)]) - yOffset);
 	} else {
-		objBuffer[bezier + 4] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)]);
-		objBuffer[bezier + 5] = ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)]) - yOffset);
-		objBuffer[bezier + 12] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)]);
-		objBuffer[bezier + 13] = ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)]) - yOffset);
-		objBuffer[bezier + 14] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)]);
-		objBuffer[bezier + 15] = ((workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)]) - yOffset);
+		objBuffer[bezier + GEXValue] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)]);
+		objBuffer[bezier + GEYValue] = ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)]) - yOffset);
+		objBuffer[bezier + GBViaX] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)]);
+		objBuffer[bezier + GBViaY] = ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)]) - yOffset);
+		objBuffer[bezier + GBEndX] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)]);
+		objBuffer[bezier + GBEndY] = ((workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)]) - yOffset);
 	}
-	objBuffer[bezier + 6] = (workBuffer[113]);
-	objBuffer[bezier + 8] = leftFillIndex;
-	objBuffer[bezier + 9] = rightFillIndex;
+	objBuffer[bezier + GEZValue] = (workBuffer[GWCurrentZ]);
+	objBuffer[bezier + GEFillIndexLeft] = leftFillIndex;
+	objBuffer[bezier + GEFillIndexRight] = rightFillIndex;
 }
 
 static int loadBitBltFrom(int bbObj) {
@@ -4780,16 +4967,16 @@ static int loadBitBltFrom(int bbObj) {
 /*	Load the bitmap fill. */
 
 static int loadBitmapFillcolormaptilefromalongnormalxIndex(int formOop, int cmOop, int tileFlag, int *point1, int *point2, int *point3, int xIndex) {
-    int ppw;
-    int bmBitsSize;
-    int *cmBits;
     int bmDepth;
-    int bmBits;
-    int cmSize;
-    int bmWidth;
+    int ppw;
     int bmFill;
-    int bmHeight;
     int bmRaster;
+    int bmHeight;
+    int *cmBits;
+    int bmBits;
+    int bmWidth;
+    int bmBitsSize;
+    int cmSize;
 
 	if (cmOop == (interpreterProxy->nilObject())) {
 		cmSize = 0;
@@ -4839,13 +5026,13 @@ static int loadBitmapFillcolormaptilefromalongnormalxIndex(int formOop, int cmOo
 	if (engineStopped) {
 		return null;
 	}
-	objBuffer[bmFill + 10] = bmWidth;
-	objBuffer[bmFill + 11] = bmHeight;
-	objBuffer[bmFill + 12] = bmDepth;
-	objBuffer[bmFill + 14] = bmRaster;
-	objBuffer[bmFill + 13] = bmBitsSize;
-	objBuffer[bmFill + 16] = tileFlag;
-	objBuffer[bmFill + 2] = xIndex;
+	objBuffer[bmFill + GBBitmapWidth] = bmWidth;
+	objBuffer[bmFill + GBBitmapHeight] = bmHeight;
+	objBuffer[bmFill + GBBitmapDepth] = bmDepth;
+	objBuffer[bmFill + GBBitmapRaster] = bmRaster;
+	objBuffer[bmFill + GBBitmapSize] = bmBitsSize;
+	objBuffer[bmFill + GBTileFlag] = tileFlag;
+	objBuffer[bmFill + GEObjectIndex] = xIndex;
 	loadFillOrientationfromalongnormalwidthheight(bmFill, point1, point2, point3, bmWidth, bmHeight);
 	return bmFill;
 }
@@ -4856,17 +5043,17 @@ static int loadBitmapFillcolormaptilefromalongnormalxIndex(int formOop, int cmOo
 static int * loadBitsFrom(int bmFill) {
     int formOop;
     int xIndex;
-    int bitsLen;
     int bitsOop;
+    int bitsLen;
 
-	xIndex = objBuffer[bmFill + 2];
+	xIndex = objBuffer[bmFill + GEObjectIndex];
 	if (xIndex > (interpreterProxy->slotSizeOf(formArray))) {
 		return null;
 	}
 	formOop = interpreterProxy->fetchPointerofObject(xIndex, formArray);
 	bitsOop = interpreterProxy->fetchPointerofObject(0, formOop);
 	bitsLen = interpreterProxy->slotSizeOf(bitsOop);
-	if (!(bitsLen == (objBuffer[bmFill + 13]))) {
+	if (!(bitsLen == (objBuffer[bmFill + GBBitmapSize]))) {
 		return null;
 	}
 	return interpreterProxy->firstIndexableField(bitsOop);
@@ -4877,16 +5064,16 @@ static int * loadBitsFrom(int bmFill) {
 	Return true if the matrix is not nil, false otherwise */
 
 static int loadColorTransformFrom(int transformOop) {
-    float *transform;
     int okay;
+    float *transform;
 
-	transform = ((float *) (workBuffer + 24));
-	workBuffer[17] = 0;
+	transform = ((float *) (workBuffer + GWColorTransform));
+	workBuffer[GWHasColorTransform] = 0;
 	okay = loadTransformFromintolength(transformOop, transform, 8);
 	if (!(okay)) {
 		return 0;
 	}
-	workBuffer[17] = 1;
+	workBuffer[GWHasColorTransform] = 1;
 	transform[1] = ((transform[1]) * (((float) 256.0)));
 	transform[3] = ((transform[3]) * (((float) 256.0)));
 	transform[5] = ((transform[5]) * (((float) 256.0)));
@@ -4898,14 +5085,14 @@ static int loadColorTransformFrom(int transformOop) {
 /*	Load the compressed segment identified by segment index */
 
 static int loadCompressedSegmentfromshortleftFillrightFilllineWidthlineColor(int segmentIndex, int points, int pointsShort, int leftFill, int rightFill, int lineWidth, int lineFill) {
+    int x1;
+    int y1;
+    int index;
+    int x2;
+    int y2;
     int x0;
     int segs;
-    int x1;
-    int x2;
-    int index;
     int y0;
-    int y1;
-    int y2;
 
 	if ((leftFill == rightFill) && ((lineWidth == 0) || (lineFill == 0))) {
 		return null;
@@ -4933,45 +5120,45 @@ static int loadCompressedSegmentfromshortleftFillrightFilllineWidthlineColor(int
 		if ((x0 == x2) && (y0 == y2)) {
 			return null;
 		}
-		(((int *) (workBuffer + 80)))[0] = x0;
-		(((int *) (workBuffer + 80)))[1] = y0;
-		(((int *) (workBuffer + 82)))[0] = x2;
-		(((int *) (workBuffer + 82)))[1] = y2;
+		(((int *) (workBuffer + GWPoint1)))[0] = x0;
+		(((int *) (workBuffer + GWPoint1)))[1] = y0;
+		(((int *) (workBuffer + GWPoint2)))[0] = x2;
+		(((int *) (workBuffer + GWPoint2)))[1] = y2;
 		/* begin transformPoints: */
 		if (2 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (2 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (2 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (2 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		return loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFill, leftFill, rightFill);
+		return loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFill, leftFill, rightFill);
 	}
-	(((int *) (workBuffer + 80)))[0] = x0;
-	(((int *) (workBuffer + 80)))[1] = y0;
-	(((int *) (workBuffer + 82)))[0] = x1;
-	(((int *) (workBuffer + 82)))[1] = y1;
-	(((int *) (workBuffer + 84)))[0] = x2;
-	(((int *) (workBuffer + 84)))[1] = y2;
+	(((int *) (workBuffer + GWPoint1)))[0] = x0;
+	(((int *) (workBuffer + GWPoint1)))[1] = y0;
+	(((int *) (workBuffer + GWPoint2)))[0] = x1;
+	(((int *) (workBuffer + GWPoint2)))[1] = y1;
+	(((int *) (workBuffer + GWPoint3)))[0] = x2;
+	(((int *) (workBuffer + GWPoint3)))[1] = y2;
 	/* begin transformPoints: */
 	if (3 > 0) {
-		transformPoint(((int *) (workBuffer + 80)));
+		transformPoint(((int *) (workBuffer + GWPoint1)));
 	}
 	if (3 > 1) {
-		transformPoint(((int *) (workBuffer + 82)));
+		transformPoint(((int *) (workBuffer + GWPoint2)));
 	}
 	if (3 > 2) {
-		transformPoint(((int *) (workBuffer + 84)));
+		transformPoint(((int *) (workBuffer + GWPoint3)));
 	}
 	if (3 > 3) {
-		transformPoint(((int *) (workBuffer + 86)));
+		transformPoint(((int *) (workBuffer + GWPoint4)));
 	}
-	segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), (lineWidth != 0) && (lineFill != 0));
+	segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), (lineWidth != 0) && (lineFill != 0));
 	if (engineStopped) {
 		return null;
 	}
@@ -4984,27 +5171,27 @@ static int loadCompressedSegmentfromshortleftFillrightFilllineWidthlineColor(int
 	 */
 
 static int loadCompressedShapesegmentsleftFillsrightFillslineWidthslineFillsfillIndexListpointShort(int *points, int nSegments, int *leftFills, int *rightFills, int *lineWidths, int *lineFills, int *fillIndexList, int pointsShort) {
+    int widthLength;
+    int lineFillLength;
+    int rightRun;
+    int rightValue;
+    int i;
+    int leftValue;
+    int leftLength;
+    int lineFillRun;
+    int leftRun;
+    int widthValue;
+    int lineFillValue;
     int widthRun;
     int rightLength;
-    int rightRun;
-    int i;
-    int rightValue;
-    int leftValue;
-    int widthValue;
-    int lineFillLength;
-    int lineFillRun;
-    int leftLength;
-    int leftRun;
-    int widthLength;
-    int lineFillValue;
+    int x1;
+    int y1;
+    int index;
+    int x2;
+    int y2;
     int x0;
     int segs;
-    int x1;
-    int x2;
-    int index;
     int y0;
-    int y1;
-    int y2;
 
 	if (nSegments == 0) {
 		return 0;
@@ -5074,46 +5261,46 @@ static int loadCompressedShapesegmentsleftFillsrightFillslineWidthslineFillsfill
 			if ((x0 == x2) && (y0 == y2)) {
 				goto l1;
 			}
-			(((int *) (workBuffer + 80)))[0] = x0;
-			(((int *) (workBuffer + 80)))[1] = y0;
-			(((int *) (workBuffer + 82)))[0] = x2;
-			(((int *) (workBuffer + 82)))[1] = y2;
+			(((int *) (workBuffer + GWPoint1)))[0] = x0;
+			(((int *) (workBuffer + GWPoint1)))[1] = y0;
+			(((int *) (workBuffer + GWPoint2)))[0] = x2;
+			(((int *) (workBuffer + GWPoint2)))[1] = y2;
 			/* begin transformPoints: */
 			if (2 > 0) {
-				transformPoint(((int *) (workBuffer + 80)));
+				transformPoint(((int *) (workBuffer + GWPoint1)));
 			}
 			if (2 > 1) {
-				transformPoint(((int *) (workBuffer + 82)));
+				transformPoint(((int *) (workBuffer + GWPoint2)));
 			}
 			if (2 > 2) {
-				transformPoint(((int *) (workBuffer + 84)));
+				transformPoint(((int *) (workBuffer + GWPoint3)));
 			}
 			if (2 > 3) {
-				transformPoint(((int *) (workBuffer + 86)));
+				transformPoint(((int *) (workBuffer + GWPoint4)));
 			}
-			loadWideLinefromtolineFillleftFillrightFill(widthValue, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFillValue, leftValue, rightValue);
+			loadWideLinefromtolineFillleftFillrightFill(widthValue, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFillValue, leftValue, rightValue);
 			goto l1;
 		}
-		(((int *) (workBuffer + 80)))[0] = x0;
-		(((int *) (workBuffer + 80)))[1] = y0;
-		(((int *) (workBuffer + 82)))[0] = x1;
-		(((int *) (workBuffer + 82)))[1] = y1;
-		(((int *) (workBuffer + 84)))[0] = x2;
-		(((int *) (workBuffer + 84)))[1] = y2;
+		(((int *) (workBuffer + GWPoint1)))[0] = x0;
+		(((int *) (workBuffer + GWPoint1)))[1] = y0;
+		(((int *) (workBuffer + GWPoint2)))[0] = x1;
+		(((int *) (workBuffer + GWPoint2)))[1] = y1;
+		(((int *) (workBuffer + GWPoint3)))[0] = x2;
+		(((int *) (workBuffer + GWPoint3)))[1] = y2;
 		/* begin transformPoints: */
 		if (3 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (3 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (3 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (3 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), (widthValue != 0) && (lineFillValue != 0));
+		segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), (widthValue != 0) && (lineFillValue != 0));
 		if (engineStopped) {
 			goto l1;
 		}
@@ -5132,22 +5319,22 @@ static int loadEdgeStateFrom(int edgeOop) {
     int value2;
     int value3;
 
-	edge = workBuffer[65];
-	if ((interpreterProxy->slotSizeOf(edgeOop)) < 6) {
+	edge = workBuffer[GWLastExportedEdge];
+	if ((interpreterProxy->slotSizeOf(edgeOop)) < ETBalloonEdgeDataSize) {
 		return interpreterProxy->primitiveFail();
 	}
 	/* begin edgeXValueOf:put: */
-	value = interpreterProxy->fetchIntegerofObject(1, edgeOop);
-	objBuffer[edge + 4] = value;
+	value = interpreterProxy->fetchIntegerofObject(ETXValueIndex, edgeOop);
+	objBuffer[edge + GEXValue] = value;
 	/* begin edgeYValueOf:put: */
-	value2 = interpreterProxy->fetchIntegerofObject(2, edgeOop);
-	objBuffer[edge + 5] = value2;
+	value2 = interpreterProxy->fetchIntegerofObject(ETYValueIndex, edgeOop);
+	objBuffer[edge + GEYValue] = value2;
 	/* begin edgeZValueOf:put: */
-	value3 = interpreterProxy->fetchIntegerofObject(3, edgeOop);
-	objBuffer[edge + 6] = value3;
+	value3 = interpreterProxy->fetchIntegerofObject(ETZValueIndex, edgeOop);
+	objBuffer[edge + GEZValue] = value3;
 	/* begin edgeNumLinesOf:put: */
-	value1 = interpreterProxy->fetchIntegerofObject(4, edgeOop);
-	objBuffer[edge + 7] = value1;
+	value1 = interpreterProxy->fetchIntegerofObject(ETLinesIndex, edgeOop);
+	objBuffer[edge + GENumLines] = value1;
 	return edge;
 }
 
@@ -5156,11 +5343,11 @@ static int loadEdgeStateFrom(int edgeOop) {
 	Return true if the matrix is not nil, false otherwise */
 
 static int loadEdgeTransformFrom(int transformOop) {
-    float *transform;
     int okay;
+    float *transform;
 
-	workBuffer[16] = 0;
-	transform = ((float *) (workBuffer + 18));
+	workBuffer[GWHasEdgeTransform] = 0;
+	transform = ((float *) (workBuffer + GWEdgeTransform));
 	okay = loadTransformFromintolength(transformOop, transform, 6);
 	if (interpreterProxy->failed()) {
 		return null;
@@ -5168,9 +5355,9 @@ static int loadEdgeTransformFrom(int transformOop) {
 	if (!(okay)) {
 		return 0;
 	}
-	workBuffer[16] = 1;
-	transform[2] = (((float) ((transform[2]) + (((double) (workBuffer[46]) )))));
-	transform[5] = (((float) ((transform[5]) + (((double) (workBuffer[47]) )))));
+	workBuffer[GWHasEdgeTransform] = 1;
+	transform[2] = (((float) ((transform[2]) + (((double) (workBuffer[GWDestOffsetX]) )))));
+	transform[5] = (((float) ((transform[5]) + (((double) (workBuffer[GWDestOffsetY]) )))));
 	return 1;
 }
 
@@ -5178,16 +5365,16 @@ static int loadEdgeTransformFrom(int transformOop) {
 /*	Transform the points */
 
 static int loadFillOrientationfromalongnormalwidthheight(int fill, int *point1, int *point2, int *point3, int fillWidth, int fillHeight) {
-    int dirY;
+    int dsLength2;
     int dtX;
-    int dtY;
     int nrmX;
+    int dsY;
+    int dtY;
+    int dirX;
     int nrmY;
     int dtLength2;
+    int dirY;
     int dsX;
-    int dsLength2;
-    int dsY;
-    int dirX;
 
 	point2[0] = ((point2[0]) + (point1[0]));
 	point2[1] = ((point2[1]) + (point1[1]));
@@ -5219,29 +5406,29 @@ static int loadFillOrientationfromalongnormalwidthheight(int fill, int *point1, 
 		dtX = 0;
 		dtY = 0;
 	}
-	objBuffer[fill + 4] = (point1[0]);
-	objBuffer[fill + 5] = (point1[1]);
-	objBuffer[fill + 6] = dsX;
-	objBuffer[fill + 7] = dsY;
-	objBuffer[fill + 8] = dtX;
-	objBuffer[fill + 9] = dtY;
+	objBuffer[fill + GFOriginX] = (point1[0]);
+	objBuffer[fill + GFOriginY] = (point1[1]);
+	objBuffer[fill + GFDirectionX] = dsX;
+	objBuffer[fill + GFDirectionY] = dsY;
+	objBuffer[fill + GFNormalX] = dtX;
+	objBuffer[fill + GFNormalY] = dtY;
 }
 
 
 /*	Check all the forms from arrayOop. */
 
 static int loadFormsFrom(int arrayOop) {
-    int ppw;
-    int bmBitsSize;
-    int i;
     int bmDepth;
-    int formOop;
-    int bmBits;
-    int bmWidth;
-    int bmHeight;
+    int ppw;
     int bmRaster;
+    int i;
+    int bmHeight;
+    int bmBits;
+    int formOop;
+    int bmWidth;
+    int bmBitsSize;
 
-	if (!((interpreterProxy->fetchClassOf(arrayOop)) == (interpreterProxy->classArray()))) {
+	if (!(interpreterProxy->isArray(arrayOop))) {
 		return 0;
 	}
 	formArray = arrayOop;
@@ -5283,8 +5470,8 @@ static int loadFormsFrom(int arrayOop) {
 /*	Load the gradient fill as defined by the color ramp. */
 
 static int loadGradientFillfromalongnormalisRadial(int rampOop, int *point1, int *point2, int *point3, int isRadial) {
-    int fill;
     int rampWidth;
+    int fill;
 
 	if (!((interpreterProxy->fetchClassOf(rampOop)) == (interpreterProxy->classBitmap()))) {
 		return interpreterProxy->primitiveFail();
@@ -5303,8 +5490,8 @@ static int loadGradientFillfromalongnormalisRadial(int rampOop, int *point1, int
 
 static int loadLinefromtooffsetleftFillrightFill(int line, int *point1, int *point2, int yOffset, int leftFill, int rightFill) {
     int *p1;
-    int *p2;
     int yDir;
+    int *p2;
 
 	if ((point1[1]) <= (point2[1])) {
 		p1 = point1;
@@ -5315,47 +5502,47 @@ static int loadLinefromtooffsetleftFillrightFill(int line, int *point1, int *poi
 		p2 = point1;
 		yDir = -1;
 	}
-	objBuffer[line + 4] = (p1[0]);
-	objBuffer[line + 5] = ((p1[1]) - yOffset);
-	objBuffer[line + 6] = (workBuffer[113]);
-	objBuffer[line + 8] = leftFill;
-	objBuffer[line + 9] = rightFill;
-	objBuffer[line + 14] = (p2[0]);
-	objBuffer[line + 15] = ((p2[1]) - yOffset);
-	objBuffer[line + 11] = yDir;
+	objBuffer[line + GEXValue] = (p1[0]);
+	objBuffer[line + GEYValue] = ((p1[1]) - yOffset);
+	objBuffer[line + GEZValue] = (workBuffer[GWCurrentZ]);
+	objBuffer[line + GEFillIndexLeft] = leftFill;
+	objBuffer[line + GEFillIndexRight] = rightFill;
+	objBuffer[line + GLEndX] = (p2[0]);
+	objBuffer[line + GLEndY] = ((p2[1]) - yOffset);
+	objBuffer[line + GLYDirection] = yDir;
 }
 
 
 /*	Load a rectangular oval currently defined by point1/point2 */
 
 static int loadOvallineFillleftFillrightFill(int lineWidth, int lineFill, int leftFill, int rightFill) {
-    int w;
-    int h;
-    int i;
-    int nSegments;
     int cx;
+    int i;
     int cy;
+    int h;
+    int w;
+    int nSegments;
 
-	w = ((int) (((((int *) (workBuffer + 82)))[0]) - ((((int *) (workBuffer + 80)))[0])) >> 1);
-	h = ((int) (((((int *) (workBuffer + 82)))[1]) - ((((int *) (workBuffer + 80)))[1])) >> 1);
-	cx = ((int) (((((int *) (workBuffer + 82)))[0]) + ((((int *) (workBuffer + 80)))[0])) >> 1);
-	cy = ((int) (((((int *) (workBuffer + 82)))[1]) + ((((int *) (workBuffer + 80)))[1])) >> 1);
+	w = ((int) (((((int *) (workBuffer + GWPoint2)))[0]) - ((((int *) (workBuffer + GWPoint1)))[0])) >> 1);
+	h = ((int) (((((int *) (workBuffer + GWPoint2)))[1]) - ((((int *) (workBuffer + GWPoint1)))[1])) >> 1);
+	cx = ((int) (((((int *) (workBuffer + GWPoint2)))[0]) + ((((int *) (workBuffer + GWPoint1)))[0])) >> 1);
+	cy = ((int) (((((int *) (workBuffer + GWPoint2)))[1]) + ((((int *) (workBuffer + GWPoint1)))[1])) >> 1);
 	for (i = 0; i <= 15; i += 1) {
 		loadOvalSegmentwhcxcy(i, w, h, cx, cy);
 		/* begin transformPoints: */
 		if (3 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (3 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (3 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (3 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		nSegments = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), (lineWidth != 0) && (lineFill != 0));
+		nSegments = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), (lineWidth != 0) && (lineFill != 0));
 		if (engineStopped) {
 			return null;
 		}
@@ -5367,21 +5554,21 @@ static int loadOvallineFillleftFillrightFill(int lineWidth, int lineFill, int le
 }
 
 static int loadOvalSegmentwhcxcy(int seg, int w, int h, int cx, int cy) {
-    int x0;
     int x1;
-    int x2;
-    int y0;
     int y1;
+    int x2;
     int y2;
+    int x0;
+    int y0;
 
 	x0 = ((int) ((((circleCosTable())[(seg * 2) + 0]) * (((double) w ))) + cx) );
 	y0 = ((int) ((((circleSinTable())[(seg * 2) + 0]) * (((double) h ))) + cy) );
-	(((int *) (workBuffer + 80)))[0] = x0;
-	(((int *) (workBuffer + 80)))[1] = y0;
+	(((int *) (workBuffer + GWPoint1)))[0] = x0;
+	(((int *) (workBuffer + GWPoint1)))[1] = y0;
 	x2 = ((int) ((((circleCosTable())[(seg * 2) + 2]) * (((double) w ))) + cx) );
 	y2 = ((int) ((((circleSinTable())[(seg * 2) + 2]) * (((double) h ))) + cy) );
-	(((int *) (workBuffer + 84)))[0] = x2;
-	(((int *) (workBuffer + 84)))[1] = y2;
+	(((int *) (workBuffer + GWPoint3)))[0] = x2;
+	(((int *) (workBuffer + GWPoint3)))[1] = y2;
 	x1 = ((int) ((((circleCosTable())[(seg * 2) + 1]) * (((double) w ))) + cx) );
 
 	/* NOTE: The intermediate point is the point ON the curve
@@ -5390,8 +5577,8 @@ static int loadOvalSegmentwhcxcy(int seg, int w, int h, int cx, int cy) {
 	y1 = ((int) ((((circleSinTable())[(seg * 2) + 1]) * (((double) h ))) + cy) );
 	x1 = (x1 * 2) - (((int) (x0 + x2) >> 1));
 	y1 = (y1 * 2) - (((int) (y0 + y2) >> 1));
-	(((int *) (workBuffer + 82)))[0] = x1;
-	(((int *) (workBuffer + 82)))[1] = y1;
+	(((int *) (workBuffer + GWPoint2)))[0] = x1;
+	(((int *) (workBuffer + GWPoint2)))[1] = y1;
 }
 
 
@@ -5438,11 +5625,11 @@ static short loadPointShortAtfrom(int index, int shortArray) {
 }
 
 static int loadPolygonnPointsfilllineWidthlineFillpointsShort(int *points, int nPoints, int fillIndex, int lineWidth, int lineFill, int isShort) {
-    int x0;
     int x1;
     int i;
-    int y0;
     int y1;
+    int x0;
+    int y0;
 
 	if (isShort) {
 		x0 = (((short *) points))[0];
@@ -5459,24 +5646,24 @@ static int loadPolygonnPointsfilllineWidthlineFillpointsShort(int *points, int n
 			x1 = (((int *) points))[i * 2];
 			y1 = (((int *) points))[(i * 2) + 1];
 		}
-		(((int *) (workBuffer + 80)))[0] = x0;
-		(((int *) (workBuffer + 80)))[1] = y0;
-		(((int *) (workBuffer + 82)))[0] = x1;
-		(((int *) (workBuffer + 82)))[1] = y1;
+		(((int *) (workBuffer + GWPoint1)))[0] = x0;
+		(((int *) (workBuffer + GWPoint1)))[1] = y0;
+		(((int *) (workBuffer + GWPoint2)))[0] = x1;
+		(((int *) (workBuffer + GWPoint2)))[1] = y1;
 		/* begin transformPoints: */
 		if (2 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (2 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (2 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (2 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFill, fillIndex, 0);
+		loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFill, fillIndex, 0);
 		if (engineStopped) {
 			return null;
 		}
@@ -5489,10 +5676,10 @@ static int loadPolygonnPointsfilllineWidthlineFillpointsShort(int *points, int n
 /*	Load a rectangle currently defined by point1-point4 */
 
 static int loadRectanglelineFillleftFillrightFill(int lineWidth, int lineFill, int leftFill, int rightFill) {
-	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFill, leftFill, rightFill);
-	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), lineFill, leftFill, rightFill);
-	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 84)), ((int *) (workBuffer + 86)), lineFill, leftFill, rightFill);
-	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 86)), ((int *) (workBuffer + 80)), lineFill, leftFill, rightFill);
+	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFill, leftFill, rightFill);
+	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), lineFill, leftFill, rightFill);
+	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint3)), ((int *) (workBuffer + GWPoint4)), lineFill, leftFill, rightFill);
+	loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint4)), ((int *) (workBuffer + GWPoint1)), lineFill, leftFill, rightFill);
 }
 
 
@@ -5515,23 +5702,23 @@ static int loadRenderingState(void) {
 	if (!(quickLoadEngineFrom(engine))) {
 		return 0;
 	}
-	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(1, engine)))) {
+	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(BESpanIndex, engine)))) {
 		return 0;
 	}
-	if (!(loadBitBltFrom(interpreterProxy->fetchPointerofObject(2, engine)))) {
+	if (!(loadBitBltFrom(interpreterProxy->fetchPointerofObject(BEBitBltIndex, engine)))) {
 		return 0;
 	}
-	if (!(loadFormsFrom(interpreterProxy->fetchPointerofObject(3, engine)))) {
+	if (!(loadFormsFrom(interpreterProxy->fetchPointerofObject(BEFormsIndex, engine)))) {
 		return 0;
 	}
-	if ((interpreterProxy->slotSizeOf(edgeOop)) < 6) {
+	if ((interpreterProxy->slotSizeOf(edgeOop)) < ETBalloonEdgeDataSize) {
 		return 0;
 	}
-	if ((interpreterProxy->slotSizeOf(fillOop)) < 6) {
+	if ((interpreterProxy->slotSizeOf(fillOop)) < FTBalloonFillDataSize) {
 		return 0;
 	}
-	state = workBuffer[2];
-	if ((state == 2) || ((state == 4) || (state == 7))) {
+	state = workBuffer[GWState];
+	if ((state == GEStateWaitingForEdge) || ((state == GEStateWaitingForFill) || (state == GEStateWaitingChange))) {
 		return 0;
 	}
 	return 1;
@@ -5539,14 +5726,14 @@ static int loadRenderingState(void) {
 
 static int loadShapenSegmentsfilllineWidthlineFillpointsShort(int *points, int nSegments, int fillIndex, int lineWidth, int lineFill, int pointsShort) {
     int i;
+    int x1;
+    int y1;
+    int index;
+    int x2;
+    int y2;
     int x0;
     int segs;
-    int x1;
-    int x2;
-    int index;
     int y0;
-    int y1;
-    int y2;
 
 	for (i = 1; i <= nSegments; i += 1) {
 		/* begin loadCompressedSegment:from:short:leftFill:rightFill:lineWidth:lineColor: */
@@ -5573,46 +5760,46 @@ static int loadShapenSegmentsfilllineWidthlineFillpointsShort(int *points, int n
 			if ((x0 == x2) && (y0 == y2)) {
 				goto l1;
 			}
-			(((int *) (workBuffer + 80)))[0] = x0;
-			(((int *) (workBuffer + 80)))[1] = y0;
-			(((int *) (workBuffer + 82)))[0] = x2;
-			(((int *) (workBuffer + 82)))[1] = y2;
+			(((int *) (workBuffer + GWPoint1)))[0] = x0;
+			(((int *) (workBuffer + GWPoint1)))[1] = y0;
+			(((int *) (workBuffer + GWPoint2)))[0] = x2;
+			(((int *) (workBuffer + GWPoint2)))[1] = y2;
 			/* begin transformPoints: */
 			if (2 > 0) {
-				transformPoint(((int *) (workBuffer + 80)));
+				transformPoint(((int *) (workBuffer + GWPoint1)));
 			}
 			if (2 > 1) {
-				transformPoint(((int *) (workBuffer + 82)));
+				transformPoint(((int *) (workBuffer + GWPoint2)));
 			}
 			if (2 > 2) {
-				transformPoint(((int *) (workBuffer + 84)));
+				transformPoint(((int *) (workBuffer + GWPoint3)));
 			}
 			if (2 > 3) {
-				transformPoint(((int *) (workBuffer + 86)));
+				transformPoint(((int *) (workBuffer + GWPoint4)));
 			}
-			loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFill, fillIndex, 0);
+			loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFill, fillIndex, 0);
 			goto l1;
 		}
-		(((int *) (workBuffer + 80)))[0] = x0;
-		(((int *) (workBuffer + 80)))[1] = y0;
-		(((int *) (workBuffer + 82)))[0] = x1;
-		(((int *) (workBuffer + 82)))[1] = y1;
-		(((int *) (workBuffer + 84)))[0] = x2;
-		(((int *) (workBuffer + 84)))[1] = y2;
+		(((int *) (workBuffer + GWPoint1)))[0] = x0;
+		(((int *) (workBuffer + GWPoint1)))[1] = y0;
+		(((int *) (workBuffer + GWPoint2)))[0] = x1;
+		(((int *) (workBuffer + GWPoint2)))[1] = y1;
+		(((int *) (workBuffer + GWPoint3)))[0] = x2;
+		(((int *) (workBuffer + GWPoint3)))[1] = y2;
 		/* begin transformPoints: */
 		if (3 > 0) {
-			transformPoint(((int *) (workBuffer + 80)));
+			transformPoint(((int *) (workBuffer + GWPoint1)));
 		}
 		if (3 > 1) {
-			transformPoint(((int *) (workBuffer + 82)));
+			transformPoint(((int *) (workBuffer + GWPoint2)));
 		}
 		if (3 > 2) {
-			transformPoint(((int *) (workBuffer + 84)));
+			transformPoint(((int *) (workBuffer + GWPoint3)));
 		}
 		if (3 > 3) {
-			transformPoint(((int *) (workBuffer + 86)));
+			transformPoint(((int *) (workBuffer + GWPoint4)));
 		}
-		segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), (lineWidth != 0) && (lineFill != 0));
+		segs = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), (lineWidth != 0) && (lineFill != 0));
 		if (engineStopped) {
 			goto l1;
 		}
@@ -5639,7 +5826,7 @@ static int loadSpanBufferFrom(int spanOop) {
 	spanBuffer = interpreterProxy->firstIndexableField(spanOop);
 	/* begin spanSizePut: */
 	value = (interpreterProxy->slotSizeOf(spanOop)) - 1;
-	workBuffer[33] = value;
+	workBuffer[GWSpanSize] = value;
 	return 1;
 }
 
@@ -5671,9 +5858,9 @@ static int loadTransformFromintolength(int transformOop, float *destPtr, int n) 
 
 static int loadWideBezierlineFillleftFillrightFilln(int lineWidth, int lineFill, int leftFill, int rightFill, int nSegments) {
     int index;
-    int bezier;
     int wide;
     int offset;
+    int bezier;
     int bezier1;
     int bezier2;
 
@@ -5688,28 +5875,28 @@ static int loadWideBezierlineFillleftFillrightFilln(int lineWidth, int lineFill,
 	while (index > 0) {
 		if (wide) {
 			/* begin allocateWideBezier */
-			if (!(allocateObjEntry(28))) {
+			if (!(allocateObjEntry(GBWideSize))) {
 				bezier = 0;
 				goto l2;
 			}
 			bezier2 = objUsed;
-			objUsed = bezier2 + 28;
-			objBuffer[bezier2 + 0] = 7;
-			objBuffer[bezier2 + 2] = 0;
-			objBuffer[bezier2 + 1] = 28;
+			objUsed = bezier2 + GBWideSize;
+			objBuffer[bezier2 + GEObjectType] = GEPrimitiveWideBezier;
+			objBuffer[bezier2 + GEObjectIndex] = 0;
+			objBuffer[bezier2 + GEObjectLength] = GBWideSize;
 			bezier = bezier2;
 		l2:	/* end allocateWideBezier */;
 		} else {
 			/* begin allocateBezier */
-			if (!(allocateObjEntry(16))) {
+			if (!(allocateObjEntry(GBBaseSize))) {
 				bezier = 0;
 				goto l1;
 			}
 			bezier1 = objUsed;
-			objUsed = bezier1 + 16;
-			objBuffer[bezier1 + 0] = 6;
-			objBuffer[bezier1 + 2] = 0;
-			objBuffer[bezier1 + 1] = 16;
+			objUsed = bezier1 + GBBaseSize;
+			objBuffer[bezier1 + GEObjectType] = GEPrimitiveBezier;
+			objBuffer[bezier1 + GEObjectIndex] = 0;
+			objBuffer[bezier1 + GEObjectLength] = GBBaseSize;
 			bezier = bezier1;
 		l1:	/* end allocateBezier */;
 		}
@@ -5718,14 +5905,14 @@ static int loadWideBezierlineFillleftFillrightFilln(int lineWidth, int lineFill,
 		}
 		loadBeziersegmentleftFillrightFilloffset(bezier, index, leftFill, rightFill, offset);
 		if (wide) {
-			objBuffer[bezier + 16] = lineFill;
-			objBuffer[bezier + 17] = lineWidth;
-			objBuffer[bezier + 20] = lineWidth;
+			objBuffer[bezier + GBWideFill] = lineFill;
+			objBuffer[bezier + GBWideWidth] = lineWidth;
+			objBuffer[bezier + GBWideExtent] = lineWidth;
 		}
 		index -= 6;
 	}
 	/* begin wbStackClear */
-	workBuffer[10] = (workBuffer[1]);
+	workBuffer[GWBufferTop] = (workBuffer[GWSize]);
 }
 
 
@@ -5739,29 +5926,29 @@ static int loadWideLinefromtolineFillleftFillrightFill(int lineWidth, int *p1, i
 
 	if ((lineWidth == 0) || (lineFill == 0)) {
 		/* begin allocateLine */
-		if (!(allocateObjEntry(16))) {
+		if (!(allocateObjEntry(GLBaseSize))) {
 			line = 0;
 			goto l1;
 		}
 		line1 = objUsed;
-		objUsed = line1 + 16;
-		objBuffer[line1 + 0] = 4;
-		objBuffer[line1 + 2] = 0;
-		objBuffer[line1 + 1] = 16;
+		objUsed = line1 + GLBaseSize;
+		objBuffer[line1 + GEObjectType] = GEPrimitiveLine;
+		objBuffer[line1 + GEObjectIndex] = 0;
+		objBuffer[line1 + GEObjectLength] = GLBaseSize;
 		line = line1;
 	l1:	/* end allocateLine */;
 		offset = 0;
 	} else {
 		/* begin allocateWideLine */
-		if (!(allocateObjEntry(21))) {
+		if (!(allocateObjEntry(GLWideSize))) {
 			line = 0;
 			goto l2;
 		}
 		line2 = objUsed;
-		objUsed = line2 + 21;
-		objBuffer[line2 + 0] = 5;
-		objBuffer[line2 + 2] = 0;
-		objBuffer[line2 + 1] = 21;
+		objUsed = line2 + GLWideSize;
+		objBuffer[line2 + GEObjectType] = GEPrimitiveWideLine;
+		objBuffer[line2 + GEObjectIndex] = 0;
+		objBuffer[line2 + GEObjectLength] = GLWideSize;
 		line = line2;
 	l2:	/* end allocateWideLine */;
 		offset = ((int) lineWidth >> 1);
@@ -5770,10 +5957,10 @@ static int loadWideLinefromtolineFillleftFillrightFill(int lineWidth, int *p1, i
 		return 0;
 	}
 	loadLinefromtooffsetleftFillrightFill(line, p1, p2, offset, leftFill, rightFill);
-	if ((((objBuffer[line + 0]) & 65535) & 1) != 0) {
-		objBuffer[line + 16] = lineFill;
-		objBuffer[line + 17] = lineWidth;
-		objBuffer[line + 20] = lineWidth;
+	if ((((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0) {
+		objBuffer[line + GLWideFill] = lineFill;
+		objBuffer[line + GLWideWidth] = lineWidth;
+		objBuffer[line + GLWideExtent] = lineWidth;
 	}
 }
 
@@ -5781,8 +5968,8 @@ static int loadWideLinefromtolineFillleftFillrightFill(int lineWidth, int *p1, i
 /*	Load a float array transformation from the given oop */
 
 static int loadWordTransformFromintolength(int transformOop, float *destPtr, int n) {
-    float *srcPtr;
     int i;
+    float *srcPtr;
 
 	srcPtr = ((float *) (interpreterProxy->firstIndexableField(transformOop)));
 	for (i = 0; i <= (n - 1); i += 1) {
@@ -5800,44 +5987,44 @@ static int loadWorkBufferFrom(int wbOop) {
 	if (!(interpreterProxy->isWords(wbOop))) {
 		return 0;
 	}
-	if ((interpreterProxy->slotSizeOf(wbOop)) < 256) {
+	if ((interpreterProxy->slotSizeOf(wbOop)) < GWMinimalSize) {
 		return 0;
 	}
 	workBuffer = interpreterProxy->firstIndexableField(wbOop);
-	if (!((workBuffer[0]) == 1097753705)) {
+	if (!((workBuffer[GWMagicIndex]) == GWMagicNumber)) {
 		return 0;
 	}
-	if (!((workBuffer[1]) == (interpreterProxy->slotSizeOf(wbOop)))) {
+	if (!((workBuffer[GWSize]) == (interpreterProxy->slotSizeOf(wbOop)))) {
 		return 0;
 	}
-	if (!((workBuffer[8]) == 128)) {
+	if (!((workBuffer[GWObjStart]) == GWHeaderSize)) {
 		return 0;
 	}
-	objBuffer = workBuffer + (workBuffer[8]);
-	getBuffer = objBuffer + (workBuffer[9]);
+	objBuffer = workBuffer + (workBuffer[GWObjStart]);
+	getBuffer = objBuffer + (workBuffer[GWObjUsed]);
 
 	/* Make sure we don't exceed the work buffer */
 
-	aetBuffer = getBuffer + (workBuffer[12]);
-	if ((((128 + (workBuffer[9])) + (workBuffer[12])) + (workBuffer[14])) > (workBuffer[1])) {
+	aetBuffer = getBuffer + (workBuffer[GWGETUsed]);
+	if ((((GWHeaderSize + (workBuffer[GWObjUsed])) + (workBuffer[GWGETUsed])) + (workBuffer[GWAETUsed])) > (workBuffer[GWSize])) {
 		return 0;
 	}
 	return 1;
 }
 
 static int magicNumberGet(void) {
-	return workBuffer[0];
+	return workBuffer[GWMagicIndex];
 }
 
 static int magicNumberPut(int value) {
-	return workBuffer[0] = value;
+	return workBuffer[GWMagicIndex] = value;
 }
 
 static int makeRectFromPoints(void) {
-	(((int *) (workBuffer + 82)))[0] = ((((int *) (workBuffer + 84)))[0]);
-	(((int *) (workBuffer + 82)))[1] = ((((int *) (workBuffer + 80)))[1]);
-	(((int *) (workBuffer + 86)))[0] = ((((int *) (workBuffer + 80)))[0]);
-	(((int *) (workBuffer + 86)))[1] = ((((int *) (workBuffer + 84)))[1]);
+	(((int *) (workBuffer + GWPoint2)))[0] = ((((int *) (workBuffer + GWPoint3)))[0]);
+	(((int *) (workBuffer + GWPoint2)))[1] = ((((int *) (workBuffer + GWPoint1)))[1]);
+	(((int *) (workBuffer + GWPoint4)))[0] = ((((int *) (workBuffer + GWPoint1)))[0]);
+	(((int *) (workBuffer + GWPoint4)))[1] = ((((int *) (workBuffer + GWPoint3)))[1]);
 }
 
 static int makeUnsignedFrom(int someIntegerValue) {
@@ -5863,7 +6050,7 @@ static int moveAETEntryFromedgex(int index, int edge, int xValue) {
     int newIndex;
 
 	newIndex = index;
-	while ((newIndex > 0) && ((objBuffer[(aetBuffer[newIndex - 1]) + 4]) > xValue)) {
+	while ((newIndex > 0) && ((objBuffer[(aetBuffer[newIndex - 1]) + GEXValue]) > xValue)) {
 		aetBuffer[newIndex] = (aetBuffer[newIndex - 1]);
 		newIndex -= 1;
 	}
@@ -5878,9 +6065,9 @@ static int msg(char *s) {
 /*	Check if we have n slots available */
 
 static int needAvailableSpace(int nSlots) {
-	if (((((128 + objUsed) + (workBuffer[12])) + (workBuffer[14])) + nSlots) > (workBuffer[10])) {
+	if (((((GWHeaderSize + objUsed) + (workBuffer[GWGETUsed])) + (workBuffer[GWAETUsed])) + nSlots) > (workBuffer[GWBufferTop])) {
 		/* begin stopBecauseOf: */
-		workBuffer[64] = 1;
+		workBuffer[GWStopReason] = GErrorNoMoreSpace;
 		engineStopped = 1;
 		return 0;
 	}
@@ -5888,15 +6075,15 @@ static int needAvailableSpace(int nSlots) {
 }
 
 static int needsFlush(void) {
-	return (workBuffer[63]) != 0;
+	return (workBuffer[GWNeedsFlush]) != 0;
 }
 
 static int needsFlushGet(void) {
-	return workBuffer[63];
+	return workBuffer[GWNeedsFlush];
 }
 
 static int needsFlushPut(int value) {
-	return workBuffer[63] = value;
+	return workBuffer[GWNeedsFlush] = value;
 }
 
 static int objat(int object, int index) {
@@ -5908,47 +6095,47 @@ static int objatput(int object, int index, int value) {
 }
 
 static int objStartGet(void) {
-	return workBuffer[8];
+	return workBuffer[GWObjStart];
 }
 
 static int objStartPut(int value) {
-	return workBuffer[8] = value;
+	return workBuffer[GWObjStart] = value;
 }
 
 static int objUsedGet(void) {
-	return workBuffer[9];
+	return workBuffer[GWObjUsed];
 }
 
 static int objUsedPut(int value) {
-	return workBuffer[9] = value;
+	return workBuffer[GWObjUsed] = value;
 }
 
 static int objectHeaderOf(int obj) {
-	return objBuffer[obj + 0];
+	return objBuffer[obj + GEObjectType];
 }
 
 static int objectIndexOf(int obj) {
-	return objBuffer[obj + 2];
+	return objBuffer[obj + GEObjectIndex];
 }
 
 static int objectIndexOfput(int obj, int value) {
-	return objBuffer[obj + 2] = value;
+	return objBuffer[obj + GEObjectIndex] = value;
 }
 
 static int objectLengthOf(int obj) {
-	return objBuffer[obj + 1];
+	return objBuffer[obj + GEObjectLength];
 }
 
 static int objectLengthOfput(int obj, int value) {
-	return objBuffer[obj + 1] = value;
+	return objBuffer[obj + GEObjectLength] = value;
 }
 
 static int objectTypeOf(int obj) {
-	return (objBuffer[obj + 0]) & 65535;
+	return (objBuffer[obj + GEObjectType]) & GEPrimitiveTypeMask;
 }
 
 static int objectTypeOfput(int obj, int value) {
-	return objBuffer[obj + 0] = value;
+	return objBuffer[obj + GEObjectType] = value;
 }
 
 
@@ -5960,19 +6147,19 @@ static int offsetFromWidth(int lineWidth) {
 }
 
 static int * point1Get(void) {
-	return ((int *) (workBuffer + 80));
+	return ((int *) (workBuffer + GWPoint1));
 }
 
 static int * point2Get(void) {
-	return ((int *) (workBuffer + 82));
+	return ((int *) (workBuffer + GWPoint2));
 }
 
 static int * point3Get(void) {
-	return ((int *) (workBuffer + 84));
+	return ((int *) (workBuffer + GWPoint3));
 }
 
 static int * point4Get(void) {
-	return ((int *) (workBuffer + 86));
+	return ((int *) (workBuffer + GWPoint4));
 }
 
 
@@ -5981,11 +6168,11 @@ static int * point4Get(void) {
 /*	Note: In the future we may check the time needed for this scan line and interrupt processing to give the Smalltalk code a chance to run at a certain time. */
 
 static int postDisplayAction(void) {
-	if (((workBuffer[11]) >= (workBuffer[12])) && ((workBuffer[14]) == 0)) {
-		workBuffer[2] = 8;
+	if (((workBuffer[GWGETStart]) >= (workBuffer[GWGETUsed])) && ((workBuffer[GWAETUsed]) == 0)) {
+		workBuffer[GWState] = GEStateCompleted;
 	}
-	if ((workBuffer[88]) >= (workBuffer[39])) {
-		workBuffer[2] = 8;
+	if ((workBuffer[GWCurrentY]) >= (workBuffer[GWFillMaxY])) {
+		workBuffer[GWState] = GEStateCompleted;
 	}
 }
 
@@ -6000,17 +6187,17 @@ EXPORT(int) primitiveAbortProcessing(void) {
 	if (!(quickLoadEngineFrom(engine))) {
 		return interpreterProxy->primitiveFail();
 	}
-	workBuffer[2] = 8;
+	workBuffer[GWState] = GEStateCompleted;
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 }
 
 
 /*	Note: No need to load either bitBlt or spanBuffer */
 
 EXPORT(int) primitiveAddActiveEdgeEntry(void) {
-    int edge;
     int edgeOop;
+    int edge;
     int value;
 
 	if (doProfileStats) {
@@ -6024,7 +6211,7 @@ EXPORT(int) primitiveAddActiveEdgeEntry(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 2))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateWaitingForEdge))) {
 		return interpreterProxy->primitiveFail();
 	}
 	edge = loadEdgeStateFrom(edgeOop);
@@ -6034,31 +6221,31 @@ EXPORT(int) primitiveAddActiveEdgeEntry(void) {
 	if (!(needAvailableSpace(1))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if ((objBuffer[edge + 7]) > 0) {
+	if ((objBuffer[edge + GENumLines]) > 0) {
 		insertEdgeIntoAET(edge);
 	}
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
-	workBuffer[2] = 1;
+	workBuffer[GWState] = GEStateAddingFromGET;
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(1);
 	if (doProfileStats) {
-		workBuffer[97] = ((workBuffer[97]) + 1);
+		workBuffer[GWCountAddAETEntry] = ((workBuffer[GWCountAddAETEntry]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[96] = ((workBuffer[96]) + value);
+		workBuffer[GWTimeAddAETEntry] = ((workBuffer[GWTimeAddAETEntry]) + value);
 	}
 }
 
 EXPORT(int) primitiveAddBezier(void) {
-    int endOop;
-    int leftFill;
+    int rightFill;
     int viaOop;
     int startOop;
-    int rightFill;
+    int leftFill;
     int nSegments;
+    int endOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 5)) {
 		return interpreterProxy->primitiveFail();
@@ -6071,7 +6258,7 @@ EXPORT(int) primitiveAddBezier(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((isFillOkay(leftFill)) && (isFillOkay(rightFill)))) {
@@ -6080,30 +6267,30 @@ EXPORT(int) primitiveAddBezier(void) {
 	if ((leftFill == rightFill) && 0) {
 		return interpreterProxy->pop(6);
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), startOop);
-	loadPointfrom(((int *) (workBuffer + 82)), viaOop);
-	loadPointfrom(((int *) (workBuffer + 84)), endOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), startOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint2)), viaOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint3)), endOop);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
 	/* begin transformPoints: */
 	if (3 > 0) {
-		transformPoint(((int *) (workBuffer + 80)));
+		transformPoint(((int *) (workBuffer + GWPoint1)));
 	}
 	if (3 > 1) {
-		transformPoint(((int *) (workBuffer + 82)));
+		transformPoint(((int *) (workBuffer + GWPoint2)));
 	}
 	if (3 > 2) {
-		transformPoint(((int *) (workBuffer + 84)));
+		transformPoint(((int *) (workBuffer + GWPoint3)));
 	}
 	if (3 > 3) {
-		transformPoint(((int *) (workBuffer + 86)));
+		transformPoint(((int *) (workBuffer + GWPoint4)));
 	}
-	nSegments = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), 0);
+	nSegments = loadAndSubdivideBezierFromviatoisWide(((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), 0);
 	/* begin needAvailableSpace: */
-	if (((((128 + objUsed) + (workBuffer[12])) + (workBuffer[14])) + (nSegments * 16)) > (workBuffer[10])) {
+	if (((((GWHeaderSize + objUsed) + (workBuffer[GWGETUsed])) + (workBuffer[GWAETUsed])) + (nSegments * GBBaseSize)) > (workBuffer[GWBufferTop])) {
 		/* begin stopBecauseOf: */
-		workBuffer[64] = 1;
+		workBuffer[GWStopReason] = GErrorNoMoreSpace;
 		engineStopped = 1;
 		goto l1;
 	}
@@ -6117,25 +6304,25 @@ l1:	/* end needAvailableSpace: */;
 	}
 	if (engineStopped) {
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(5);
 	}
 }
 
 EXPORT(int) primitiveAddBezierShape(void) {
-    int points;
-    int length;
     int lineWidth;
+    int length;
+    int points;
+    int segSize;
     int lineFill;
     int isArray;
-    int fillIndex;
-    int segSize;
     int nSegments;
+    int fillIndex;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 5)) {
 		return interpreterProxy->primitiveFail();
@@ -6148,7 +6335,7 @@ EXPORT(int) primitiveAddBezierShape(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	length = interpreterProxy->slotSizeOf(points);
@@ -6161,7 +6348,7 @@ EXPORT(int) primitiveAddBezierShape(void) {
 			return interpreterProxy->primitiveFail();
 		}
 	} else {
-		if (!((interpreterProxy->fetchClassOf(points)) == (interpreterProxy->classArray()))) {
+		if (!(interpreterProxy->isArray(points))) {
 			return interpreterProxy->primitiveFail();
 		}
 		if (!(length == (nSegments * 3))) {
@@ -6170,9 +6357,9 @@ EXPORT(int) primitiveAddBezierShape(void) {
 		isArray = 1;
 	}
 	if ((lineWidth == 0) || (lineFill == 0)) {
-		segSize = 16;
+		segSize = GLBaseSize;
 	} else {
-		segSize = 21;
+		segSize = GLWideSize;
 	}
 	if (!(needAvailableSpace(segSize * nSegments))) {
 		return interpreterProxy->primitiveFail();
@@ -6203,22 +6390,22 @@ EXPORT(int) primitiveAddBezierShape(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
-		workBuffer[63] = 1;
+		workBuffer[GWNeedsFlush] = 1;
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(5);
 	}
 }
 
 EXPORT(int) primitiveAddBitmapFill(void) {
+    int cmOop;
+    int dirOop;
+    int originOop;
     int tileFlag;
     int formOop;
+    int fill;
     int xIndex;
     int nrmOop;
-    int fill;
-    int cmOop;
-    int originOop;
-    int dirOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 7)) {
 		return interpreterProxy->primitiveFail();
@@ -6241,36 +6428,36 @@ EXPORT(int) primitiveAddBitmapFill(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(7), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(7), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), originOop);
-	loadPointfrom(((int *) (workBuffer + 82)), dirOop);
-	loadPointfrom(((int *) (workBuffer + 84)), nrmOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), originOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint2)), dirOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint3)), nrmOop);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
-	fill = loadBitmapFillcolormaptilefromalongnormalxIndex(formOop, cmOop, tileFlag, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), xIndex - 1);
+	fill = loadBitmapFillcolormaptilefromalongnormalxIndex(formOop, cmOop, tileFlag, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), xIndex - 1);
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(8);
 		interpreterProxy->push(interpreterProxy->positive32BitIntegerFor(fill));
 	}
 }
 
 EXPORT(int) primitiveAddCompressedShape(void) {
-    int lineWidths;
     int leftFills;
-    int points;
-    int lineFills;
     int fillIndexList;
-    int pointsShort;
+    int lineWidths;
+    int points;
     int rightFills;
     int nSegments;
+    int pointsShort;
+    int lineFills;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 7)) {
 		return interpreterProxy->primitiveFail();
@@ -6285,13 +6472,13 @@ EXPORT(int) primitiveAddCompressedShape(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(7), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(7), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(checkCompressedShapesegmentsleftFillsrightFillslineWidthslineFillsfillIndexList(points, nSegments, leftFills, rightFills, lineWidths, lineFills, fillIndexList))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(needAvailableSpace((((16 < 16) ? 16 : 16)) * nSegments))) {
+	if (!(needAvailableSpace((((GBBaseSize < GLBaseSize) ? GLBaseSize : GBBaseSize)) * nSegments))) {
 		return interpreterProxy->primitiveFail();
 	}
 
@@ -6303,20 +6490,20 @@ EXPORT(int) primitiveAddCompressedShape(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
-		workBuffer[63] = 1;
+		workBuffer[GWNeedsFlush] = 1;
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(7);
 	}
 }
 
 EXPORT(int) primitiveAddGradientFill(void) {
+    int dirOop;
+    int originOop;
     int rampOop;
-    int nrmOop;
     int fill;
     int isRadial;
-    int originOop;
-    int dirOop;
+    int nrmOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 5)) {
 		return interpreterProxy->primitiveFail();
@@ -6329,32 +6516,32 @@ EXPORT(int) primitiveAddGradientFill(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), originOop);
-	loadPointfrom(((int *) (workBuffer + 82)), dirOop);
-	loadPointfrom(((int *) (workBuffer + 84)), nrmOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), originOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint2)), dirOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint3)), nrmOop);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
-	fill = loadGradientFillfromalongnormalisRadial(rampOop, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), isRadial);
+	fill = loadGradientFillfromalongnormalisRadial(rampOop, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), isRadial);
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(6);
 		interpreterProxy->push(interpreterProxy->positive32BitIntegerFor(fill));
 	}
 }
 
 EXPORT(int) primitiveAddLine(void) {
-    int endOop;
-    int leftFill;
-    int startOop;
     int rightFill;
+    int startOop;
+    int leftFill;
+    int endOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 4)) {
 		return interpreterProxy->primitiveFail();
@@ -6366,52 +6553,52 @@ EXPORT(int) primitiveAddLine(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(4), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(4), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((isFillOkay(leftFill)) && (isFillOkay(rightFill)))) {
 		return interpreterProxy->primitiveFail();
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), startOop);
-	loadPointfrom(((int *) (workBuffer + 82)), endOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), startOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint2)), endOop);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
 	/* begin transformPoints: */
 	if (2 > 0) {
-		transformPoint(((int *) (workBuffer + 80)));
+		transformPoint(((int *) (workBuffer + GWPoint1)));
 	}
 	if (2 > 1) {
-		transformPoint(((int *) (workBuffer + 82)));
+		transformPoint(((int *) (workBuffer + GWPoint2)));
 	}
 	if (2 > 2) {
-		transformPoint(((int *) (workBuffer + 84)));
+		transformPoint(((int *) (workBuffer + GWPoint3)));
 	}
 	if (2 > 3) {
-		transformPoint(((int *) (workBuffer + 86)));
+		transformPoint(((int *) (workBuffer + GWPoint4)));
 	}
 	leftFill = transformColor(leftFill);
 	rightFill = transformColor(rightFill);
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
-	loadWideLinefromtolineFillleftFillrightFill(0, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), 0, leftFill, rightFill);
+	loadWideLinefromtolineFillleftFillrightFill(0, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), 0, leftFill, rightFill);
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(4);
 	}
 }
 
 EXPORT(int) primitiveAddOval(void) {
-    int endOop;
-    int borderWidth;
-    int borderIndex;
     int startOop;
+    int borderIndex;
+    int borderWidth;
     int fillIndex;
+    int endOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 5)) {
 		return interpreterProxy->primitiveFail();
@@ -6424,7 +6611,7 @@ EXPORT(int) primitiveAddOval(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((isFillOkay(borderIndex)) && (isFillOkay(fillIndex)))) {
@@ -6438,7 +6625,7 @@ EXPORT(int) primitiveAddOval(void) {
 	if ((fillIndex == 0) && ((borderIndex == 0) || (borderWidth <= 0))) {
 		return interpreterProxy->pop(5);
 	}
-	if (!(needAvailableSpace(16 * 16))) {
+	if (!(needAvailableSpace(16 * GBBaseSize))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if ((borderWidth > 0) && (borderIndex != 0)) {
@@ -6446,39 +6633,39 @@ EXPORT(int) primitiveAddOval(void) {
 	} else {
 		borderWidth = 0;
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), startOop);
-	loadPointfrom(((int *) (workBuffer + 82)), endOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), startOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint2)), endOop);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
 	loadOvallineFillleftFillrightFill(borderWidth, borderIndex, 0, fillIndex);
 	if (engineStopped) {
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
-		workBuffer[63] = 1;
+		workBuffer[GWNeedsFlush] = 1;
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(5);
 	}
 }
 
 EXPORT(int) primitiveAddPolygon(void) {
-    int points;
-    int length;
     int lineWidth;
+    int length;
+    int points;
+    int segSize;
     int lineFill;
+    int isArray;
     int nPoints;
     int fillIndex;
-    int isArray;
-    int segSize;
-    int x0;
     int x1;
     int i;
-    int y0;
     int y1;
+    int x0;
+    int y0;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 5)) {
 		return interpreterProxy->primitiveFail();
@@ -6491,7 +6678,7 @@ EXPORT(int) primitiveAddPolygon(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	length = interpreterProxy->slotSizeOf(points);
@@ -6504,7 +6691,7 @@ EXPORT(int) primitiveAddPolygon(void) {
 			return interpreterProxy->primitiveFail();
 		}
 	} else {
-		if (!((interpreterProxy->fetchClassOf(points)) == (interpreterProxy->classArray()))) {
+		if (!(interpreterProxy->isArray(points))) {
 			return interpreterProxy->primitiveFail();
 		}
 		if (!(length == nPoints)) {
@@ -6513,9 +6700,9 @@ EXPORT(int) primitiveAddPolygon(void) {
 		isArray = 1;
 	}
 	if ((lineWidth == 0) || (lineFill == 0)) {
-		segSize = 16;
+		segSize = GLBaseSize;
 	} else {
-		segSize = 21;
+		segSize = GLWideSize;
 	}
 	if (!(needAvailableSpace(segSize * nPoints))) {
 		return interpreterProxy->primitiveFail();
@@ -6536,37 +6723,37 @@ EXPORT(int) primitiveAddPolygon(void) {
 	}
 	if (isArray) {
 		/* begin loadArrayPolygon:nPoints:fill:lineWidth:lineFill: */
-		loadPointfrom(((int *) (workBuffer + 80)), interpreterProxy->fetchPointerofObject(0, points));
+		loadPointfrom(((int *) (workBuffer + GWPoint1)), interpreterProxy->fetchPointerofObject(0, points));
 		if (interpreterProxy->failed()) {
 			goto l1;
 		}
-		x0 = (((int *) (workBuffer + 80)))[0];
-		y0 = (((int *) (workBuffer + 80)))[1];
+		x0 = (((int *) (workBuffer + GWPoint1)))[0];
+		y0 = (((int *) (workBuffer + GWPoint1)))[1];
 		for (i = 1; i <= (nPoints - 1); i += 1) {
-			loadPointfrom(((int *) (workBuffer + 80)), interpreterProxy->fetchPointerofObject(i, points));
+			loadPointfrom(((int *) (workBuffer + GWPoint1)), interpreterProxy->fetchPointerofObject(i, points));
 			if (interpreterProxy->failed()) {
 				goto l1;
 			}
-			x1 = (((int *) (workBuffer + 80)))[0];
-			y1 = (((int *) (workBuffer + 80)))[1];
-			(((int *) (workBuffer + 80)))[0] = x0;
-			(((int *) (workBuffer + 80)))[1] = y0;
-			(((int *) (workBuffer + 82)))[0] = x1;
-			(((int *) (workBuffer + 82)))[1] = y1;
+			x1 = (((int *) (workBuffer + GWPoint1)))[0];
+			y1 = (((int *) (workBuffer + GWPoint1)))[1];
+			(((int *) (workBuffer + GWPoint1)))[0] = x0;
+			(((int *) (workBuffer + GWPoint1)))[1] = y0;
+			(((int *) (workBuffer + GWPoint2)))[0] = x1;
+			(((int *) (workBuffer + GWPoint2)))[1] = y1;
 			/* begin transformPoints: */
 			if (2 > 0) {
-				transformPoint(((int *) (workBuffer + 80)));
+				transformPoint(((int *) (workBuffer + GWPoint1)));
 			}
 			if (2 > 1) {
-				transformPoint(((int *) (workBuffer + 82)));
+				transformPoint(((int *) (workBuffer + GWPoint2)));
 			}
 			if (2 > 2) {
-				transformPoint(((int *) (workBuffer + 84)));
+				transformPoint(((int *) (workBuffer + GWPoint3)));
 			}
 			if (2 > 3) {
-				transformPoint(((int *) (workBuffer + 86)));
+				transformPoint(((int *) (workBuffer + GWPoint4)));
 			}
-			loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), lineFill, fillIndex, 0);
+			loadWideLinefromtolineFillleftFillrightFill(lineWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), lineFill, fillIndex, 0);
 			if (engineStopped) {
 				goto l1;
 			}
@@ -6581,19 +6768,19 @@ EXPORT(int) primitiveAddPolygon(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
-		workBuffer[63] = 1;
+		workBuffer[GWNeedsFlush] = 1;
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(5);
 	}
 }
 
 EXPORT(int) primitiveAddRect(void) {
-    int endOop;
-    int borderWidth;
-    int borderIndex;
     int startOop;
+    int borderIndex;
+    int borderWidth;
     int fillIndex;
+    int endOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 5)) {
 		return interpreterProxy->primitiveFail();
@@ -6606,7 +6793,7 @@ EXPORT(int) primitiveAddRect(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), 0))) {
+	if (!(quickLoadEngineFromrequiredState(interpreterProxy->stackObjectValue(5), GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((isFillOkay(borderIndex)) && (isFillOkay(fillIndex)))) {
@@ -6620,7 +6807,7 @@ EXPORT(int) primitiveAddRect(void) {
 	if ((fillIndex == 0) && ((borderIndex == 0) || (borderWidth == 0))) {
 		return interpreterProxy->pop(5);
 	}
-	if (!(needAvailableSpace(4 * 16))) {
+	if (!(needAvailableSpace(4 * GLBaseSize))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if ((borderWidth > 0) && (borderIndex != 0)) {
@@ -6628,37 +6815,37 @@ EXPORT(int) primitiveAddRect(void) {
 	} else {
 		borderWidth = 0;
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), startOop);
-	loadPointfrom(((int *) (workBuffer + 84)), endOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), startOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint3)), endOop);
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	(((int *) (workBuffer + 82)))[0] = ((((int *) (workBuffer + 84)))[0]);
-	(((int *) (workBuffer + 82)))[1] = ((((int *) (workBuffer + 80)))[1]);
-	(((int *) (workBuffer + 86)))[0] = ((((int *) (workBuffer + 80)))[0]);
-	(((int *) (workBuffer + 86)))[1] = ((((int *) (workBuffer + 84)))[1]);
+	(((int *) (workBuffer + GWPoint2)))[0] = ((((int *) (workBuffer + GWPoint3)))[0]);
+	(((int *) (workBuffer + GWPoint2)))[1] = ((((int *) (workBuffer + GWPoint1)))[1]);
+	(((int *) (workBuffer + GWPoint4)))[0] = ((((int *) (workBuffer + GWPoint1)))[0]);
+	(((int *) (workBuffer + GWPoint4)))[1] = ((((int *) (workBuffer + GWPoint3)))[1]);
 	/* begin transformPoints: */
 	if (4 > 0) {
-		transformPoint(((int *) (workBuffer + 80)));
+		transformPoint(((int *) (workBuffer + GWPoint1)));
 	}
 	if (4 > 1) {
-		transformPoint(((int *) (workBuffer + 82)));
+		transformPoint(((int *) (workBuffer + GWPoint2)));
 	}
 	if (4 > 2) {
-		transformPoint(((int *) (workBuffer + 84)));
+		transformPoint(((int *) (workBuffer + GWPoint3)));
 	}
 	if (4 > 3) {
-		transformPoint(((int *) (workBuffer + 86)));
+		transformPoint(((int *) (workBuffer + GWPoint4)));
 	}
 	/* begin loadRectangle:lineFill:leftFill:rightFill: */
-	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + 80)), ((int *) (workBuffer + 82)), borderIndex, 0, fillIndex);
-	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + 82)), ((int *) (workBuffer + 84)), borderIndex, 0, fillIndex);
-	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + 84)), ((int *) (workBuffer + 86)), borderIndex, 0, fillIndex);
-	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + 86)), ((int *) (workBuffer + 80)), borderIndex, 0, fillIndex);
+	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + GWPoint1)), ((int *) (workBuffer + GWPoint2)), borderIndex, 0, fillIndex);
+	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + GWPoint2)), ((int *) (workBuffer + GWPoint3)), borderIndex, 0, fillIndex);
+	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + GWPoint3)), ((int *) (workBuffer + GWPoint4)), borderIndex, 0, fillIndex);
+	loadWideLinefromtolineFillleftFillrightFill(borderWidth, ((int *) (workBuffer + GWPoint4)), ((int *) (workBuffer + GWPoint1)), borderIndex, 0, fillIndex);
 	if (!(interpreterProxy->failed())) {
-		workBuffer[63] = 1;
+		workBuffer[GWNeedsFlush] = 1;
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(5);
 	}
 }
@@ -6667,8 +6854,8 @@ EXPORT(int) primitiveAddRect(void) {
 /*	Note: No need to load either bitBlt or spanBuffer */
 
 EXPORT(int) primitiveChangedActiveEdgeEntry(void) {
-    int edge;
     int edgeOop;
+    int edge;
     int value;
 
 	if (doProfileStats) {
@@ -6682,38 +6869,38 @@ EXPORT(int) primitiveChangedActiveEdgeEntry(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 7))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateWaitingChange))) {
 		return interpreterProxy->primitiveFail();
 	}
 	edge = loadEdgeStateFrom(edgeOop);
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if ((objBuffer[edge + 7]) == 0) {
+	if ((objBuffer[edge + GENumLines]) == 0) {
 		removeFirstAETEntry();
 	} else {
 		resortFirstAETEntry();
-		workBuffer[13] = ((workBuffer[13]) + 1);
+		workBuffer[GWAETStart] = ((workBuffer[GWAETStart]) + 1);
 	}
-	workBuffer[2] = 6;
+	workBuffer[GWState] = GEStateUpdateEdges;
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(1);
 	if (doProfileStats) {
-		workBuffer[107] = ((workBuffer[107]) + 1);
+		workBuffer[GWCountChangeAETEntry] = ((workBuffer[GWCountChangeAETEntry]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[106] = ((workBuffer[106]) + value);
+		workBuffer[GWTimeChangeAETEntry] = ((workBuffer[GWTimeChangeAETEntry]) + value);
 	}
 }
 
 EXPORT(int) primitiveCopyBuffer(void) {
-    int diff;
     int buf1;
-    int buf2;
-    int * src;
     int * dst;
     int i;
+    int buf2;
+    int * src;
+    int diff;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 2)) {
 		return interpreterProxy->primitiveFail();
@@ -6735,14 +6922,14 @@ EXPORT(int) primitiveCopyBuffer(void) {
 	}
 	src = workBuffer;
 	dst = interpreterProxy->firstIndexableField(buf2);
-	for (i = 0; i <= ((workBuffer[10]) - 1); i += 1) {
+	for (i = 0; i <= ((workBuffer[GWBufferTop]) - 1); i += 1) {
 		dst[i] = (src[i]);
 	}
-	dst[10] = ((workBuffer[10]) + diff);
-	dst[1] = ((workBuffer[1]) + diff);
-	src += workBuffer[10];
-	dst = (dst + (workBuffer[10])) + diff;
-	for (i = 0; i <= (((workBuffer[1]) - (workBuffer[10])) - 1); i += 1) {
+	dst[GWBufferTop] = ((workBuffer[GWBufferTop]) + diff);
+	dst[GWSize] = ((workBuffer[GWSize]) + diff);
+	src += workBuffer[GWBufferTop];
+	dst = (dst + (workBuffer[GWBufferTop])) + diff;
+	for (i = 0; i <= (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 1); i += 1) {
 		dst[i] = (src[i]);
 	}
 	if (!(loadWorkBufferFrom(buf2))) {
@@ -6767,31 +6954,31 @@ EXPORT(int) primitiveDisplaySpanBuffer(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 5))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateBlitBuffer))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(1, engine)))) {
+	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(BESpanIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(loadBitBltFrom(interpreterProxy->fetchPointerofObject(2, engine)))) {
+	if (!(loadBitBltFrom(interpreterProxy->fetchPointerofObject(BEBitBltIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (((workBuffer[88]) & (workBuffer[52])) == (workBuffer[52])) {
-		displaySpanBufferAt(workBuffer[88]);
+	if (((workBuffer[GWCurrentY]) & (workBuffer[GWAAScanMask])) == (workBuffer[GWAAScanMask])) {
+		displaySpanBufferAt(workBuffer[GWCurrentY]);
 		postDisplayAction();
 	}
-	if (!((workBuffer[2]) == 8)) {
-		workBuffer[13] = 0;
-		workBuffer[88] = ((workBuffer[88]) + 1);
-		workBuffer[2] = 6;
+	if (!((workBuffer[GWState]) == GEStateCompleted)) {
+		workBuffer[GWAETStart] = 0;
+		workBuffer[GWCurrentY] = ((workBuffer[GWCurrentY]) + 1);
+		workBuffer[GWState] = GEStateUpdateEdges;
 	}
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	if (doProfileStats) {
-		workBuffer[103] = ((workBuffer[103]) + 1);
+		workBuffer[GWCountDisplaySpan] = ((workBuffer[GWCountDisplaySpan]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[102] = ((workBuffer[102]) + value);
+		workBuffer[GWTimeDisplaySpan] = ((workBuffer[GWTimeDisplaySpan]) + value);
 	}
 }
 
@@ -6799,8 +6986,8 @@ EXPORT(int) primitiveDisplaySpanBuffer(void) {
 /*	Turn on/off profiling. Return the old value of the flag. */
 
 EXPORT(int) primitiveDoProfileStats(void) {
-    int oldValue;
     int newValue;
+    int oldValue;
 
 	oldValue = doProfileStats;
 	newValue = interpreterProxy->stackObjectValue(0);
@@ -6829,16 +7016,16 @@ EXPORT(int) primitiveFinishedProcessing(void) {
 	if (!(quickLoadEngineFrom(engine))) {
 		return interpreterProxy->primitiveFail();
 	}
-	finished = (workBuffer[2]) == 8;
+	finished = (workBuffer[GWState]) == GEStateCompleted;
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(1);
 	interpreterProxy->pushBool(finished);
 	if (doProfileStats) {
-		workBuffer[93] = ((workBuffer[93]) + 1);
+		workBuffer[GWCountFinishTest] = ((workBuffer[GWCountFinishTest]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[92] = ((workBuffer[92]) + value);
+		workBuffer[GWTimeFinishTest] = ((workBuffer[GWTimeFinishTest]) + value);
 	}
 }
 
@@ -6854,12 +7041,12 @@ EXPORT(int) primitiveGetAALevel(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(1);
-	interpreterProxy->pushInteger(workBuffer[48]);
+	interpreterProxy->pushInteger(workBuffer[GWAALevel]);
 }
 
 EXPORT(int) primitiveGetBezierStats(void) {
-    int *stats;
     int statOop;
+    int *stats;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 1)) {
 		return interpreterProxy->primitiveFail();
@@ -6879,16 +7066,16 @@ EXPORT(int) primitiveGetBezierStats(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	stats = interpreterProxy->firstIndexableField(statOop);
-	stats[0] = ((stats[0]) + (workBuffer[108]));
-	stats[1] = ((stats[1]) + (workBuffer[109]));
-	stats[2] = ((stats[2]) + (workBuffer[110]));
-	stats[3] = ((stats[3]) + (workBuffer[111]));
+	stats[0] = ((stats[0]) + (workBuffer[GWBezierMonotonSubdivisions]));
+	stats[1] = ((stats[1]) + (workBuffer[GWBezierHeightSubdivisions]));
+	stats[2] = ((stats[2]) + (workBuffer[GWBezierOverflowSubdivisions]));
+	stats[3] = ((stats[3]) + (workBuffer[GWBezierLineConversions]));
 	interpreterProxy->pop(1);
 }
 
 EXPORT(int) primitiveGetClipRect(void) {
-    int pointOop;
     int rectOop;
+    int pointOop;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 1)) {
 		return interpreterProxy->primitiveFail();
@@ -6908,11 +7095,11 @@ EXPORT(int) primitiveGetClipRect(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pushRemappableOop(rectOop);
-	pointOop = interpreterProxy->makePointwithxValueyValue(workBuffer[42], workBuffer[44]);
+	pointOop = interpreterProxy->makePointwithxValueyValue(workBuffer[GWClipMinX], workBuffer[GWClipMinY]);
 	rectOop = interpreterProxy->popRemappableOop();
 	interpreterProxy->storePointerofObjectwithValue(0, rectOop, pointOop);
 	interpreterProxy->pushRemappableOop(rectOop);
-	pointOop = interpreterProxy->makePointwithxValueyValue(workBuffer[43], workBuffer[45]);
+	pointOop = interpreterProxy->makePointwithxValueyValue(workBuffer[GWClipMaxX], workBuffer[GWClipMaxY]);
 	rectOop = interpreterProxy->popRemappableOop();
 	interpreterProxy->storePointerofObjectwithValue(1, rectOop, pointOop);
 	interpreterProxy->pop(2);
@@ -6920,8 +7107,8 @@ EXPORT(int) primitiveGetClipRect(void) {
 }
 
 EXPORT(int) primitiveGetCounts(void) {
-    int *stats;
     int statOop;
+    int *stats;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 1)) {
 		return interpreterProxy->primitiveFail();
@@ -6941,15 +7128,15 @@ EXPORT(int) primitiveGetCounts(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	stats = interpreterProxy->firstIndexableField(statOop);
-	stats[0] = ((stats[0]) + (workBuffer[91]));
-	stats[1] = ((stats[1]) + (workBuffer[93]));
-	stats[2] = ((stats[2]) + (workBuffer[95]));
-	stats[3] = ((stats[3]) + (workBuffer[97]));
-	stats[4] = ((stats[4]) + (workBuffer[99]));
-	stats[5] = ((stats[5]) + (workBuffer[101]));
-	stats[6] = ((stats[6]) + (workBuffer[103]));
-	stats[7] = ((stats[7]) + (workBuffer[105]));
-	stats[8] = ((stats[8]) + (workBuffer[107]));
+	stats[0] = ((stats[0]) + (workBuffer[GWCountInitializing]));
+	stats[1] = ((stats[1]) + (workBuffer[GWCountFinishTest]));
+	stats[2] = ((stats[2]) + (workBuffer[GWCountNextGETEntry]));
+	stats[3] = ((stats[3]) + (workBuffer[GWCountAddAETEntry]));
+	stats[4] = ((stats[4]) + (workBuffer[GWCountNextFillEntry]));
+	stats[5] = ((stats[5]) + (workBuffer[GWCountMergeFill]));
+	stats[6] = ((stats[6]) + (workBuffer[GWCountDisplaySpan]));
+	stats[7] = ((stats[7]) + (workBuffer[GWCountNextAETEntry]));
+	stats[8] = ((stats[8]) + (workBuffer[GWCountChangeAETEntry]));
 	interpreterProxy->pop(1);
 }
 
@@ -6965,7 +7152,7 @@ EXPORT(int) primitiveGetDepth(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(1);
-	interpreterProxy->pushInteger(workBuffer[113]);
+	interpreterProxy->pushInteger(workBuffer[GWCurrentZ]);
 }
 
 
@@ -6985,14 +7172,14 @@ EXPORT(int) primitiveGetFailureReason(void) {
 	if (!(interpreterProxy->isPointers(engine))) {
 		return 0;
 	}
-	if ((interpreterProxy->slotSizeOf(engine)) < 12) {
+	if ((interpreterProxy->slotSizeOf(engine)) < BEBalloonEngineSize) {
 		return 0;
 	}
-	if (!(loadWorkBufferFrom(interpreterProxy->fetchPointerofObject(0, engine)))) {
+	if (!(loadWorkBufferFrom(interpreterProxy->fetchPointerofObject(BEWorkBufferIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(1);
-	interpreterProxy->pushInteger(workBuffer[64]);
+	interpreterProxy->pushInteger(workBuffer[GWStopReason]);
 }
 
 EXPORT(int) primitiveGetOffset(void) {
@@ -7008,14 +7195,14 @@ EXPORT(int) primitiveGetOffset(void) {
 	if (!(quickLoadEngineFrom(engine))) {
 		return interpreterProxy->primitiveFail();
 	}
-	pointOop = interpreterProxy->makePointwithxValueyValue(workBuffer[46], workBuffer[47]);
+	pointOop = interpreterProxy->makePointwithxValueyValue(workBuffer[GWDestOffsetX], workBuffer[GWDestOffsetY]);
 	interpreterProxy->pop(1);
 	interpreterProxy->push(pointOop);
 }
 
 EXPORT(int) primitiveGetTimes(void) {
-    int *stats;
     int statOop;
+    int *stats;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 1)) {
 		return interpreterProxy->primitiveFail();
@@ -7035,15 +7222,15 @@ EXPORT(int) primitiveGetTimes(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	stats = interpreterProxy->firstIndexableField(statOop);
-	stats[0] = ((stats[0]) + (workBuffer[90]));
-	stats[1] = ((stats[1]) + (workBuffer[92]));
-	stats[2] = ((stats[2]) + (workBuffer[94]));
-	stats[3] = ((stats[3]) + (workBuffer[96]));
-	stats[4] = ((stats[4]) + (workBuffer[98]));
-	stats[5] = ((stats[5]) + (workBuffer[100]));
-	stats[6] = ((stats[6]) + (workBuffer[102]));
-	stats[7] = ((stats[7]) + (workBuffer[104]));
-	stats[8] = ((stats[8]) + (workBuffer[106]));
+	stats[0] = ((stats[0]) + (workBuffer[GWTimeInitializing]));
+	stats[1] = ((stats[1]) + (workBuffer[GWTimeFinishTest]));
+	stats[2] = ((stats[2]) + (workBuffer[GWTimeNextGETEntry]));
+	stats[3] = ((stats[3]) + (workBuffer[GWTimeAddAETEntry]));
+	stats[4] = ((stats[4]) + (workBuffer[GWTimeNextFillEntry]));
+	stats[5] = ((stats[5]) + (workBuffer[GWTimeMergeFill]));
+	stats[6] = ((stats[6]) + (workBuffer[GWTimeDisplaySpan]));
+	stats[7] = ((stats[7]) + (workBuffer[GWTimeNextAETEntry]));
+	stats[8] = ((stats[8]) + (workBuffer[GWTimeChangeAETEntry]));
 	interpreterProxy->pop(1);
 }
 
@@ -7061,31 +7248,31 @@ EXPORT(int) primitiveInitializeBuffer(void) {
 	if (!(interpreterProxy->isWords(wbOop))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if ((size = interpreterProxy->slotSizeOf(wbOop)) < 256) {
+	if ((size = interpreterProxy->slotSizeOf(wbOop)) < GWMinimalSize) {
 		return interpreterProxy->primitiveFail();
 	}
 	workBuffer = interpreterProxy->firstIndexableField(wbOop);
-	objBuffer = workBuffer + 128;
-	workBuffer[0] = 1097753705;
-	workBuffer[1] = size;
-	workBuffer[10] = size;
-	workBuffer[2] = 0;
-	workBuffer[8] = 128;
-	workBuffer[9] = 4;
-	objBuffer[0 + 0] = 256;
-	objBuffer[0 + 1] = 4;
-	objBuffer[0 + 2] = 0;
-	workBuffer[11] = 0;
-	workBuffer[12] = 0;
-	workBuffer[13] = 0;
-	workBuffer[14] = 0;
-	workBuffer[64] = 0;
-	workBuffer[63] = 0;
-	workBuffer[42] = 0;
-	workBuffer[43] = 0;
-	workBuffer[44] = 0;
-	workBuffer[45] = 0;
-	workBuffer[113] = 0;
+	objBuffer = workBuffer + GWHeaderSize;
+	workBuffer[GWMagicIndex] = GWMagicNumber;
+	workBuffer[GWSize] = size;
+	workBuffer[GWBufferTop] = size;
+	workBuffer[GWState] = GEStateUnlocked;
+	workBuffer[GWObjStart] = GWHeaderSize;
+	workBuffer[GWObjUsed] = 4;
+	objBuffer[0 + GEObjectType] = GEPrimitiveFill;
+	objBuffer[0 + GEObjectLength] = 4;
+	objBuffer[0 + GEObjectIndex] = 0;
+	workBuffer[GWGETStart] = 0;
+	workBuffer[GWGETUsed] = 0;
+	workBuffer[GWAETStart] = 0;
+	workBuffer[GWAETUsed] = 0;
+	workBuffer[GWStopReason] = 0;
+	workBuffer[GWNeedsFlush] = 0;
+	workBuffer[GWClipMinX] = 0;
+	workBuffer[GWClipMaxX] = 0;
+	workBuffer[GWClipMinY] = 0;
+	workBuffer[GWClipMaxY] = 0;
+	workBuffer[GWCurrentZ] = 0;
 	resetGraphicsEngineStats();
 	initEdgeTransform();
 	initColorTransform();
@@ -7109,26 +7296,26 @@ EXPORT(int) primitiveInitializeProcessing(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(1, engine)))) {
+	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(BESpanIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
 	initializeGETProcessing();
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
-	workBuffer[2] = 1;
+	workBuffer[GWState] = GEStateAddingFromGET;
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 	}
 	if (doProfileStats) {
-		workBuffer[91] = ((workBuffer[91]) + 1);
+		workBuffer[GWCountInitializing] = ((workBuffer[GWCountInitializing]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[90] = ((workBuffer[90]) + value);
+		workBuffer[GWTimeInitializing] = ((workBuffer[GWTimeInitializing]) + value);
 	}
 }
 
@@ -7136,9 +7323,9 @@ EXPORT(int) primitiveInitializeProcessing(void) {
 /*	Note: No need to load bitBlt but must load spanBuffer */
 
 EXPORT(int) primitiveMergeFillFrom(void) {
-    int bitsOop;
-    int value;
     int fillOop;
+    int value;
+    int bitsOop;
     int value1;
 
 	if (doProfileStats) {
@@ -7153,46 +7340,46 @@ EXPORT(int) primitiveMergeFillFrom(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 4))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateWaitingForFill))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(1, engine)))) {
+	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(BESpanIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((interpreterProxy->fetchClassOf(bitsOop)) == (interpreterProxy->classBitmap()))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if ((interpreterProxy->slotSizeOf(fillOop)) < 6) {
+	if ((interpreterProxy->slotSizeOf(fillOop)) < FTBalloonFillDataSize) {
 		return interpreterProxy->primitiveFail();
 	}
-	value = interpreterProxy->fetchIntegerofObject(0, fillOop);
-	if (!((objBuffer[(workBuffer[66]) + 2]) == value)) {
+	value = interpreterProxy->fetchIntegerofObject(FTIndexIndex, fillOop);
+	if (!((objBuffer[(workBuffer[GWLastExportedFill]) + GEObjectIndex]) == value)) {
 		return interpreterProxy->primitiveFail();
 	}
-	value = interpreterProxy->fetchIntegerofObject(1, fillOop);
-	if (!((workBuffer[67]) == value)) {
+	value = interpreterProxy->fetchIntegerofObject(FTMinXIndex, fillOop);
+	if (!((workBuffer[GWLastExportedLeftX]) == value)) {
 		return interpreterProxy->primitiveFail();
 	}
-	value = interpreterProxy->fetchIntegerofObject(2, fillOop);
-	if (!((workBuffer[68]) == value)) {
+	value = interpreterProxy->fetchIntegerofObject(FTMaxXIndex, fillOop);
+	if (!((workBuffer[GWLastExportedRightX]) == value)) {
 		return interpreterProxy->primitiveFail();
 	}
-	if ((interpreterProxy->slotSizeOf(bitsOop)) < ((workBuffer[68]) - (workBuffer[67]))) {
+	if ((interpreterProxy->slotSizeOf(bitsOop)) < ((workBuffer[GWLastExportedRightX]) - (workBuffer[GWLastExportedLeftX]))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	fillBitmapSpanfromto(interpreterProxy->firstIndexableField(bitsOop), workBuffer[67], workBuffer[68]);
-	workBuffer[2] = 3;
+	fillBitmapSpanfromto(interpreterProxy->firstIndexableField(bitsOop), workBuffer[GWLastExportedLeftX], workBuffer[GWLastExportedRightX]);
+	workBuffer[GWState] = GEStateScanningAET;
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(2);
 	if (doProfileStats) {
-		workBuffer[101] = ((workBuffer[101]) + 1);
+		workBuffer[GWCountMergeFill] = ((workBuffer[GWCountMergeFill]) + 1);
 		/* begin incrementStat:by: */
 		value1 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[100] = ((workBuffer[100]) + value1);
+		workBuffer[GWTimeMergeFill] = ((workBuffer[GWTimeMergeFill]) + value1);
 	}
 }
 
@@ -7209,9 +7396,9 @@ EXPORT(int) primitiveNeedsFlush(void) {
 	if (!(quickLoadEngineFrom(engine))) {
 		return interpreterProxy->primitiveFail();
 	}
-	needFlush = (workBuffer[63]) != 0;
+	needFlush = (workBuffer[GWNeedsFlush]) != 0;
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(1);
 	interpreterProxy->pushBool(needFlush);
 }
@@ -7235,12 +7422,12 @@ EXPORT(int) primitiveNeedsFlushPut(void) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (needFlush == 1) {
-		workBuffer[63] = 1;
+		workBuffer[GWNeedsFlush] = 1;
 	} else {
-		workBuffer[63] = 0;
+		workBuffer[GWNeedsFlush] = 0;
 	}
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(1);
 }
 
@@ -7248,8 +7435,8 @@ EXPORT(int) primitiveNeedsFlushPut(void) {
 /*	Note: No need to load either bitBlt or spanBuffer */
 
 EXPORT(int) primitiveNextActiveEdgeEntry(void) {
-    int edge;
     int edgeOop;
+    int edge;
     int hasEdge;
     int value;
 
@@ -7264,32 +7451,32 @@ EXPORT(int) primitiveNextActiveEdgeEntry(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredStateor(engine, 6, 8))) {
+	if (!(quickLoadEngineFromrequiredStateor(engine, GEStateUpdateEdges, GEStateCompleted))) {
 		return interpreterProxy->primitiveFail();
 	}
 	hasEdge = 0;
-	if (!((workBuffer[2]) == 8)) {
+	if (!((workBuffer[GWState]) == GEStateCompleted)) {
 		hasEdge = findNextExternalUpdateFromAET();
 		if (hasEdge) {
-			edge = aetBuffer[workBuffer[13]];
+			edge = aetBuffer[workBuffer[GWAETStart]];
 			storeEdgeStateFrominto(edge, edgeOop);
-			workBuffer[2] = 7;
+			workBuffer[GWState] = GEStateWaitingChange;
 		} else {
-			workBuffer[2] = 1;
+			workBuffer[GWState] = GEStateAddingFromGET;
 		}
 	}
 	if (interpreterProxy->failed()) {
 		return null;
 	}
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(2);
 	interpreterProxy->pushBool(!hasEdge);
 	if (doProfileStats) {
-		workBuffer[105] = ((workBuffer[105]) + 1);
+		workBuffer[GWCountNextAETEntry] = ((workBuffer[GWCountNextAETEntry]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[104] = ((workBuffer[104]) + value);
+		workBuffer[GWTimeNextAETEntry] = ((workBuffer[GWTimeNextAETEntry]) + value);
 	}
 }
 
@@ -7297,8 +7484,8 @@ EXPORT(int) primitiveNextActiveEdgeEntry(void) {
 /*	Note: No need to load bitBlt but must load spanBuffer */
 
 EXPORT(int) primitiveNextFillEntry(void) {
-    int hasFill;
     int fillOop;
+    int hasFill;
     int value;
 
 	if (doProfileStats) {
@@ -7312,20 +7499,20 @@ EXPORT(int) primitiveNextFillEntry(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 3))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateScanningAET))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(1, engine)))) {
+	if (!(loadSpanBufferFrom(interpreterProxy->fetchPointerofObject(BESpanIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(loadFormsFrom(interpreterProxy->fetchPointerofObject(3, engine)))) {
+	if (!(loadFormsFrom(interpreterProxy->fetchPointerofObject(BEFormsIndex, engine)))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!((workBuffer[69]) == 0)) {
-		if (((workBuffer[88]) & (workBuffer[52])) == 0) {
+	if (!((workBuffer[GWClearSpanBuffer]) == 0)) {
+		if (((workBuffer[GWCurrentY]) & (workBuffer[GWAAScanMask])) == 0) {
 			clearSpanBuffer();
 		}
-		workBuffer[69] = 0;
+		workBuffer[GWClearSpanBuffer] = 0;
 	}
 	hasFill = findNextExternalFillFromAET();
 	if (engineStopped) {
@@ -7336,22 +7523,22 @@ EXPORT(int) primitiveNextFillEntry(void) {
 	}
 	if (!(interpreterProxy->failed())) {
 		if (hasFill) {
-			workBuffer[2] = 4;
+			workBuffer[GWState] = GEStateWaitingForFill;
 		} else {
 			/* begin wbStackClear */
-			workBuffer[10] = (workBuffer[1]);
-			workBuffer[35] = 0;
-			workBuffer[2] = 5;
+			workBuffer[GWBufferTop] = (workBuffer[GWSize]);
+			workBuffer[GWSpanEndAA] = 0;
+			workBuffer[GWState] = GEStateBlitBuffer;
 		}
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(2);
 		interpreterProxy->pushBool(!hasFill);
 		if (doProfileStats) {
-			workBuffer[99] = ((workBuffer[99]) + 1);
+			workBuffer[GWCountNextFillEntry] = ((workBuffer[GWCountNextFillEntry]) + 1);
 			/* begin incrementStat:by: */
 			value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[98] = ((workBuffer[98]) + value);
+			workBuffer[GWTimeNextFillEntry] = ((workBuffer[GWTimeNextFillEntry]) + value);
 		}
 	}
 }
@@ -7360,8 +7547,8 @@ EXPORT(int) primitiveNextFillEntry(void) {
 /*	Note: No need to load either bitBlt or spanBuffer */
 
 EXPORT(int) primitiveNextGlobalEdgeEntry(void) {
-    int edge;
     int edgeOop;
+    int edge;
     int hasEdge;
     int value;
 
@@ -7376,47 +7563,47 @@ EXPORT(int) primitiveNextGlobalEdgeEntry(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 1))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateAddingFromGET))) {
 		return interpreterProxy->primitiveFail();
 	}
 	hasEdge = findNextExternalEntryFromGET();
 	if (hasEdge) {
-		edge = getBuffer[workBuffer[11]];
+		edge = getBuffer[workBuffer[GWGETStart]];
 		storeEdgeStateFrominto(edge, edgeOop);
-		workBuffer[11] = ((workBuffer[11]) + 1);
+		workBuffer[GWGETStart] = ((workBuffer[GWGETStart]) + 1);
 	}
 	if (interpreterProxy->failed()) {
 		return null;
 	}
 	if (hasEdge) {
-		workBuffer[2] = 2;
+		workBuffer[GWState] = GEStateWaitingForEdge;
 	} else {
-		workBuffer[2] = 3;
-		workBuffer[69] = 1;
-		workBuffer[13] = 0;
+		workBuffer[GWState] = GEStateScanningAET;
+		workBuffer[GWClearSpanBuffer] = 1;
+		workBuffer[GWAETStart] = 0;
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
 	}
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(2);
 	interpreterProxy->pushBool(!hasEdge);
 	if (doProfileStats) {
-		workBuffer[95] = ((workBuffer[95]) + 1);
+		workBuffer[GWCountNextGETEntry] = ((workBuffer[GWCountNextGETEntry]) + 1);
 		/* begin incrementStat:by: */
 		value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-		workBuffer[94] = ((workBuffer[94]) + value);
+		workBuffer[GWTimeNextGETEntry] = ((workBuffer[GWTimeNextGETEntry]) + value);
 	}
 }
 
 EXPORT(int) primitiveRegisterExternalEdge(void) {
-    int index;
-    int edge;
-    int rightFillIndex;
-    int initialY;
     int initialX;
-    int leftFillIndex;
+    int index;
+    int initialY;
+    int edge;
     int initialZ;
+    int leftFillIndex;
+    int rightFillIndex;
     int value;
     int value1;
 
@@ -7433,10 +7620,10 @@ EXPORT(int) primitiveRegisterExternalEdge(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
-	if (!(allocateObjEntry(10))) {
+	if (!(allocateObjEntry(GEBaseEdgeSize))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(isFillOkay(leftFillIndex))) {
@@ -7449,25 +7636,25 @@ EXPORT(int) primitiveRegisterExternalEdge(void) {
 
 	/* Install type and length */
 
-	objUsed = edge + 10;
-	objBuffer[edge + 0] = 2;
-	objBuffer[edge + 1] = 10;
-	objBuffer[edge + 2] = index;
-	objBuffer[edge + 4] = initialX;
-	objBuffer[edge + 5] = initialY;
-	objBuffer[edge + 6] = initialZ;
+	objUsed = edge + GEBaseEdgeSize;
+	objBuffer[edge + GEObjectType] = GEPrimitiveEdge;
+	objBuffer[edge + GEObjectLength] = GEBaseEdgeSize;
+	objBuffer[edge + GEObjectIndex] = index;
+	objBuffer[edge + GEXValue] = initialX;
+	objBuffer[edge + GEYValue] = initialY;
+	objBuffer[edge + GEZValue] = initialZ;
 	/* begin edgeLeftFillOf:put: */
 	value = transformColor(leftFillIndex);
-	objBuffer[edge + 8] = value;
+	objBuffer[edge + GEFillIndexLeft] = value;
 	/* begin edgeRightFillOf:put: */
 	value1 = transformColor(rightFillIndex);
-	objBuffer[edge + 9] = value1;
+	objBuffer[edge + GEFillIndexRight] = value1;
 	if (engineStopped) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(6);
 	}
 }
@@ -7484,26 +7671,26 @@ EXPORT(int) primitiveRegisterExternalFill(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	fill = 0;
 	while (fill == 0) {
-		if (!(allocateObjEntry(10))) {
+		if (!(allocateObjEntry(GEBaseEdgeSize))) {
 			return interpreterProxy->primitiveFail();
 		}
 		fill = objUsed;
 
 		/* Install type and length */
 
-		objUsed = fill + 4;
-		objBuffer[fill + 0] = 256;
-		objBuffer[fill + 1] = 4;
-		objBuffer[fill + 2] = index;
+		objUsed = fill + GEBaseFillSize;
+		objBuffer[fill + GEObjectType] = GEPrimitiveFill;
+		objBuffer[fill + GEObjectLength] = GEBaseFillSize;
+		objBuffer[fill + GEObjectIndex] = index;
 	}
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(2);
 		interpreterProxy->pushInteger(fill);
 	}
@@ -7546,12 +7733,12 @@ EXPORT(int) primitiveSetAALevel(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	setAALevel(level);
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(1);
 }
 
@@ -7559,10 +7746,10 @@ EXPORT(int) primitiveSetAALevel(void) {
 /*	Primitive. Set the BitBlt plugin to use. */
 
 EXPORT(int) primitiveSetBitBltPlugin(void) {
-    int length;
     char *ptr;
-    int pluginName;
+    int length;
     int i;
+    int pluginName;
     int needReload;
 
 
@@ -7607,7 +7794,7 @@ EXPORT(int) primitiveSetClipRect(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!(interpreterProxy->isPointers(rectOop))) {
@@ -7616,15 +7803,15 @@ EXPORT(int) primitiveSetClipRect(void) {
 	if ((interpreterProxy->slotSizeOf(rectOop)) < 2) {
 		return interpreterProxy->primitiveFail();
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), interpreterProxy->fetchPointerofObject(0, rectOop));
-	loadPointfrom(((int *) (workBuffer + 82)), interpreterProxy->fetchPointerofObject(1, rectOop));
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), interpreterProxy->fetchPointerofObject(0, rectOop));
+	loadPointfrom(((int *) (workBuffer + GWPoint2)), interpreterProxy->fetchPointerofObject(1, rectOop));
 	if (!(interpreterProxy->failed())) {
-		workBuffer[42] = ((((int *) (workBuffer + 80)))[0]);
-		workBuffer[44] = ((((int *) (workBuffer + 80)))[1]);
-		workBuffer[43] = ((((int *) (workBuffer + 82)))[0]);
-		workBuffer[45] = ((((int *) (workBuffer + 82)))[1]);
+		workBuffer[GWClipMinX] = ((((int *) (workBuffer + GWPoint1)))[0]);
+		workBuffer[GWClipMinY] = ((((int *) (workBuffer + GWPoint1)))[1]);
+		workBuffer[GWClipMaxX] = ((((int *) (workBuffer + GWPoint2)))[0]);
+		workBuffer[GWClipMaxY] = ((((int *) (workBuffer + GWPoint2)))[1]);
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(1);
 	}
 }
@@ -7640,13 +7827,13 @@ EXPORT(int) primitiveSetColorTransform(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	loadColorTransformFrom(transformOop);
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(1);
 	}
 }
@@ -7662,13 +7849,13 @@ EXPORT(int) primitiveSetDepth(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
-	workBuffer[113] = depth;
+	workBuffer[GWCurrentZ] = depth;
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(1);
 	}
 }
@@ -7684,13 +7871,13 @@ EXPORT(int) primitiveSetEdgeTransform(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	loadEdgeTransformFrom(transformOop);
 	if (!(interpreterProxy->failed())) {
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(1);
 	}
 }
@@ -7706,18 +7893,18 @@ EXPORT(int) primitiveSetOffset(void) {
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (!(quickLoadEngineFromrequiredState(engine, 0))) {
+	if (!(quickLoadEngineFromrequiredState(engine, GEStateUnlocked))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((interpreterProxy->fetchClassOf(pointOop)) == (interpreterProxy->classPoint()))) {
 		return interpreterProxy->primitiveFail();
 	}
-	loadPointfrom(((int *) (workBuffer + 80)), pointOop);
+	loadPointfrom(((int *) (workBuffer + GWPoint1)), pointOop);
 	if (!(interpreterProxy->failed())) {
-		workBuffer[46] = ((((int *) (workBuffer + 80)))[0]);
-		workBuffer[47] = ((((int *) (workBuffer + 80)))[1]);
+		workBuffer[GWDestOffsetX] = ((((int *) (workBuffer + GWPoint1)))[0]);
+		workBuffer[GWDestOffsetY] = ((((int *) (workBuffer + GWPoint1)))[1]);
 		/* begin storeEngineStateInto: */
-		workBuffer[9] = objUsed;
+		workBuffer[GWObjUsed] = objUsed;
 		interpreterProxy->pop(1);
 	}
 }
@@ -7732,96 +7919,96 @@ static int proceedRenderingImage(void) {
     int value2;
     int value3;
 
-	while (!((workBuffer[2]) == 8)) {
+	while (!((workBuffer[GWState]) == GEStateCompleted)) {
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
 		external = findNextExternalEntryFromGET();
 		if (doProfileStats) {
-			workBuffer[95] = ((workBuffer[95]) + 1);
+			workBuffer[GWCountNextGETEntry] = ((workBuffer[GWCountNextGETEntry]) + 1);
 			/* begin incrementStat:by: */
 			value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[94] = ((workBuffer[94]) + value);
+			workBuffer[GWTimeNextGETEntry] = ((workBuffer[GWTimeNextGETEntry]) + value);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 1;
+			return workBuffer[GWState] = GEStateAddingFromGET;
 		}
 		if (external) {
-			workBuffer[2] = 2;
+			workBuffer[GWState] = GEStateWaitingForEdge;
 			/* begin stopBecauseOf: */
-			workBuffer[64] = 4;
+			workBuffer[GWStopReason] = GErrorGETEntry;
 			engineStopped = 1;
 			return null;
 		}
-		workBuffer[13] = 0;
+		workBuffer[GWAETStart] = 0;
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
-		workBuffer[69] = 1;
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
+		workBuffer[GWClearSpanBuffer] = 1;
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
-		if (((workBuffer[69]) != 0) && (((workBuffer[88]) & (workBuffer[52])) == 0)) {
+		if (((workBuffer[GWClearSpanBuffer]) != 0) && (((workBuffer[GWCurrentY]) & (workBuffer[GWAAScanMask])) == 0)) {
 			clearSpanBuffer();
 		}
-		workBuffer[69] = 0;
+		workBuffer[GWClearSpanBuffer] = 0;
 		external = findNextExternalFillFromAET();
 		if (doProfileStats) {
-			workBuffer[99] = ((workBuffer[99]) + 1);
+			workBuffer[GWCountNextFillEntry] = ((workBuffer[GWCountNextFillEntry]) + 1);
 			/* begin incrementStat:by: */
 			value1 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[98] = ((workBuffer[98]) + value1);
+			workBuffer[GWTimeNextFillEntry] = ((workBuffer[GWTimeNextFillEntry]) + value1);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 3;
+			return workBuffer[GWState] = GEStateScanningAET;
 		}
 		if (external) {
-			workBuffer[2] = 4;
+			workBuffer[GWState] = GEStateWaitingForFill;
 			/* begin stopBecauseOf: */
-			workBuffer[64] = 5;
+			workBuffer[GWStopReason] = GErrorFillEntry;
 			engineStopped = 1;
 			return null;
 		}
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
-		workBuffer[35] = 0;
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
+		workBuffer[GWSpanEndAA] = 0;
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
-		if (((workBuffer[88]) & (workBuffer[52])) == (workBuffer[52])) {
-			displaySpanBufferAt(workBuffer[88]);
+		if (((workBuffer[GWCurrentY]) & (workBuffer[GWAAScanMask])) == (workBuffer[GWAAScanMask])) {
+			displaySpanBufferAt(workBuffer[GWCurrentY]);
 			postDisplayAction();
 		}
 		if (doProfileStats) {
-			workBuffer[103] = ((workBuffer[103]) + 1);
+			workBuffer[GWCountDisplaySpan] = ((workBuffer[GWCountDisplaySpan]) + 1);
 			/* begin incrementStat:by: */
 			value2 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[102] = ((workBuffer[102]) + value2);
+			workBuffer[GWTimeDisplaySpan] = ((workBuffer[GWTimeDisplaySpan]) + value2);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 5;
+			return workBuffer[GWState] = GEStateBlitBuffer;
 		}
-		if ((workBuffer[2]) == 8) {
+		if ((workBuffer[GWState]) == GEStateCompleted) {
 			return 0;
 		}
-		workBuffer[13] = 0;
-		workBuffer[88] = ((workBuffer[88]) + 1);
+		workBuffer[GWAETStart] = 0;
+		workBuffer[GWCurrentY] = ((workBuffer[GWCurrentY]) + 1);
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
 		external = findNextExternalUpdateFromAET();
 		if (doProfileStats) {
-			workBuffer[105] = ((workBuffer[105]) + 1);
+			workBuffer[GWCountNextAETEntry] = ((workBuffer[GWCountNextAETEntry]) + 1);
 			/* begin incrementStat:by: */
 			value3 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[104] = ((workBuffer[104]) + value3);
+			workBuffer[GWTimeNextAETEntry] = ((workBuffer[GWTimeNextAETEntry]) + value3);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 6;
+			return workBuffer[GWState] = GEStateUpdateEdges;
 		}
 		if (external) {
-			workBuffer[2] = 7;
+			workBuffer[GWState] = GEStateWaitingChange;
 			/* begin stopBecauseOf: */
-			workBuffer[64] = 6;
+			workBuffer[GWStopReason] = GErrorAETEntry;
 			engineStopped = 1;
 			return null;
 		}
@@ -7834,124 +8021,124 @@ static int proceedRenderingImage(void) {
 /*	This is the main rendering entry */
 
 static int proceedRenderingScanline(void) {
-    int external;
     int state;
+    int external;
     int value;
     int value1;
     int value2;
     int value3;
 
-	state = workBuffer[2];
-	if (state == 0) {
+	state = workBuffer[GWState];
+	if (state == GEStateUnlocked) {
 		initializeGETProcessing();
 		if (engineStopped) {
 			return 0;
 		}
-		state = 1;
+		state = GEStateAddingFromGET;
 	}
-	if (state == 1) {
+	if (state == GEStateAddingFromGET) {
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
 		external = findNextExternalEntryFromGET();
 		if (doProfileStats) {
-			workBuffer[95] = ((workBuffer[95]) + 1);
+			workBuffer[GWCountNextGETEntry] = ((workBuffer[GWCountNextGETEntry]) + 1);
 			/* begin incrementStat:by: */
 			value = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[94] = ((workBuffer[94]) + value);
+			workBuffer[GWTimeNextGETEntry] = ((workBuffer[GWTimeNextGETEntry]) + value);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 1;
+			return workBuffer[GWState] = GEStateAddingFromGET;
 		}
 		if (external) {
-			workBuffer[2] = 2;
+			workBuffer[GWState] = GEStateWaitingForEdge;
 			/* begin stopBecauseOf: */
-			workBuffer[64] = 4;
+			workBuffer[GWStopReason] = GErrorGETEntry;
 			engineStopped = 1;
 			return null;
 		}
-		workBuffer[13] = 0;
+		workBuffer[GWAETStart] = 0;
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
-		workBuffer[69] = 1;
-		state = 3;
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
+		workBuffer[GWClearSpanBuffer] = 1;
+		state = GEStateScanningAET;
 	}
-	if (state == 3) {
+	if (state == GEStateScanningAET) {
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
-		if (((workBuffer[69]) != 0) && (((workBuffer[88]) & (workBuffer[52])) == 0)) {
+		if (((workBuffer[GWClearSpanBuffer]) != 0) && (((workBuffer[GWCurrentY]) & (workBuffer[GWAAScanMask])) == 0)) {
 			clearSpanBuffer();
 		}
-		workBuffer[69] = 0;
+		workBuffer[GWClearSpanBuffer] = 0;
 		external = findNextExternalFillFromAET();
 		if (doProfileStats) {
-			workBuffer[99] = ((workBuffer[99]) + 1);
+			workBuffer[GWCountNextFillEntry] = ((workBuffer[GWCountNextFillEntry]) + 1);
 			/* begin incrementStat:by: */
 			value1 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[98] = ((workBuffer[98]) + value1);
+			workBuffer[GWTimeNextFillEntry] = ((workBuffer[GWTimeNextFillEntry]) + value1);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 3;
+			return workBuffer[GWState] = GEStateScanningAET;
 		}
 		if (external) {
-			workBuffer[2] = 4;
+			workBuffer[GWState] = GEStateWaitingForFill;
 			/* begin stopBecauseOf: */
-			workBuffer[64] = 5;
+			workBuffer[GWStopReason] = GErrorFillEntry;
 			engineStopped = 1;
 			return null;
 		}
-		state = 5;
+		state = GEStateBlitBuffer;
 		/* begin wbStackClear */
-		workBuffer[10] = (workBuffer[1]);
-		workBuffer[35] = 0;
+		workBuffer[GWBufferTop] = (workBuffer[GWSize]);
+		workBuffer[GWSpanEndAA] = 0;
 	}
-	if (state == 5) {
+	if (state == GEStateBlitBuffer) {
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
-		if (((workBuffer[88]) & (workBuffer[52])) == (workBuffer[52])) {
-			displaySpanBufferAt(workBuffer[88]);
+		if (((workBuffer[GWCurrentY]) & (workBuffer[GWAAScanMask])) == (workBuffer[GWAAScanMask])) {
+			displaySpanBufferAt(workBuffer[GWCurrentY]);
 			postDisplayAction();
 		}
 		if (doProfileStats) {
-			workBuffer[103] = ((workBuffer[103]) + 1);
+			workBuffer[GWCountDisplaySpan] = ((workBuffer[GWCountDisplaySpan]) + 1);
 			/* begin incrementStat:by: */
 			value2 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[102] = ((workBuffer[102]) + value2);
+			workBuffer[GWTimeDisplaySpan] = ((workBuffer[GWTimeDisplaySpan]) + value2);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 5;
+			return workBuffer[GWState] = GEStateBlitBuffer;
 		}
-		if ((workBuffer[2]) == 8) {
+		if ((workBuffer[GWState]) == GEStateCompleted) {
 			return 0;
 		}
-		state = 6;
-		workBuffer[13] = 0;
-		workBuffer[88] = ((workBuffer[88]) + 1);
+		state = GEStateUpdateEdges;
+		workBuffer[GWAETStart] = 0;
+		workBuffer[GWCurrentY] = ((workBuffer[GWCurrentY]) + 1);
 	}
-	if (state == 6) {
+	if (state == GEStateUpdateEdges) {
 		if (doProfileStats) {
 			geProfileTime = interpreterProxy->ioMicroMSecs();
 		}
 		external = findNextExternalUpdateFromAET();
 		if (doProfileStats) {
-			workBuffer[105] = ((workBuffer[105]) + 1);
+			workBuffer[GWCountNextAETEntry] = ((workBuffer[GWCountNextAETEntry]) + 1);
 			/* begin incrementStat:by: */
 			value3 = (interpreterProxy->ioMicroMSecs()) - geProfileTime;
-			workBuffer[104] = ((workBuffer[104]) + value3);
+			workBuffer[GWTimeNextAETEntry] = ((workBuffer[GWTimeNextAETEntry]) + value3);
 		}
 		if (engineStopped) {
-			return workBuffer[2] = 6;
+			return workBuffer[GWState] = GEStateUpdateEdges;
 		}
 		if (external) {
-			workBuffer[2] = 7;
+			workBuffer[GWState] = GEStateWaitingChange;
 			/* begin stopBecauseOf: */
-			workBuffer[64] = 6;
+			workBuffer[GWStopReason] = GErrorAETEntry;
 			engineStopped = 1;
 			return null;
 		}
-		workBuffer[2] = 1;
+		workBuffer[GWState] = GEStateAddingFromGET;
 	}
 }
 
@@ -7968,15 +8155,15 @@ static int quickLoadEngineFrom(int engineOop) {
 	if (!(interpreterProxy->isPointers(engineOop))) {
 		return 0;
 	}
-	if ((interpreterProxy->slotSizeOf(engineOop)) < 12) {
+	if ((interpreterProxy->slotSizeOf(engineOop)) < BEBalloonEngineSize) {
 		return 0;
 	}
 	engine = engineOop;
-	if (!(loadWorkBufferFrom(interpreterProxy->fetchPointerofObject(0, engineOop)))) {
+	if (!(loadWorkBufferFrom(interpreterProxy->fetchPointerofObject(BEWorkBufferIndex, engineOop)))) {
 		return 0;
 	}
-	workBuffer[64] = 0;
-	objUsed = workBuffer[9];
+	workBuffer[GWStopReason] = 0;
+	objUsed = workBuffer[GWObjUsed];
 	engineStopped = 0;
 	return 1;
 }
@@ -7985,10 +8172,10 @@ static int quickLoadEngineFromrequiredState(int oop, int requiredState) {
 	if (!(quickLoadEngineFrom(oop))) {
 		return 0;
 	}
-	if ((workBuffer[2]) == requiredState) {
+	if ((workBuffer[GWState]) == requiredState) {
 		return 1;
 	}
-	workBuffer[64] = 2;
+	workBuffer[GWStopReason] = GErrorBadState;
 	return 0;
 }
 
@@ -7996,13 +8183,13 @@ static int quickLoadEngineFromrequiredStateor(int oop, int requiredState, int al
 	if (!(quickLoadEngineFrom(oop))) {
 		return 0;
 	}
-	if ((workBuffer[2]) == requiredState) {
+	if ((workBuffer[GWState]) == requiredState) {
 		return 1;
 	}
-	if ((workBuffer[2]) == alternativeState) {
+	if ((workBuffer[GWState]) == alternativeState) {
 		return 1;
 	}
-	workBuffer[64] = 2;
+	workBuffer[GWStopReason] = GErrorBadState;
 	return 0;
 }
 
@@ -8010,12 +8197,12 @@ static int quickLoadEngineFromrequiredStateor(int oop, int requiredState, int al
 /*	Remove any top fills if they have become invalid. */
 
 static int quickRemoveInvalidFillsAt(int leftX) {
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		return null;
 	}
 	while ((topRightX()) <= leftX) {
 		hideFilldepth(topFill(), topDepth());
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			return null;
 		}
 	}
@@ -8027,17 +8214,17 @@ static int quickRemoveInvalidFillsAt(int leftX) {
 /*	Note: The original loop has been heavily re-written for C translation */
 
 static int quickSortGlobalEdgeTablefromto(int *array, int i, int j) {
-    int before;
     int k;
-    int l;
-    int di;
-    int ij;
-    int dj;
-    int n;
-    int tmp;
-    int tt;
     int again;
+    int tt;
+    int di;
+    int n;
+    int l;
+    int dj;
+    int before;
     int dij;
+    int ij;
+    int tmp;
 
 	if ((n = (j + 1) - i) <= 1) {
 		return 0;
@@ -8134,9 +8321,9 @@ static int * rShiftTable(void) {
 static int removeFirstAETEntry(void) {
     int index;
 
-	index = workBuffer[13];
-	workBuffer[14] = ((workBuffer[14]) - 1);
-	while (index < (workBuffer[14])) {
+	index = workBuffer[GWAETStart];
+	workBuffer[GWAETUsed] = ((workBuffer[GWAETUsed]) - 1);
+	while (index < (workBuffer[GWAETUsed])) {
 		aetBuffer[index] = (aetBuffer[index + 1]);
 		index += 1;
 	}
@@ -8156,67 +8343,67 @@ static int repeatValuemax(int delta, int maxValue) {
 }
 
 static int resetGraphicsEngineStats(void) {
-	workBuffer[90] = 0;
-	workBuffer[92] = 0;
-	workBuffer[94] = 0;
-	workBuffer[96] = 0;
-	workBuffer[98] = 0;
-	workBuffer[100] = 0;
-	workBuffer[102] = 0;
-	workBuffer[104] = 0;
-	workBuffer[106] = 0;
-	workBuffer[91] = 0;
-	workBuffer[93] = 0;
-	workBuffer[95] = 0;
-	workBuffer[97] = 0;
-	workBuffer[99] = 0;
-	workBuffer[101] = 0;
-	workBuffer[103] = 0;
-	workBuffer[105] = 0;
-	workBuffer[107] = 0;
-	workBuffer[108] = 0;
-	workBuffer[109] = 0;
-	workBuffer[110] = 0;
-	workBuffer[111] = 0;
+	workBuffer[GWTimeInitializing] = 0;
+	workBuffer[GWTimeFinishTest] = 0;
+	workBuffer[GWTimeNextGETEntry] = 0;
+	workBuffer[GWTimeAddAETEntry] = 0;
+	workBuffer[GWTimeNextFillEntry] = 0;
+	workBuffer[GWTimeMergeFill] = 0;
+	workBuffer[GWTimeDisplaySpan] = 0;
+	workBuffer[GWTimeNextAETEntry] = 0;
+	workBuffer[GWTimeChangeAETEntry] = 0;
+	workBuffer[GWCountInitializing] = 0;
+	workBuffer[GWCountFinishTest] = 0;
+	workBuffer[GWCountNextGETEntry] = 0;
+	workBuffer[GWCountAddAETEntry] = 0;
+	workBuffer[GWCountNextFillEntry] = 0;
+	workBuffer[GWCountMergeFill] = 0;
+	workBuffer[GWCountDisplaySpan] = 0;
+	workBuffer[GWCountNextAETEntry] = 0;
+	workBuffer[GWCountChangeAETEntry] = 0;
+	workBuffer[GWBezierMonotonSubdivisions] = 0;
+	workBuffer[GWBezierHeightSubdivisions] = 0;
+	workBuffer[GWBezierOverflowSubdivisions] = 0;
+	workBuffer[GWBezierLineConversions] = 0;
 }
 
 static int resortFirstAETEntry(void) {
-    int edge;
     int leftEdge;
+    int edge;
     int xValue;
 
-	if ((workBuffer[13]) == 0) {
+	if ((workBuffer[GWAETStart]) == 0) {
 		return null;
 	}
-	edge = aetBuffer[workBuffer[13]];
-	xValue = objBuffer[edge + 4];
-	leftEdge = aetBuffer[(workBuffer[13]) - 1];
-	if ((objBuffer[leftEdge + 4]) <= xValue) {
+	edge = aetBuffer[workBuffer[GWAETStart]];
+	xValue = objBuffer[edge + GEXValue];
+	leftEdge = aetBuffer[(workBuffer[GWAETStart]) - 1];
+	if ((objBuffer[leftEdge + GEXValue]) <= xValue) {
 		return null;
 	}
-	moveAETEntryFromedgex(workBuffer[13], edge, xValue);
+	moveAETEntryFromedgex(workBuffer[GWAETStart], edge, xValue);
 }
 
 static int returnWideBezierFill(void) {
-	return dispatchReturnValue = objBuffer[dispatchedValue + 16];
+	return dispatchReturnValue = objBuffer[dispatchedValue + GBWideFill];
 }
 
 static int returnWideBezierWidth(void) {
-	return dispatchReturnValue = objBuffer[dispatchedValue + 17];
+	return dispatchReturnValue = objBuffer[dispatchedValue + GBWideWidth];
 }
 
 
 /*	Return the fill of the (wide) line - this method is called from a case. */
 
 static int returnWideLineFill(void) {
-	return dispatchReturnValue = objBuffer[dispatchedValue + 16];
+	return dispatchReturnValue = objBuffer[dispatchedValue + GLWideFill];
 }
 
 
 /*	Return the width of the (wide) line - this method is called from a case. */
 
 static int returnWideLineWidth(void) {
-	return dispatchReturnValue = objBuffer[dispatchedValue + 17];
+	return dispatchReturnValue = objBuffer[dispatchedValue + GLWideWidth];
 }
 
 
@@ -8238,24 +8425,24 @@ static int setAALevel(int level) {
 	if (level < 2) {
 		aaLevel = 1;
 	}
-	workBuffer[48] = aaLevel;
+	workBuffer[GWAALevel] = aaLevel;
 	if (aaLevel == 1) {
-		workBuffer[49] = 0;
-		workBuffer[51] = 4294967295U;
-		workBuffer[52] = 0;
+		workBuffer[GWAAShift] = 0;
+		workBuffer[GWAAColorMask] = 4294967295U;
+		workBuffer[GWAAScanMask] = 0;
 	}
 	if (aaLevel == 2) {
-		workBuffer[49] = 1;
-		workBuffer[51] = 4244438268U;
-		workBuffer[52] = 1;
+		workBuffer[GWAAShift] = 1;
+		workBuffer[GWAAColorMask] = 4244438268U;
+		workBuffer[GWAAScanMask] = 1;
 	}
 	if (aaLevel == 4) {
-		workBuffer[49] = 2;
-		workBuffer[51] = 4042322160U;
-		workBuffer[52] = 3;
+		workBuffer[GWAAShift] = 2;
+		workBuffer[GWAAColorMask] = 4042322160U;
+		workBuffer[GWAAScanMask] = 3;
 	}
-	workBuffer[50] = ((workBuffer[49]) * 2);
-	workBuffer[53] = (workBuffer[49]);
+	workBuffer[GWAAColorShift] = ((workBuffer[GWAAShift]) * 2);
+	workBuffer[GWAAHalfPixel] = (workBuffer[GWAAShift]);
 }
 
 
@@ -8293,19 +8480,19 @@ static int showFilldepthrightX(int fillIndex, int depth, int rightX) {
 	if (!(wbStackPush(3))) {
 		return null;
 	}
-	workBuffer[(workBuffer[10]) + 0] = fillIndex;
-	workBuffer[(workBuffer[10]) + (0 + 1)] = depth;
-	workBuffer[(workBuffer[10]) + (0 + 2)] = rightX;
-	if (((workBuffer[1]) - (workBuffer[10])) == 3) {
+	workBuffer[(workBuffer[GWBufferTop]) + 0] = fillIndex;
+	workBuffer[(workBuffer[GWBufferTop]) + (0 + 1)] = depth;
+	workBuffer[(workBuffer[GWBufferTop]) + (0 + 2)] = rightX;
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 3) {
 		return null;
 	}
-	if (fillSortsbefore(0, ((workBuffer[1]) - (workBuffer[10])) - 3)) {
-		workBuffer[(workBuffer[10]) + 0] = (workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)]);
-		workBuffer[(workBuffer[10]) + (0 + 1)] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)]);
-		workBuffer[(workBuffer[10]) + (0 + 2)] = (workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)]);
-		workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)] = fillIndex;
-		workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)] = depth;
-		workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)] = rightX;
+	if (fillSortsbefore(0, ((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)) {
+		workBuffer[(workBuffer[GWBufferTop]) + 0] = (workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)]);
+		workBuffer[(workBuffer[GWBufferTop]) + (0 + 1)] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)]);
+		workBuffer[(workBuffer[GWBufferTop]) + (0 + 2)] = (workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)]);
+		workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)] = fillIndex;
+		workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)] = depth;
+		workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)] = rightX;
 	}
 }
 
@@ -8320,39 +8507,39 @@ static int * smallSqrtTable(void) {
 /*	Sort the entire global edge table */
 
 static int sortGlobalEdgeTable(void) {
-	quickSortGlobalEdgeTablefromto(getBuffer, 0, (workBuffer[12]) - 1);
+	quickSortGlobalEdgeTablefromto(getBuffer, 0, (workBuffer[GWGETUsed]) - 1);
 }
 
 static int spanEndAAGet(void) {
-	return workBuffer[35];
+	return workBuffer[GWSpanEndAA];
 }
 
 static int spanEndAAPut(int value) {
-	return workBuffer[35] = value;
+	return workBuffer[GWSpanEndAA] = value;
 }
 
 static int spanEndGet(void) {
-	return workBuffer[34];
+	return workBuffer[GWSpanEnd];
 }
 
 static int spanEndPut(int value) {
-	return workBuffer[34] = value;
+	return workBuffer[GWSpanEnd] = value;
 }
 
 static int spanSizeGet(void) {
-	return workBuffer[33];
+	return workBuffer[GWSpanSize];
 }
 
 static int spanSizePut(int value) {
-	return workBuffer[33] = value;
+	return workBuffer[GWSpanSize] = value;
 }
 
 static int spanStartGet(void) {
-	return workBuffer[32];
+	return workBuffer[GWSpanStart];
 }
 
 static int spanStartPut(int value) {
-	return workBuffer[32] = value;
+	return workBuffer[GWSpanStart] = value;
 }
 
 static int squaredLengthOfwith(int deltaX, int deltaY) {
@@ -8360,11 +8547,11 @@ static int squaredLengthOfwith(int deltaX, int deltaY) {
 }
 
 static int stackFillDepth(int index) {
-	return workBuffer[(workBuffer[10]) + (index + 1)];
+	return workBuffer[(workBuffer[GWBufferTop]) + (index + 1)];
 }
 
 static int stackFillDepthput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + (index + 1)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + (index + 1)] = value;
 }
 
 static int stackFillEntryLength(void) {
@@ -8372,38 +8559,38 @@ static int stackFillEntryLength(void) {
 }
 
 static int stackFillRightX(int index) {
-	return workBuffer[(workBuffer[10]) + (index + 2)];
+	return workBuffer[(workBuffer[GWBufferTop]) + (index + 2)];
 }
 
 static int stackFillRightXput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + (index + 2)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + (index + 2)] = value;
 }
 
 static int stackFillSize(void) {
-	return (workBuffer[1]) - (workBuffer[10]);
+	return (workBuffer[GWSize]) - (workBuffer[GWBufferTop]);
 }
 
 static int stackFillValue(int index) {
-	return workBuffer[(workBuffer[10]) + index];
+	return workBuffer[(workBuffer[GWBufferTop]) + index];
 }
 
 static int stackFillValueput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + index] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + index] = value;
 }
 
 static int stateGet(void) {
-	return workBuffer[2];
+	return workBuffer[GWState];
 }
 
 static int statePut(int value) {
-	return workBuffer[2] = value;
+	return workBuffer[GWState] = value;
 }
 
 
 /*	Initialize the current entry in the GET by stepping to the current scan line */
 
 static int stepToFirstBezier(void) {
-	return stepToFirstBezierInat(getBuffer[workBuffer[11]], workBuffer[88]);
+	return stepToFirstBezierInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 }
 
 
@@ -8415,43 +8602,43 @@ static int stepToFirstBezier(void) {
 		compensate for this - but I'm not really sure. */
 
 static int stepToFirstBezierInat(int bezier, int yValue) {
-    int squaredStepSize;
-    int *updateData;
     int fwY1;
-    int fwY2;
-    int endX;
-    int endY;
-    int fwX1;
     int fwDDx;
-    int fwX2;
-    int fwDDy;
-    int fwDx;
-    int startX;
-    int startY;
-    int fwDy;
-    int maxSteps;
-    int scaledStepSize;
-    int deltaY;
-    int viaX;
+    int fwX1;
+    int endX;
+    int *updateData;
     int viaY;
+    int fwDy;
+    int fwY2;
+    int scaledStepSize;
+    int startX;
+    int fwDDy;
+    int fwX2;
+    int endY;
+    int deltaY;
+    int maxSteps;
+    int squaredStepSize;
+    int startY;
+    int viaX;
+    int fwDx;
     int xValue;
-    int minY;
-    int fwDx1;
     int fwDy1;
     int lastX;
+    int minY;
     int lastY;
-    int word1;
+    int fwDx1;
     int word2;
+    int word1;
 
-	if ((!((((objBuffer[bezier + 0]) & 65535) & 1) != 0)) && (yValue >= (objBuffer[bezier + 15]))) {
-		return objBuffer[bezier + 7] = 0;
+	if ((!((((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0)) && (yValue >= (objBuffer[bezier + GBEndY]))) {
+		return objBuffer[bezier + GENumLines] = 0;
 	}
-	startX = objBuffer[bezier + 4];
-	startY = objBuffer[bezier + 5];
-	viaX = objBuffer[bezier + 12];
-	viaY = objBuffer[bezier + 13];
-	endX = objBuffer[bezier + 14];
-	endY = objBuffer[bezier + 15];
+	startX = objBuffer[bezier + GEXValue];
+	startY = objBuffer[bezier + GEYValue];
+	viaX = objBuffer[bezier + GBViaX];
+	viaY = objBuffer[bezier + GBViaY];
+	endX = objBuffer[bezier + GBEndX];
+	endY = objBuffer[bezier + GBEndY];
 
 	/* Initialize integer forward differencing */
 
@@ -8478,35 +8665,35 @@ static int stepToFirstBezierInat(int bezier, int yValue) {
 	/* Store the values */
 
 	fwDy += ((int) fwDDy >> 1);
-	objBuffer[bezier + 7] = deltaY;
-	updateData = (objBuffer + bezier) + 10;
-	updateData[0] = (startX * 256);
-	updateData[1] = (startY * 256);
-	updateData[2] = fwDx;
-	updateData[3] = fwDy;
-	updateData[4] = fwDDx;
-	updateData[5] = fwDDy;
-	if (!((startY = objBuffer[bezier + 5]) == yValue)) {
+	objBuffer[bezier + GENumLines] = deltaY;
+	updateData = (objBuffer + bezier) + GBUpdateData;
+	updateData[GBUpdateX] = (startX * 256);
+	updateData[GBUpdateY] = (startY * 256);
+	updateData[GBUpdateDX] = fwDx;
+	updateData[GBUpdateDY] = fwDy;
+	updateData[GBUpdateDDX] = fwDDx;
+	updateData[GBUpdateDDY] = fwDDy;
+	if (!((startY = objBuffer[bezier + GEYValue]) == yValue)) {
 		/* begin stepToNextBezierIn:at: */
 		/* begin stepToNextBezierForward:at: */
-		lastX = (((int*) ((objBuffer + bezier) + 10)))[0];
-		lastY = (((int*) ((objBuffer + bezier) + 10)))[1];
-		fwDx1 = (((int*) ((objBuffer + bezier) + 10)))[2];
-		fwDy1 = (((int*) ((objBuffer + bezier) + 10)))[3];
+		lastX = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateX];
+		lastY = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateY];
+		fwDx1 = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDX];
+		fwDy1 = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDY];
 		minY = yValue * 256;
 		while ((minY > lastY) && (fwDy1 >= 0)) {
 			lastX += ((int) (fwDx1 + 32768) >> 16);
 			lastY += ((int) (fwDy1 + 32768) >> 16);
-			fwDx1 += (((int*) ((objBuffer + bezier) + 10)))[4];
-			fwDy1 += (((int*) ((objBuffer + bezier) + 10)))[5];
+			fwDx1 += (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDDX];
+			fwDy1 += (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDDY];
 		}
-		(((int*) ((objBuffer + bezier) + 10)))[0] = lastX;
-		(((int*) ((objBuffer + bezier) + 10)))[1] = lastY;
-		(((int*) ((objBuffer + bezier) + 10)))[2] = fwDx1;
-		(((int*) ((objBuffer + bezier) + 10)))[3] = fwDy1;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateX] = lastX;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateY] = lastY;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDX] = fwDx1;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDY] = fwDy1;
 		xValue = ((int) lastX >> 8);
-		objBuffer[bezier + 4] = xValue;
-		objBuffer[bezier + 7] = (deltaY - (yValue - startY));
+		objBuffer[bezier + GEXValue] = xValue;
+		objBuffer[bezier + GENumLines] = (deltaY - (yValue - startY));
 	}
 }
 
@@ -8514,33 +8701,33 @@ static int stepToFirstBezierInat(int bezier, int yValue) {
 /*	Initialize the current entry in the GET by stepping to the current scan line */
 
 static int stepToFirstLine(void) {
-	return stepToFirstLineInat(getBuffer[workBuffer[11]], workBuffer[88]);
+	return stepToFirstLineInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 }
 
 
 /*	Initialize the line at yValue */
 
 static int stepToFirstLineInat(int line, int yValue) {
-    int error;
+    int xInc;
     int xDir;
+    int error;
     int i;
+    int deltaX;
     int errorAdjUp;
+    int deltaY;
     int startY;
     int widthX;
-    int deltaX;
-    int deltaY;
-    int xInc;
-    int x;
     int err;
+    int x;
 
-	if ((!((((objBuffer[line + 0]) & 65535) & 1) != 0)) && (yValue >= (objBuffer[line + 15]))) {
-		return objBuffer[line + 7] = 0;
+	if ((!((((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & GEPrimitiveWide) != 0)) && (yValue >= (objBuffer[line + GLEndY]))) {
+		return objBuffer[line + GENumLines] = 0;
 	}
-	deltaX = (objBuffer[line + 14]) - (objBuffer[line + 4]);
+	deltaX = (objBuffer[line + GLEndX]) - (objBuffer[line + GEXValue]);
 
 	/* Check if edge goes left to right */
 
-	deltaY = (objBuffer[line + 15]) - (objBuffer[line + 5]);
+	deltaY = (objBuffer[line + GLEndY]) - (objBuffer[line + GEYValue]);
 	if (deltaX >= 0) {
 		xDir = 1;
 		widthX = deltaX;
@@ -8569,25 +8756,25 @@ static int stepToFirstLineInat(int line, int yValue) {
 			errorAdjUp = widthX % deltaY;
 		}
 	}
-	objBuffer[line + 7] = deltaY;
-	objBuffer[line + 10] = xDir;
-	objBuffer[line + 12] = xInc;
-	objBuffer[line + 13] = error;
-	objBuffer[line + 14] = errorAdjUp;
-	objBuffer[line + 15] = deltaY;
-	if (!((startY = objBuffer[line + 5]) == yValue)) {
+	objBuffer[line + GENumLines] = deltaY;
+	objBuffer[line + GLXDirection] = xDir;
+	objBuffer[line + GLXIncrement] = xInc;
+	objBuffer[line + GLError] = error;
+	objBuffer[line + GLErrorAdjUp] = errorAdjUp;
+	objBuffer[line + GLErrorAdjDown] = deltaY;
+	if (!((startY = objBuffer[line + GEYValue]) == yValue)) {
 		for (i = startY; i <= (yValue - 1); i += 1) {
 			/* begin stepToNextLineIn:at: */
-			x = (objBuffer[line + 4]) + (objBuffer[line + 12]);
-			err = (objBuffer[line + 13]) + (objBuffer[line + 14]);
+			x = (objBuffer[line + GEXValue]) + (objBuffer[line + GLXIncrement]);
+			err = (objBuffer[line + GLError]) + (objBuffer[line + GLErrorAdjUp]);
 			if (err > 0) {
-				x += objBuffer[line + 10];
-				err -= objBuffer[line + 15];
+				x += objBuffer[line + GLXDirection];
+				err -= objBuffer[line + GLErrorAdjDown];
 			}
-			objBuffer[line + 13] = err;
-			objBuffer[line + 4] = x;
+			objBuffer[line + GLError] = err;
+			objBuffer[line + GEXValue] = x;
 		}
-		objBuffer[line + 7] = (deltaY - (yValue - startY));
+		objBuffer[line + GENumLines] = (deltaY - (yValue - startY));
 	}
 }
 
@@ -8595,41 +8782,41 @@ static int stepToFirstLineInat(int line, int yValue) {
 /*	Initialize the current entry in the GET by stepping to the current scan line */
 
 static int stepToFirstWideBezier(void) {
-	return stepToFirstWideBezierInat(getBuffer[workBuffer[11]], workBuffer[88]);
+	return stepToFirstWideBezierInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 }
 
 
 /*	Initialize the bezier at yValue */
 
 static int stepToFirstWideBezierInat(int bezier, int yValue) {
+    int yEntry;
     int lineOffset;
-    int nLines;
     int lineWidth;
+    int endX;
     int xDir;
     int i;
-    int endX;
+    int nLines;
     int yExit;
     int startY;
-    int yEntry;
 
-	lineWidth = objBuffer[bezier + 20];
+	lineWidth = objBuffer[bezier + GBWideExtent];
 
 	/* Compute the incremental values of the bezier */
 
 	lineOffset = ((int) lineWidth >> 1);
-	endX = objBuffer[bezier + 14];
-	startY = objBuffer[bezier + 5];
+	endX = objBuffer[bezier + GBEndX];
+	startY = objBuffer[bezier + GEYValue];
 	stepToFirstBezierInat(bezier, startY);
 
 	/* Copy the incremental update data */
 
-	nLines = objBuffer[bezier + 7];
+	nLines = objBuffer[bezier + GENumLines];
 	for (i = 0; i <= 5; i += 1) {
-		((objBuffer + bezier) + 22)[i] = (((objBuffer + bezier) + 10)[i]);
+		((objBuffer + bezier) + GBWideUpdateData)[i] = (((objBuffer + bezier) + GBUpdateData)[i]);
 	}
-	xDir = ((objBuffer + bezier) + 10)[2];
+	xDir = ((objBuffer + bezier) + GBUpdateData)[GBUpdateDX];
 	if (xDir == 0) {
-		((objBuffer + bezier) + 10)[4];
+		((objBuffer + bezier) + GBUpdateData)[GBUpdateDDX];
 	}
 	if (xDir >= 0) {
 		xDir = 1;
@@ -8642,9 +8829,9 @@ static int stepToFirstWideBezierInat(int bezier, int yValue) {
 		adjustWideBezierRightwidthoffsetendX(bezier, lineWidth, lineOffset, endX);
 	}
 	if (nLines == 0) {
-		((objBuffer + bezier) + 10)[0] = ((objBuffer[bezier + 21]) * 256);
+		((objBuffer + bezier) + GBUpdateData)[GBUpdateX] = ((objBuffer[bezier + GBFinalX]) * 256);
 	}
-	objBuffer[bezier + 7] = (nLines + lineWidth);
+	objBuffer[bezier + GENumLines] = (nLines + lineWidth);
 
 	/* turned on at lineOffset */
 
@@ -8653,19 +8840,19 @@ static int stepToFirstWideBezierInat(int bezier, int yValue) {
 	/* turned off at zero */
 
 	yExit = (0 - nLines) - lineOffset;
-	objBuffer[bezier + 18] = yEntry;
-	objBuffer[bezier + 19] = yExit;
+	objBuffer[bezier + GBWideEntry] = yEntry;
+	objBuffer[bezier + GBWideExit] = yExit;
 	if ((yEntry >= lineOffset) && (yExit < 0)) {
-		objBuffer[bezier + 0] = (((objBuffer[bezier + 0]) & 65535) & (~65536));
+		objBuffer[bezier + GEObjectType] = (((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 	} else {
-		objBuffer[bezier + 0] = (((objBuffer[bezier + 0]) & 65535) | 65536);
+		objBuffer[bezier + GEObjectType] = (((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 	}
 	computeFinalWideBezierValueswidth(bezier, lineWidth);
 	if (!(startY == yValue)) {
 		for (i = startY; i <= (yValue - 1); i += 1) {
 			stepToNextWideBezierInat(bezier, i);
 		}
-		objBuffer[bezier + 7] = ((objBuffer[bezier + 7]) - (yValue - startY));
+		objBuffer[bezier + GENumLines] = ((objBuffer[bezier + GENumLines]) - (yValue - startY));
 	}
 }
 
@@ -8673,51 +8860,51 @@ static int stepToFirstWideBezierInat(int bezier, int yValue) {
 /*	Initialize the current entry in the GET by stepping to the current scan line */
 
 static int stepToFirstWideLine(void) {
-	return stepToFirstWideLineInat(getBuffer[workBuffer[11]], workBuffer[88]);
+	return stepToFirstWideLineInat(getBuffer[workBuffer[GWGETStart]], workBuffer[GWCurrentY]);
 }
 
 
 /*	Initialize the wide line at yValue. */
 
 static int stepToFirstWideLineInat(int line, int yValue) {
+    int yEntry;
     int lineOffset;
-    int nLines;
     int lineWidth;
     int xDir;
     int i;
-    int yExit;
+    int nLines;
     int startX;
+    int yExit;
     int startY;
-    int yEntry;
+    int yEntry1;
     int lineOffset1;
-    int yExit1;
-    int nextX;
     int lineWidth1;
     int lastX;
-    int yEntry1;
-    int x;
+    int yExit1;
+    int nextX;
     int err;
+    int x;
 
-	lineWidth = objBuffer[line + 20];
+	lineWidth = objBuffer[line + GLWideExtent];
 
 	/* Compute the incremental values of the line */
 
 	lineOffset = ((int) lineWidth >> 1);
-	startX = objBuffer[line + 4];
-	startY = objBuffer[line + 5];
+	startX = objBuffer[line + GEXValue];
+	startY = objBuffer[line + GEYValue];
 	stepToFirstLineInat(line, startY);
-	nLines = objBuffer[line + 7];
+	nLines = objBuffer[line + GENumLines];
 
 	/* Adjust the line to start at the correct X position */
 
-	xDir = objBuffer[line + 10];
-	objBuffer[line + 4] = (startX - lineOffset);
-	objBuffer[line + 7] = (nLines + lineWidth);
+	xDir = objBuffer[line + GLXDirection];
+	objBuffer[line + GEXValue] = (startX - lineOffset);
+	objBuffer[line + GENumLines] = (nLines + lineWidth);
 	if (xDir > 0) {
-		objBuffer[line + 17] = ((objBuffer[line + 12]) + lineWidth);
+		objBuffer[line + GLWideWidth] = ((objBuffer[line + GLXIncrement]) + lineWidth);
 	} else {
-		objBuffer[line + 17] = (lineWidth - (objBuffer[line + 12]));
-		objBuffer[line + 4] = ((objBuffer[line + 4]) + (objBuffer[line + 12]));
+		objBuffer[line + GLWideWidth] = (lineWidth - (objBuffer[line + GLXIncrement]));
+		objBuffer[line + GEXValue] = ((objBuffer[line + GEXValue]) + (objBuffer[line + GLXIncrement]));
 	}
 
 	/* turned on at lineOffset */
@@ -8727,44 +8914,44 @@ static int stepToFirstWideLineInat(int line, int yValue) {
 	/* turned off at zero */
 
 	yExit = (0 - nLines) - lineOffset;
-	objBuffer[line + 18] = yEntry;
-	objBuffer[line + 19] = yExit;
+	objBuffer[line + GLWideEntry] = yEntry;
+	objBuffer[line + GLWideExit] = yExit;
 	if ((yEntry >= lineOffset) && (yExit < 0)) {
-		objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) & (~65536));
+		objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 	} else {
-		objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) | 65536);
+		objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 	}
 	if (!(startY == yValue)) {
 		for (i = startY; i <= (yValue - 1); i += 1) {
 			/* begin stepToNextWideLineIn:at: */
-			yEntry1 = (objBuffer[line + 18]) + 1;
-			yExit1 = (objBuffer[line + 19]) + 1;
-			objBuffer[line + 18] = yEntry1;
-			objBuffer[line + 19] = yExit1;
-			lineWidth1 = objBuffer[line + 20];
+			yEntry1 = (objBuffer[line + GLWideEntry]) + 1;
+			yExit1 = (objBuffer[line + GLWideExit]) + 1;
+			objBuffer[line + GLWideEntry] = yEntry1;
+			objBuffer[line + GLWideExit] = yExit1;
+			lineWidth1 = objBuffer[line + GLWideExtent];
 			lineOffset1 = ((int) lineWidth1 >> 1);
 			if (yEntry1 >= lineOffset1) {
-				objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) & (~65536));
+				objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 			}
 			if (yExit1 >= 0) {
-				objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) | 65536);
+				objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 			}
-			lastX = objBuffer[line + 4];
+			lastX = objBuffer[line + GEXValue];
 			/* begin stepToNextLineIn:at: */
-			x = (objBuffer[line + 4]) + (objBuffer[line + 12]);
-			err = (objBuffer[line + 13]) + (objBuffer[line + 14]);
+			x = (objBuffer[line + GEXValue]) + (objBuffer[line + GLXIncrement]);
+			err = (objBuffer[line + GLError]) + (objBuffer[line + GLErrorAdjUp]);
 			if (err > 0) {
-				x += objBuffer[line + 10];
-				err -= objBuffer[line + 15];
+				x += objBuffer[line + GLXDirection];
+				err -= objBuffer[line + GLErrorAdjDown];
 			}
-			objBuffer[line + 13] = err;
-			objBuffer[line + 4] = x;
-			nextX = objBuffer[line + 4];
+			objBuffer[line + GLError] = err;
+			objBuffer[line + GEXValue] = x;
+			nextX = objBuffer[line + GEXValue];
 			if ((yEntry1 <= lineWidth1) || ((yExit1 + lineOffset1) >= 0)) {
 				adjustWideLineafterSteppingFromto(line, lastX, nextX);
 			}
 		}
-		objBuffer[line + 7] = ((objBuffer[line + 7]) - (yValue - startY));
+		objBuffer[line + GENumLines] = ((objBuffer[line + GENumLines]) - (yValue - startY));
 	}
 }
 
@@ -8773,31 +8960,31 @@ static int stepToFirstWideLineInat(int line, int yValue) {
 
 static int stepToNextBezier(void) {
     int xValue;
-    int minY;
-    int fwDx;
     int fwDy;
     int lastX;
+    int minY;
     int lastY;
+    int fwDx;
 
 	/* begin stepToNextBezierIn:at: */
 	/* begin stepToNextBezierForward:at: */
-	lastX = (((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[0];
-	lastY = (((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[1];
-	fwDx = (((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[2];
-	fwDy = (((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[3];
-	minY = (workBuffer[88]) * 256;
+	lastX = (((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateX];
+	lastY = (((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateY];
+	fwDx = (((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateDX];
+	fwDy = (((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateDY];
+	minY = (workBuffer[GWCurrentY]) * 256;
 	while ((minY > lastY) && (fwDy >= 0)) {
 		lastX += ((int) (fwDx + 32768) >> 16);
 		lastY += ((int) (fwDy + 32768) >> 16);
-		fwDx += (((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[4];
-		fwDy += (((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[5];
+		fwDx += (((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateDDX];
+		fwDy += (((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateDDY];
 	}
-	(((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[0] = lastX;
-	(((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[1] = lastY;
-	(((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[2] = fwDx;
-	(((int*) ((objBuffer + (aetBuffer[workBuffer[13]])) + 10)))[3] = fwDy;
+	(((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateX] = lastX;
+	(((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateY] = lastY;
+	(((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateDX] = fwDx;
+	(((int*) ((objBuffer + (aetBuffer[workBuffer[GWAETStart]])) + GBUpdateData)))[GBUpdateDY] = fwDy;
 	xValue = ((int) lastX >> 8);
-	objBuffer[(aetBuffer[workBuffer[13]]) + 4] = xValue;
+	objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GEXValue] = xValue;
 	return null;
 }
 
@@ -8807,16 +8994,16 @@ static int stepToNextBezier(void) {
 		not declaring updateData as 'int*' but casting it on every use. */
 
 static int stepToNextBezierForwardat(int updateData, int yValue) {
-    int minY;
-    int fwDx;
     int fwDy;
     int lastX;
+    int minY;
     int lastY;
+    int fwDx;
 
-	lastX = (((int*) updateData))[0];
-	lastY = (((int*) updateData))[1];
-	fwDx = (((int*) updateData))[2];
-	fwDy = (((int*) updateData))[3];
+	lastX = (((int*) updateData))[GBUpdateX];
+	lastY = (((int*) updateData))[GBUpdateY];
+	fwDx = (((int*) updateData))[GBUpdateDX];
+	fwDy = (((int*) updateData))[GBUpdateDY];
 
 	/* Step as long as we haven't yet reached minY and also
 	as long as fwDy is greater than zero thus stepping down.
@@ -8827,13 +9014,13 @@ static int stepToNextBezierForwardat(int updateData, int yValue) {
 	while ((minY > lastY) && (fwDy >= 0)) {
 		lastX += ((int) (fwDx + 32768) >> 16);
 		lastY += ((int) (fwDy + 32768) >> 16);
-		fwDx += (((int*) updateData))[4];
-		fwDy += (((int*) updateData))[5];
+		fwDx += (((int*) updateData))[GBUpdateDDX];
+		fwDy += (((int*) updateData))[GBUpdateDDY];
 	}
-	(((int*) updateData))[0] = lastX;
-	(((int*) updateData))[1] = lastY;
-	(((int*) updateData))[2] = fwDx;
-	(((int*) updateData))[3] = fwDy;
+	(((int*) updateData))[GBUpdateX] = lastX;
+	(((int*) updateData))[GBUpdateY] = lastY;
+	(((int*) updateData))[GBUpdateDX] = fwDx;
+	(((int*) updateData))[GBUpdateDY] = fwDy;
 	return ((int) lastX >> 8);
 }
 
@@ -8842,48 +9029,48 @@ static int stepToNextBezierForwardat(int updateData, int yValue) {
 
 static int stepToNextBezierInat(int bezier, int yValue) {
     int xValue;
-    int minY;
-    int fwDx;
     int fwDy;
     int lastX;
+    int minY;
     int lastY;
+    int fwDx;
 
 	/* begin stepToNextBezierForward:at: */
-	lastX = (((int*) ((objBuffer + bezier) + 10)))[0];
-	lastY = (((int*) ((objBuffer + bezier) + 10)))[1];
-	fwDx = (((int*) ((objBuffer + bezier) + 10)))[2];
-	fwDy = (((int*) ((objBuffer + bezier) + 10)))[3];
+	lastX = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateX];
+	lastY = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateY];
+	fwDx = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDX];
+	fwDy = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDY];
 	minY = yValue * 256;
 	while ((minY > lastY) && (fwDy >= 0)) {
 		lastX += ((int) (fwDx + 32768) >> 16);
 		lastY += ((int) (fwDy + 32768) >> 16);
-		fwDx += (((int*) ((objBuffer + bezier) + 10)))[4];
-		fwDy += (((int*) ((objBuffer + bezier) + 10)))[5];
+		fwDx += (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDDX];
+		fwDy += (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDDY];
 	}
-	(((int*) ((objBuffer + bezier) + 10)))[0] = lastX;
-	(((int*) ((objBuffer + bezier) + 10)))[1] = lastY;
-	(((int*) ((objBuffer + bezier) + 10)))[2] = fwDx;
-	(((int*) ((objBuffer + bezier) + 10)))[3] = fwDy;
+	(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateX] = lastX;
+	(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateY] = lastY;
+	(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDX] = fwDx;
+	(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDY] = fwDy;
 	xValue = ((int) lastX >> 8);
-	objBuffer[bezier + 4] = xValue;
+	objBuffer[bezier + GEXValue] = xValue;
 }
 
 
 /*	Process the current entry in the AET by stepping to the next scan line */
 
 static int stepToNextLine(void) {
-    int x;
     int err;
+    int x;
 
 	/* begin stepToNextLineIn:at: */
-	x = (objBuffer[(aetBuffer[workBuffer[13]]) + 4]) + (objBuffer[(aetBuffer[workBuffer[13]]) + 12]);
-	err = (objBuffer[(aetBuffer[workBuffer[13]]) + 13]) + (objBuffer[(aetBuffer[workBuffer[13]]) + 14]);
+	x = (objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GEXValue]) + (objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GLXIncrement]);
+	err = (objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GLError]) + (objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GLErrorAdjUp]);
 	if (err > 0) {
-		x += objBuffer[(aetBuffer[workBuffer[13]]) + 10];
-		err -= objBuffer[(aetBuffer[workBuffer[13]]) + 15];
+		x += objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GLXDirection];
+		err -= objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GLErrorAdjDown];
 	}
-	objBuffer[(aetBuffer[workBuffer[13]]) + 13] = err;
-	objBuffer[(aetBuffer[workBuffer[13]]) + 4] = x;
+	objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GLError] = err;
+	objBuffer[(aetBuffer[workBuffer[GWAETStart]]) + GEXValue] = x;
 	return null;
 }
 
@@ -8891,94 +9078,94 @@ static int stepToNextLine(void) {
 /*	Incrementally step to the next scan line in the given line */
 
 static int stepToNextLineInat(int line, int yValue) {
-    int x;
     int err;
+    int x;
 
-	x = (objBuffer[line + 4]) + (objBuffer[line + 12]);
-	err = (objBuffer[line + 13]) + (objBuffer[line + 14]);
+	x = (objBuffer[line + GEXValue]) + (objBuffer[line + GLXIncrement]);
+	err = (objBuffer[line + GLError]) + (objBuffer[line + GLErrorAdjUp]);
 	if (err > 0) {
-		x += objBuffer[line + 10];
-		err -= objBuffer[line + 15];
+		x += objBuffer[line + GLXDirection];
+		err -= objBuffer[line + GLErrorAdjDown];
 	}
-	objBuffer[line + 13] = err;
-	objBuffer[line + 4] = x;
+	objBuffer[line + GLError] = err;
+	objBuffer[line + GEXValue] = x;
 }
 
 
 /*	Initialize the current entry in the GET by stepping to the current scan line */
 
 static int stepToNextWideBezier(void) {
-	stepToNextWideBezierInat(aetBuffer[workBuffer[13]], workBuffer[88]);
+	stepToNextWideBezierInat(aetBuffer[workBuffer[GWAETStart]], workBuffer[GWCurrentY]);
 }
 
 
 /*	Incrementally step to the next scan line in the given wide bezier */
 
 static int stepToNextWideBezierInat(int bezier, int yValue) {
-    int lineOffset;
-    int yExit;
-    int lineWidth;
     int yEntry;
-    int minY;
-    int fwDx;
+    int lineOffset;
+    int lineWidth;
+    int yExit;
     int fwDy;
     int lastX;
+    int minY;
     int lastY;
-    int minY1;
-    int fwDx1;
+    int fwDx;
     int fwDy1;
     int lastX1;
+    int minY1;
     int lastY1;
+    int fwDx1;
 
-	lineWidth = objBuffer[bezier + 20];
+	lineWidth = objBuffer[bezier + GBWideExtent];
 	lineOffset = ((int) lineWidth >> 1);
-	yEntry = (objBuffer[bezier + 18]) + 1;
-	yExit = (objBuffer[bezier + 19]) + 1;
-	objBuffer[bezier + 18] = yEntry;
-	objBuffer[bezier + 19] = yExit;
+	yEntry = (objBuffer[bezier + GBWideEntry]) + 1;
+	yExit = (objBuffer[bezier + GBWideExit]) + 1;
+	objBuffer[bezier + GBWideEntry] = yEntry;
+	objBuffer[bezier + GBWideExit] = yExit;
 	if (yEntry >= lineOffset) {
-		objBuffer[bezier + 0] = (((objBuffer[bezier + 0]) & 65535) & (~65536));
+		objBuffer[bezier + GEObjectType] = (((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 	}
 	if (yExit >= 0) {
-		objBuffer[bezier + 0] = (((objBuffer[bezier + 0]) & 65535) | 65536);
+		objBuffer[bezier + GEObjectType] = (((objBuffer[bezier + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 	}
 	if ((yExit + lineOffset) < 0) {
 		/* begin stepToNextBezierForward:at: */
-		lastX = (((int*) ((objBuffer + bezier) + 10)))[0];
-		lastY = (((int*) ((objBuffer + bezier) + 10)))[1];
-		fwDx = (((int*) ((objBuffer + bezier) + 10)))[2];
-		fwDy = (((int*) ((objBuffer + bezier) + 10)))[3];
+		lastX = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateX];
+		lastY = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateY];
+		fwDx = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDX];
+		fwDy = (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDY];
 		minY = yValue * 256;
 		while ((minY > lastY) && (fwDy >= 0)) {
 			lastX += ((int) (fwDx + 32768) >> 16);
 			lastY += ((int) (fwDy + 32768) >> 16);
-			fwDx += (((int*) ((objBuffer + bezier) + 10)))[4];
-			fwDy += (((int*) ((objBuffer + bezier) + 10)))[5];
+			fwDx += (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDDX];
+			fwDy += (((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDDY];
 		}
-		(((int*) ((objBuffer + bezier) + 10)))[0] = lastX;
-		(((int*) ((objBuffer + bezier) + 10)))[1] = lastY;
-		(((int*) ((objBuffer + bezier) + 10)))[2] = fwDx;
-		(((int*) ((objBuffer + bezier) + 10)))[3] = fwDy;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateX] = lastX;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateY] = lastY;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDX] = fwDx;
+		(((int*) ((objBuffer + bezier) + GBUpdateData)))[GBUpdateDY] = fwDy;
 		((int) lastX >> 8);
 	} else {
-		((objBuffer + bezier) + 10)[0] = ((objBuffer[bezier + 21]) * 256);
+		((objBuffer + bezier) + GBUpdateData)[GBUpdateX] = ((objBuffer[bezier + GBFinalX]) * 256);
 	}
 	/* begin stepToNextBezierForward:at: */
-	lastX1 = (((int*) ((objBuffer + bezier) + 22)))[0];
-	lastY1 = (((int*) ((objBuffer + bezier) + 22)))[1];
-	fwDx1 = (((int*) ((objBuffer + bezier) + 22)))[2];
-	fwDy1 = (((int*) ((objBuffer + bezier) + 22)))[3];
+	lastX1 = (((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateX];
+	lastY1 = (((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateY];
+	fwDx1 = (((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateDX];
+	fwDy1 = (((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateDY];
 	minY1 = yValue * 256;
 	while ((minY1 > lastY1) && (fwDy1 >= 0)) {
 		lastX1 += ((int) (fwDx1 + 32768) >> 16);
 		lastY1 += ((int) (fwDy1 + 32768) >> 16);
-		fwDx1 += (((int*) ((objBuffer + bezier) + 22)))[4];
-		fwDy1 += (((int*) ((objBuffer + bezier) + 22)))[5];
+		fwDx1 += (((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateDDX];
+		fwDy1 += (((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateDDY];
 	}
-	(((int*) ((objBuffer + bezier) + 22)))[0] = lastX1;
-	(((int*) ((objBuffer + bezier) + 22)))[1] = lastY1;
-	(((int*) ((objBuffer + bezier) + 22)))[2] = fwDx1;
-	(((int*) ((objBuffer + bezier) + 22)))[3] = fwDy1;
+	(((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateX] = lastX1;
+	(((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateY] = lastY1;
+	(((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateDX] = fwDx1;
+	(((int*) ((objBuffer + bezier) + GBWideUpdateData)))[GBUpdateDY] = fwDy1;
 	((int) lastX1 >> 8);
 	computeFinalWideBezierValueswidth(bezier, lineWidth);
 }
@@ -8989,41 +9176,41 @@ static int stepToNextWideBezierInat(int bezier, int yValue) {
 static int stepToNextWideLine(void) {
     int line;
     int yValue;
+    int yEntry;
     int lineOffset;
-    int yExit;
-    int nextX;
     int lineWidth;
     int lastX;
-    int yEntry;
-    int x;
+    int yExit;
+    int nextX;
     int err;
+    int x;
 
 	/* begin stepToNextWideLineIn:at: */
-	line = aetBuffer[workBuffer[13]];
-	yValue = workBuffer[88];
-	yEntry = (objBuffer[line + 18]) + 1;
-	yExit = (objBuffer[line + 19]) + 1;
-	objBuffer[line + 18] = yEntry;
-	objBuffer[line + 19] = yExit;
-	lineWidth = objBuffer[line + 20];
+	line = aetBuffer[workBuffer[GWAETStart]];
+	yValue = workBuffer[GWCurrentY];
+	yEntry = (objBuffer[line + GLWideEntry]) + 1;
+	yExit = (objBuffer[line + GLWideExit]) + 1;
+	objBuffer[line + GLWideEntry] = yEntry;
+	objBuffer[line + GLWideExit] = yExit;
+	lineWidth = objBuffer[line + GLWideExtent];
 	lineOffset = ((int) lineWidth >> 1);
 	if (yEntry >= lineOffset) {
-		objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) & (~65536));
+		objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 	}
 	if (yExit >= 0) {
-		objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) | 65536);
+		objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 	}
-	lastX = objBuffer[line + 4];
+	lastX = objBuffer[line + GEXValue];
 	/* begin stepToNextLineIn:at: */
-	x = (objBuffer[line + 4]) + (objBuffer[line + 12]);
-	err = (objBuffer[line + 13]) + (objBuffer[line + 14]);
+	x = (objBuffer[line + GEXValue]) + (objBuffer[line + GLXIncrement]);
+	err = (objBuffer[line + GLError]) + (objBuffer[line + GLErrorAdjUp]);
 	if (err > 0) {
-		x += objBuffer[line + 10];
-		err -= objBuffer[line + 15];
+		x += objBuffer[line + GLXDirection];
+		err -= objBuffer[line + GLErrorAdjDown];
 	}
-	objBuffer[line + 13] = err;
-	objBuffer[line + 4] = x;
-	nextX = objBuffer[line + 4];
+	objBuffer[line + GLError] = err;
+	objBuffer[line + GEXValue] = x;
+	nextX = objBuffer[line + GEXValue];
 	if ((yEntry <= lineWidth) || ((yExit + lineOffset) >= 0)) {
 		adjustWideLineafterSteppingFromto(line, lastX, nextX);
 	}
@@ -9034,73 +9221,73 @@ static int stepToNextWideLine(void) {
 /*	Incrementally step to the next scan line in the given wide line */
 
 static int stepToNextWideLineInat(int line, int yValue) {
+    int yEntry;
     int lineOffset;
-    int yExit;
-    int nextX;
     int lineWidth;
     int lastX;
-    int yEntry;
-    int x;
+    int yExit;
+    int nextX;
     int err;
+    int x;
 
-	yEntry = (objBuffer[line + 18]) + 1;
-	yExit = (objBuffer[line + 19]) + 1;
-	objBuffer[line + 18] = yEntry;
-	objBuffer[line + 19] = yExit;
-	lineWidth = objBuffer[line + 20];
+	yEntry = (objBuffer[line + GLWideEntry]) + 1;
+	yExit = (objBuffer[line + GLWideExit]) + 1;
+	objBuffer[line + GLWideEntry] = yEntry;
+	objBuffer[line + GLWideExit] = yExit;
+	lineWidth = objBuffer[line + GLWideExtent];
 	lineOffset = ((int) lineWidth >> 1);
 	if (yEntry >= lineOffset) {
-		objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) & (~65536));
+		objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) & (~GEEdgeFillsInvalid));
 	}
 	if (yExit >= 0) {
-		objBuffer[line + 0] = (((objBuffer[line + 0]) & 65535) | 65536);
+		objBuffer[line + GEObjectType] = (((objBuffer[line + GEObjectType]) & GEPrimitiveTypeMask) | GEEdgeFillsInvalid);
 	}
-	lastX = objBuffer[line + 4];
+	lastX = objBuffer[line + GEXValue];
 	/* begin stepToNextLineIn:at: */
-	x = (objBuffer[line + 4]) + (objBuffer[line + 12]);
-	err = (objBuffer[line + 13]) + (objBuffer[line + 14]);
+	x = (objBuffer[line + GEXValue]) + (objBuffer[line + GLXIncrement]);
+	err = (objBuffer[line + GLError]) + (objBuffer[line + GLErrorAdjUp]);
 	if (err > 0) {
-		x += objBuffer[line + 10];
-		err -= objBuffer[line + 15];
+		x += objBuffer[line + GLXDirection];
+		err -= objBuffer[line + GLErrorAdjDown];
 	}
-	objBuffer[line + 13] = err;
-	objBuffer[line + 4] = x;
+	objBuffer[line + GLError] = err;
+	objBuffer[line + GEXValue] = x;
 
 	/* Check for special start/end adjustments */
 
-	nextX = objBuffer[line + 4];
+	nextX = objBuffer[line + GEXValue];
 	if ((yEntry <= lineWidth) || ((yExit + lineOffset) >= 0)) {
 		adjustWideLineafterSteppingFromto(line, lastX, nextX);
 	}
 }
 
 static int stopBecauseOf(int stopReason) {
-	workBuffer[64] = stopReason;
+	workBuffer[GWStopReason] = stopReason;
 	engineStopped = 1;
 }
 
 static int stopReasonGet(void) {
-	return workBuffer[64];
+	return workBuffer[GWStopReason];
 }
 
 static int stopReasonPut(int value) {
-	return workBuffer[64] = value;
+	return workBuffer[GWStopReason] = value;
 }
 
 static int storeEdgeStateFrominto(int edge, int edgeOop) {
-	if ((interpreterProxy->slotSizeOf(edgeOop)) < 6) {
+	if ((interpreterProxy->slotSizeOf(edgeOop)) < ETBalloonEdgeDataSize) {
 		return interpreterProxy->primitiveFail();
 	}
-	interpreterProxy->storeIntegerofObjectwithValue(0, edgeOop, objBuffer[edge + 2]);
-	interpreterProxy->storeIntegerofObjectwithValue(1, edgeOop, objBuffer[edge + 4]);
-	interpreterProxy->storeIntegerofObjectwithValue(2, edgeOop, workBuffer[88]);
-	interpreterProxy->storeIntegerofObjectwithValue(3, edgeOop, objBuffer[edge + 6]);
-	interpreterProxy->storeIntegerofObjectwithValue(4, edgeOop, objBuffer[edge + 7]);
-	workBuffer[65] = edge;
+	interpreterProxy->storeIntegerofObjectwithValue(ETIndexIndex, edgeOop, objBuffer[edge + GEObjectIndex]);
+	interpreterProxy->storeIntegerofObjectwithValue(ETXValueIndex, edgeOop, objBuffer[edge + GEXValue]);
+	interpreterProxy->storeIntegerofObjectwithValue(ETYValueIndex, edgeOop, workBuffer[GWCurrentY]);
+	interpreterProxy->storeIntegerofObjectwithValue(ETZValueIndex, edgeOop, objBuffer[edge + GEZValue]);
+	interpreterProxy->storeIntegerofObjectwithValue(ETLinesIndex, edgeOop, objBuffer[edge + GENumLines]);
+	workBuffer[GWLastExportedEdge] = edge;
 }
 
 static int storeEngineStateInto(int oop) {
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 }
 
 static int storeFillStateInto(int fillOop) {
@@ -9108,23 +9295,23 @@ static int storeFillStateInto(int fillOop) {
     int rightX;
     int fillIndex;
 
-	fillIndex = workBuffer[66];
-	leftX = workBuffer[67];
-	rightX = workBuffer[68];
-	if ((interpreterProxy->slotSizeOf(fillOop)) < 6) {
+	fillIndex = workBuffer[GWLastExportedFill];
+	leftX = workBuffer[GWLastExportedLeftX];
+	rightX = workBuffer[GWLastExportedRightX];
+	if ((interpreterProxy->slotSizeOf(fillOop)) < FTBalloonFillDataSize) {
 		return interpreterProxy->primitiveFail();
 	}
-	interpreterProxy->storeIntegerofObjectwithValue(0, fillOop, objBuffer[fillIndex + 2]);
-	interpreterProxy->storeIntegerofObjectwithValue(1, fillOop, leftX);
-	interpreterProxy->storeIntegerofObjectwithValue(2, fillOop, rightX);
-	interpreterProxy->storeIntegerofObjectwithValue(3, fillOop, workBuffer[88]);
+	interpreterProxy->storeIntegerofObjectwithValue(FTIndexIndex, fillOop, objBuffer[fillIndex + GEObjectIndex]);
+	interpreterProxy->storeIntegerofObjectwithValue(FTMinXIndex, fillOop, leftX);
+	interpreterProxy->storeIntegerofObjectwithValue(FTMaxXIndex, fillOop, rightX);
+	interpreterProxy->storeIntegerofObjectwithValue(FTYValueIndex, fillOop, workBuffer[GWCurrentY]);
 }
 
 static int storeRenderingState(void) {
     int edgeOop;
     int fillOop;
-    int edge;
     int reason;
+    int edge;
 
 	if (interpreterProxy->failed()) {
 		return null;
@@ -9133,41 +9320,41 @@ static int storeRenderingState(void) {
 		/* begin storeStopStateIntoEdge:fill: */
 		edgeOop = interpreterProxy->stackObjectValue(1);
 		fillOop = interpreterProxy->stackObjectValue(0);
-		reason = workBuffer[64];
-		if (reason == 4) {
-			edge = getBuffer[workBuffer[11]];
+		reason = workBuffer[GWStopReason];
+		if (reason == GErrorGETEntry) {
+			edge = getBuffer[workBuffer[GWGETStart]];
 			storeEdgeStateFrominto(edge, edgeOop);
-			workBuffer[11] = ((workBuffer[11]) + 1);
+			workBuffer[GWGETStart] = ((workBuffer[GWGETStart]) + 1);
 		}
-		if (reason == 5) {
+		if (reason == GErrorFillEntry) {
 			storeFillStateInto(fillOop);
 		}
-		if (reason == 6) {
-			edge = aetBuffer[workBuffer[13]];
+		if (reason == GErrorAETEntry) {
+			edge = aetBuffer[workBuffer[GWAETStart]];
 			storeEdgeStateFrominto(edge, edgeOop);
 		}
 	}
 	/* begin storeEngineStateInto: */
-	workBuffer[9] = objUsed;
+	workBuffer[GWObjUsed] = objUsed;
 	interpreterProxy->pop(3);
-	interpreterProxy->pushInteger(workBuffer[64]);
+	interpreterProxy->pushInteger(workBuffer[GWStopReason]);
 }
 
 static int storeStopStateIntoEdgefill(int edgeOop, int fillOop) {
-    int edge;
     int reason;
+    int edge;
 
-	reason = workBuffer[64];
-	if (reason == 4) {
-		edge = getBuffer[workBuffer[11]];
+	reason = workBuffer[GWStopReason];
+	if (reason == GErrorGETEntry) {
+		edge = getBuffer[workBuffer[GWGETStart]];
 		storeEdgeStateFrominto(edge, edgeOop);
-		workBuffer[11] = ((workBuffer[11]) + 1);
+		workBuffer[GWGETStart] = ((workBuffer[GWGETStart]) + 1);
 	}
-	if (reason == 5) {
+	if (reason == GErrorFillEntry) {
 		storeFillStateInto(fillOop);
 	}
-	if (reason == 6) {
-		edge = aetBuffer[workBuffer[13]];
+	if (reason == GErrorAETEntry) {
+		edge = aetBuffer[workBuffer[GWAETStart]];
 		storeEdgeStateFrominto(edge, edgeOop);
 	}
 }
@@ -9176,18 +9363,18 @@ static int storeStopStateIntoEdgefill(int edgeOop, int fillOop) {
 /*	Subdivide the given bezier curve if necessary */
 
 static int subdivideBezier(int index) {
-    int startX;
-    int startY;
-    int deltaX;
-    int deltaY;
     int endX;
+    int deltaX;
+    int startX;
     int endY;
+    int deltaY;
+    int startY;
 
-	startY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)];
+	startY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)];
 
 	/* If the receiver is horizontal, don't do anything */
 
-	endY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)];
+	endY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)];
 	if (endY == startY) {
 		return index;
 	}
@@ -9196,17 +9383,17 @@ static int subdivideBezier(int index) {
 		deltaY = 0 - deltaY;
 	}
 	if (deltaY > 255) {
-		workBuffer[109] = ((workBuffer[109]) + 1);
+		workBuffer[GWBezierHeightSubdivisions] = ((workBuffer[GWBezierHeightSubdivisions]) + 1);
 		return computeBezierSplitAtHalf(index);
 	}
-	startX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)];
-	endX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)];
+	startX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)];
+	endX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)];
 	deltaX = endX - startX;
 	if (deltaX < 0) {
 		deltaX = 0 - deltaX;
 	}
 	if ((deltaY * 32) < deltaX) {
-		workBuffer[110] = ((workBuffer[110]) + 1);
+		workBuffer[GWBezierOverflowSubdivisions] = ((workBuffer[GWBezierOverflowSubdivisions]) + 1);
 		return computeBezierSplitAtHalf(index);
 	}
 	return index;
@@ -9216,9 +9403,9 @@ static int subdivideBezier(int index) {
 /*	Recursively subdivide the curve on the bezier stack. */
 
 static int subdivideBezierFrom(int index) {
-    int index1;
-    int otherIndex;
     int index2;
+    int otherIndex;
+    int index1;
 
 	otherIndex = subdivideBezier(index);
 	if (!(otherIndex == index)) {
@@ -9245,8 +9432,8 @@ static int subdivideBezierFrom(int index) {
 
 static int subdivideToBeMonotoninX(int base, int doTestX) {
     int base2;
-    int index1;
     int index2;
+    int index1;
 
 	base2 = index1 = index2 = subdivideToBeMonotonInY(base);
 	if (doTestX) {
@@ -9268,23 +9455,23 @@ static int subdivideToBeMonotoninX(int base, int doTestX) {
 /*	Check if the given bezier curve is monoton in X. If not, subdivide it */
 
 static int subdivideToBeMonotonInX(int index) {
-    int dx1;
-    int dx2;
     int num;
+    int endX;
+    int dx1;
     int startX;
     int denom;
+    int dx2;
     int viaX;
-    int endX;
 
-	startX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 0)];
-	viaX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 2)];
-	endX = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 4)];
+	startX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 0)];
+	viaX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 2)];
+	endX = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 4)];
 	dx1 = viaX - startX;
 	dx2 = endX - viaX;
 	if ((dx1 * dx2) >= 0) {
 		return index;
 	}
-	workBuffer[108] = ((workBuffer[108]) + 1);
+	workBuffer[GWBezierMonotonSubdivisions] = ((workBuffer[GWBezierMonotonSubdivisions]) + 1);
 	denom = dx2 - dx1;
 	num = dx1;
 	if (num < 0) {
@@ -9300,23 +9487,23 @@ static int subdivideToBeMonotonInX(int index) {
 /*	Check if the given bezier curve is monoton in Y. If not, subdivide it */
 
 static int subdivideToBeMonotonInY(int index) {
+    int num;
+    int viaY;
     int endY;
     int dy1;
-    int num;
-    int dy2;
-    int startY;
     int denom;
-    int viaY;
+    int startY;
+    int dy2;
 
-	startY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 1)];
-	viaY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 3)];
-	endY = workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - index) + 5)];
+	startY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 1)];
+	viaY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 3)];
+	endY = workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - index) + 5)];
 	dy1 = viaY - startY;
 	dy2 = endY - viaY;
 	if ((dy1 * dy2) >= 0) {
 		return index;
 	}
-	workBuffer[108] = ((workBuffer[108]) + 1);
+	workBuffer[GWBezierMonotonSubdivisions] = ((workBuffer[GWBezierMonotonSubdivisions]) + 1);
 	denom = dy2 - dy1;
 	num = dy1;
 	if (num < 0) {
@@ -9334,11 +9521,11 @@ static int subdivideToBeMonotonInY(int index) {
 static int toggleFilldepthrightX(int fillIndex, int depth, int rightX) {
     int hidden;
 
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		if (wbStackPush(3)) {
-			workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)] = fillIndex;
-			workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)] = depth;
-			workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)] = rightX;
+			workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)] = fillIndex;
+			workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)] = depth;
+			workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)] = rightX;
 		}
 	} else {
 		hidden = hideFilldepth(fillIndex, depth);
@@ -9349,30 +9536,30 @@ static int toggleFilldepthrightX(int fillIndex, int depth, int rightX) {
 }
 
 static int toggleFillsOf(int edge) {
-    int depth;
     int fillIndex;
+    int depth;
     int leftX;
 
 	if (!(needAvailableSpace(3 * 2))) {
 		return null;
 	}
-	depth = (objBuffer[edge + 6]) << 1;
-	fillIndex = objBuffer[edge + 8];
+	depth = (objBuffer[edge + GEZValue]) << 1;
+	fillIndex = objBuffer[edge + GEFillIndexLeft];
 	if (!(fillIndex == 0)) {
 		toggleFilldepthrightX(fillIndex, depth, 999999999);
 	}
-	fillIndex = objBuffer[edge + 9];
+	fillIndex = objBuffer[edge + GEFillIndexRight];
 	if (!(fillIndex == 0)) {
 		toggleFilldepthrightX(fillIndex, depth, 999999999);
 	}
 	/* begin quickRemoveInvalidFillsAt: */
-	leftX = objBuffer[edge + 4];
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	leftX = objBuffer[edge + GEXValue];
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		goto l1;
 	}
 	while ((topRightX()) <= leftX) {
 		hideFilldepth(topFill(), topDepth());
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			goto l1;
 		}
 	}
@@ -9380,15 +9567,15 @@ l1:	/* end quickRemoveInvalidFillsAt: */;
 }
 
 static int toggleWideFillOf(int edge) {
+    int lineWidth;
+    int index;
+    int rightX;
     int depth;
     int fill;
-    int lineWidth;
-    int rightX;
     int type;
-    int index;
     int leftX;
 
-	type = ((unsigned) ((objBuffer[edge + 0]) & 65535)) >> 1;
+	type = ((unsigned) ((objBuffer[edge + GEObjectType]) & GEPrimitiveTypeMask)) >> 1;
 	dispatchedValue = edge;
 	switch (type) {
 	case 0:
@@ -9396,10 +9583,10 @@ static int toggleWideFillOf(int edge) {
 		errorWrongIndex();
 		break;
 	case 2:
-		dispatchReturnValue = objBuffer[dispatchedValue + 17];
+		dispatchReturnValue = objBuffer[dispatchedValue + GLWideWidth];
 		break;
 	case 3:
-		dispatchReturnValue = objBuffer[dispatchedValue + 17];
+		dispatchReturnValue = objBuffer[dispatchedValue + GBWideWidth];
 		break;
 	}
 	lineWidth = dispatchReturnValue;
@@ -9409,10 +9596,10 @@ static int toggleWideFillOf(int edge) {
 		errorWrongIndex();
 		break;
 	case 2:
-		dispatchReturnValue = objBuffer[dispatchedValue + 16];
+		dispatchReturnValue = objBuffer[dispatchedValue + GLWideFill];
 		break;
 	case 3:
-		dispatchReturnValue = objBuffer[dispatchedValue + 16];
+		dispatchReturnValue = objBuffer[dispatchedValue + GBWideFill];
 		break;
 	}
 	fill = dispatchReturnValue;
@@ -9425,24 +9612,24 @@ static int toggleWideFillOf(int edge) {
 
 	/* So lines sort before interior fills */
 
-	depth = ((objBuffer[edge + 6]) << 1) + 1;
-	rightX = (objBuffer[edge + 4]) + lineWidth;
+	depth = ((objBuffer[edge + GEZValue]) << 1) + 1;
+	rightX = (objBuffer[edge + GEXValue]) + lineWidth;
 	index = findStackFilldepth(fill, depth);
 	if (index == -1) {
 		showFilldepthrightX(fill, depth, rightX);
 	} else {
-		if ((workBuffer[(workBuffer[10]) + (index + 2)]) < rightX) {
-			workBuffer[(workBuffer[10]) + (index + 2)] = rightX;
+		if ((workBuffer[(workBuffer[GWBufferTop]) + (index + 2)]) < rightX) {
+			workBuffer[(workBuffer[GWBufferTop]) + (index + 2)] = rightX;
 		}
 	}
 	/* begin quickRemoveInvalidFillsAt: */
-	leftX = objBuffer[edge + 4];
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	leftX = objBuffer[edge + GEXValue];
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		goto l1;
 	}
 	while ((topRightX()) <= leftX) {
 		hideFilldepth(topFill(), topDepth());
-		if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+		if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 			goto l1;
 		}
 	}
@@ -9450,60 +9637,60 @@ l1:	/* end quickRemoveInvalidFillsAt: */;
 }
 
 static int topDepth(void) {
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		return -1;
 	} else {
-		return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)];
+		return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)];
 	}
 }
 
 static int topFill(void) {
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		return 0;
 	} else {
-		return workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+		return workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 	}
 }
 
 static int topFillDepth(void) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)];
 }
 
 static int topFillDepthPut(int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 1)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 1)] = value;
 }
 
 static int topFillRightX(void) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 }
 
 static int topFillRightXPut(int value) {
-	return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)] = value;
 }
 
 static int topFillValue(void) {
-	return workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)];
+	return workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)];
 }
 
 static int topFillValuePut(int value) {
-	return workBuffer[(workBuffer[10]) + (((workBuffer[1]) - (workBuffer[10])) - 3)] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3)] = value;
 }
 
 static int topRightX(void) {
-	if (((workBuffer[1]) - (workBuffer[10])) == 0) {
+	if (((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) == 0) {
 		return 999999999;
 	} else {
-		return workBuffer[(workBuffer[10]) + ((((workBuffer[1]) - (workBuffer[10])) - 3) + 2)];
+		return workBuffer[(workBuffer[GWBufferTop]) + ((((workBuffer[GWSize]) - (workBuffer[GWBufferTop])) - 3) + 2)];
 	}
 }
 
 static int transformColor(int fillIndex) {
-    float *transform;
-    int g;
-    int r;
-    int b;
     int a;
+    float *transform;
+    int b;
+    int g;
     double alphaScale;
+    int r;
 
 	if (!((fillIndex == 0) || ((fillIndex & 4278190080U) != 0))) {
 		return fillIndex;
@@ -9512,8 +9699,8 @@ static int transformColor(int fillIndex) {
 	g = (((unsigned) fillIndex) >> 8) & 255;
 	r = (((unsigned) fillIndex) >> 16) & 255;
 	a = (((unsigned) fillIndex) >> 24) & 255;
-	if ((workBuffer[17]) != 0) {
-		transform = ((float *) (workBuffer + 24));
+	if ((workBuffer[GWHasColorTransform]) != 0) {
+		transform = ((float *) (workBuffer + GWColorTransform));
 		alphaScale = ((a * (transform[6])) + (transform[7])) / a;
 		r = ((int) (((r * (transform[0])) + (transform[1])) * alphaScale) );
 		g = ((int) (((g * (transform[2])) + (transform[3])) * alphaScale) );
@@ -9531,9 +9718,9 @@ static int transformColor(int fillIndex) {
 	if (a < 1) {
 		return 0;
 	}
-	if ((a < 255) && ((workBuffer[63]) != 0)) {
+	if ((a < 255) && ((workBuffer[GWNeedsFlush]) != 0)) {
 		/* begin stopBecauseOf: */
-		workBuffer[64] = 3;
+		workBuffer[GWStopReason] = GErrorNeedFlush;
 		engineStopped = 1;
 	}
 	return ((b + (g << 8)) + (r << 16)) + (a << 24);
@@ -9543,12 +9730,12 @@ static int transformColor(int fillIndex) {
 /*	Transform the given point. If haveMatrix is true then use the current transformation. */
 
 static int transformPoint(int *point) {
-	if ((workBuffer[16]) != 0) {
+	if ((workBuffer[GWHasEdgeTransform]) != 0) {
 		/* begin transformPoint:into: */
 		transformPointXyinto(((double) ((((int *) point))[0]) ), ((double) ((((int *) point))[1]) ), ((int *) point));
 	} else {
-		point[0] = (((point[0]) + (workBuffer[46])) * (workBuffer[48]));
-		point[1] = (((point[1]) + (workBuffer[47])) * (workBuffer[48]));
+		point[0] = (((point[0]) + (workBuffer[GWDestOffsetX])) * (workBuffer[GWAALevel]));
+		point[1] = (((point[1]) + (workBuffer[GWDestOffsetY])) * (workBuffer[GWAALevel]));
 	}
 }
 
@@ -9567,13 +9754,13 @@ static int transformPointinto(int srcPoint, int dstPoint) {
 	the declarations and adding argument coercions at the appropriate points) */
 
 static int transformPointXyinto(double xValue, double yValue, int *dstPoint) {
-    float *transform;
     int x;
+    float *transform;
     int y;
 
-	transform = ((float *) (workBuffer + 18));
-	x = ((int) (((((transform[0]) * xValue) + ((transform[1]) * yValue)) + (transform[2])) * (((double) (workBuffer[48]) ))) );
-	y = ((int) (((((transform[3]) * xValue) + ((transform[4]) * yValue)) + (transform[5])) * (((double) (workBuffer[48]) ))) );
+	transform = ((float *) (workBuffer + GWEdgeTransform));
+	x = ((int) (((((transform[0]) * xValue) + ((transform[1]) * yValue)) + (transform[2])) * (((double) (workBuffer[GWAALevel]) ))) );
+	y = ((int) (((((transform[3]) * xValue) + ((transform[4]) * yValue)) + (transform[5])) * (((double) (workBuffer[GWAALevel]) ))) );
 	dstPoint[0] = x;
 	dstPoint[1] = y;
 }
@@ -9584,16 +9771,16 @@ static int transformPointXyinto(double xValue, double yValue, int *dstPoint) {
 
 static int transformPoints(int n) {
 	if (n > 0) {
-		transformPoint(((int *) (workBuffer + 80)));
+		transformPoint(((int *) (workBuffer + GWPoint1)));
 	}
 	if (n > 1) {
-		transformPoint(((int *) (workBuffer + 82)));
+		transformPoint(((int *) (workBuffer + GWPoint2)));
 	}
 	if (n > 2) {
-		transformPoint(((int *) (workBuffer + 84)));
+		transformPoint(((int *) (workBuffer + GWPoint3)));
 	}
 	if (n > 3) {
-		transformPoint(((int *) (workBuffer + 86)));
+		transformPoint(((int *) (workBuffer + GWPoint4)));
 	}
 }
 
@@ -9601,38 +9788,38 @@ static int transformPoints(int n) {
 /*	Transform the given width */
 
 static int transformWidth(int w) {
+    int dstWidth;
     double deltaX;
     double deltaY;
     int dstWidth2;
-    int dstWidth;
 
 	if (w == 0) {
 		return 0;
 	}
-	(((int *) (workBuffer + 80)))[0] = 0;
-	(((int *) (workBuffer + 80)))[1] = 0;
-	(((int *) (workBuffer + 82)))[0] = (w * 256);
-	(((int *) (workBuffer + 82)))[1] = 0;
-	(((int *) (workBuffer + 84)))[0] = 0;
-	(((int *) (workBuffer + 84)))[1] = (w * 256);
+	(((int *) (workBuffer + GWPoint1)))[0] = 0;
+	(((int *) (workBuffer + GWPoint1)))[1] = 0;
+	(((int *) (workBuffer + GWPoint2)))[0] = (w * 256);
+	(((int *) (workBuffer + GWPoint2)))[1] = 0;
+	(((int *) (workBuffer + GWPoint3)))[0] = 0;
+	(((int *) (workBuffer + GWPoint3)))[1] = (w * 256);
 	/* begin transformPoints: */
 	if (3 > 0) {
-		transformPoint(((int *) (workBuffer + 80)));
+		transformPoint(((int *) (workBuffer + GWPoint1)));
 	}
 	if (3 > 1) {
-		transformPoint(((int *) (workBuffer + 82)));
+		transformPoint(((int *) (workBuffer + GWPoint2)));
 	}
 	if (3 > 2) {
-		transformPoint(((int *) (workBuffer + 84)));
+		transformPoint(((int *) (workBuffer + GWPoint3)));
 	}
 	if (3 > 3) {
-		transformPoint(((int *) (workBuffer + 86)));
+		transformPoint(((int *) (workBuffer + GWPoint4)));
 	}
-	deltaX = ((double) (((((int *) (workBuffer + 82)))[0]) - ((((int *) (workBuffer + 80)))[0])) );
-	deltaY = ((double) (((((int *) (workBuffer + 82)))[1]) - ((((int *) (workBuffer + 80)))[1])) );
+	deltaX = ((double) (((((int *) (workBuffer + GWPoint2)))[0]) - ((((int *) (workBuffer + GWPoint1)))[0])) );
+	deltaY = ((double) (((((int *) (workBuffer + GWPoint2)))[1]) - ((((int *) (workBuffer + GWPoint1)))[1])) );
 	dstWidth = ((int) ((((int) (sqrt((deltaX * deltaX) + (deltaY * deltaY))) )) + 128) >> 8);
-	deltaX = ((double) (((((int *) (workBuffer + 84)))[0]) - ((((int *) (workBuffer + 80)))[0])) );
-	deltaY = ((double) (((((int *) (workBuffer + 84)))[1]) - ((((int *) (workBuffer + 80)))[1])) );
+	deltaX = ((double) (((((int *) (workBuffer + GWPoint3)))[0]) - ((((int *) (workBuffer + GWPoint1)))[0])) );
+	deltaY = ((double) (((((int *) (workBuffer + GWPoint3)))[1]) - ((((int *) (workBuffer + GWPoint1)))[1])) );
 	dstWidth2 = ((int) ((((int) (sqrt((deltaX * deltaX) + (deltaY * deltaY))) )) + 128) >> 8);
 	if (dstWidth2 < dstWidth) {
 		dstWidth = dstWidth2;
@@ -9645,20 +9832,20 @@ static int transformWidth(int w) {
 }
 
 static int uncheckedTransformColor(int fillIndex) {
+    int a;
     float *transform;
+    int b;
     int g;
     int r;
-    int b;
-    int a;
 
-	if (!((workBuffer[17]) != 0)) {
+	if (!((workBuffer[GWHasColorTransform]) != 0)) {
 		return fillIndex;
 	}
 	b = fillIndex & 255;
 	g = (((unsigned) fillIndex) >> 8) & 255;
 	r = (((unsigned) fillIndex) >> 16) & 255;
 	a = (((unsigned) fillIndex) >> 24) & 255;
-	transform = ((float *) (workBuffer + 24));
+	transform = ((float *) (workBuffer + GWColorTransform));
 	r = ((int) ((r * (transform[0])) + (transform[1])) );
 	g = ((int) ((g * (transform[2])) + (transform[3])) );
 	b = ((int) ((b * (transform[4])) + (transform[5])) );
@@ -9678,131 +9865,131 @@ static int uncheckedTransformColor(int fillIndex) {
 }
 
 static int wbSizeGet(void) {
-	return workBuffer[1];
+	return workBuffer[GWSize];
 }
 
 static int wbSizePut(int value) {
-	return workBuffer[1] = value;
+	return workBuffer[GWSize] = value;
 }
 
 static int wbStackClear(void) {
-	workBuffer[10] = (workBuffer[1]);
+	workBuffer[GWBufferTop] = (workBuffer[GWSize]);
 }
 
 static int wbStackPop(int nItems) {
-	workBuffer[10] = ((workBuffer[10]) + nItems);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) + nItems);
 }
 
 static int wbStackPush(int nItems) {
 	if (!(needAvailableSpace(nItems))) {
 		return 0;
 	}
-	workBuffer[10] = ((workBuffer[10]) - nItems);
+	workBuffer[GWBufferTop] = ((workBuffer[GWBufferTop]) - nItems);
 	return 1;
 }
 
 static int wbStackSize(void) {
-	return (workBuffer[1]) - (workBuffer[10]);
+	return (workBuffer[GWSize]) - (workBuffer[GWBufferTop]);
 }
 
 static int wbStackValue(int index) {
-	return workBuffer[(workBuffer[10]) + index];
+	return workBuffer[(workBuffer[GWBufferTop]) + index];
 }
 
 static int wbStackValueput(int index, int value) {
-	return workBuffer[(workBuffer[10]) + index] = value;
+	return workBuffer[(workBuffer[GWBufferTop]) + index] = value;
 }
 
 static int wbTopGet(void) {
-	return workBuffer[10];
+	return workBuffer[GWBufferTop];
 }
 
 static int wbTopPut(int value) {
-	return workBuffer[10] = value;
+	return workBuffer[GWBufferTop] = value;
 }
 
 static int wideBezierEntryOf(int line) {
-	return objBuffer[line + 18];
+	return objBuffer[line + GBWideEntry];
 }
 
 static int wideBezierEntryOfput(int line, int value) {
-	return objBuffer[line + 18] = value;
+	return objBuffer[line + GBWideEntry] = value;
 }
 
 static int wideBezierExitOf(int line) {
-	return objBuffer[line + 19];
+	return objBuffer[line + GBWideExit];
 }
 
 static int wideBezierExitOfput(int line, int value) {
-	return objBuffer[line + 19] = value;
+	return objBuffer[line + GBWideExit] = value;
 }
 
 static int wideBezierExtentOf(int bezier) {
-	return objBuffer[bezier + 20];
+	return objBuffer[bezier + GBWideExtent];
 }
 
 static int wideBezierExtentOfput(int bezier, int value) {
-	return objBuffer[bezier + 20] = value;
+	return objBuffer[bezier + GBWideExtent] = value;
 }
 
 static int wideBezierFillOf(int bezier) {
-	return objBuffer[bezier + 16];
+	return objBuffer[bezier + GBWideFill];
 }
 
 static int wideBezierFillOfput(int bezier, int value) {
-	return objBuffer[bezier + 16] = value;
+	return objBuffer[bezier + GBWideFill] = value;
 }
 
 static int * wideBezierUpdateDataOf(int bezier) {
-	return (objBuffer + bezier) + 22;
+	return (objBuffer + bezier) + GBWideUpdateData;
 }
 
 static int wideBezierWidthOf(int line) {
-	return objBuffer[line + 17];
+	return objBuffer[line + GBWideWidth];
 }
 
 static int wideBezierWidthOfput(int line, int value) {
-	return objBuffer[line + 17] = value;
+	return objBuffer[line + GBWideWidth] = value;
 }
 
 static int wideLineEntryOf(int line) {
-	return objBuffer[line + 18];
+	return objBuffer[line + GLWideEntry];
 }
 
 static int wideLineEntryOfput(int line, int value) {
-	return objBuffer[line + 18] = value;
+	return objBuffer[line + GLWideEntry] = value;
 }
 
 static int wideLineExitOf(int line) {
-	return objBuffer[line + 19];
+	return objBuffer[line + GLWideExit];
 }
 
 static int wideLineExitOfput(int line, int value) {
-	return objBuffer[line + 19] = value;
+	return objBuffer[line + GLWideExit] = value;
 }
 
 static int wideLineExtentOf(int line) {
-	return objBuffer[line + 20];
+	return objBuffer[line + GLWideExtent];
 }
 
 static int wideLineExtentOfput(int line, int value) {
-	return objBuffer[line + 20] = value;
+	return objBuffer[line + GLWideExtent] = value;
 }
 
 static int wideLineFillOf(int line) {
-	return objBuffer[line + 16];
+	return objBuffer[line + GLWideFill];
 }
 
 static int wideLineFillOfput(int line, int value) {
-	return objBuffer[line + 16] = value;
+	return objBuffer[line + GLWideFill] = value;
 }
 
 static int wideLineWidthOf(int line) {
-	return objBuffer[line + 17];
+	return objBuffer[line + GLWideWidth];
 }
 
 static int wideLineWidthOfput(int line, int value) {
-	return objBuffer[line + 17] = value;
+	return objBuffer[line + GLWideWidth] = value;
 }
 
 

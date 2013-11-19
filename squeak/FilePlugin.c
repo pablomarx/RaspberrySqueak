@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:51 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:08:55 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -34,29 +34,9 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"FilePlugin 4 March 2003 (i)"
-#else
-	"FilePlugin 4 March 2003 (e)"
-#endif
-;
-static int sCCPfn;
-static int sCDFfn;
-static int sCDPfn;
-static int sCGFTfn;
-static int sCLPfn;
-static int sCOFfn;
-static int sCRFfn;
-static int sCSFTfn;
-static int sDFAfn;
-static int sHFAfn;
+/*** Constants ***/
+#define DirBadPath 2
+#define DirNoMoreEntries 1
 
 /*** Function Prototypes ***/
 static int asciiDirectoryDelimiter(void);
@@ -103,6 +83,30 @@ EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
 EXPORT(int) setMacFileTypeAndCreator(char * fileName, char * typeString, char * creatorString);
 EXPORT(int) shutdownModule(void);
 #pragma export off
+/*** Variables ***/
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"FilePlugin 19 March 2005 (i)"
+#else
+	"FilePlugin 19 March 2005 (e)"
+#endif
+;
+static int sCCPfn;
+static int sCDFfn;
+static int sCDPfn;
+static int sCGFTfn;
+static int sCLPfn;
+static int sCOFfn;
+static int sCRFfn;
+static int sCSFTfn;
+static int sDFAfn;
+static int sHFAfn;
+
 
 static int asciiDirectoryDelimiter(void) {
 	return dir_Delimitor();
@@ -113,8 +117,8 @@ static int asciiDirectoryDelimiter(void) {
 
 EXPORT(int) fileOpenNamesizewritesecure(char * nameIndex, int nameSize, int writeFlag, int secureFlag) {
     int fileOop;
-    SQFile * file;
     int okToOpen;
+    SQFile * file;
 
 	fileOop = interpreterProxy->instantiateClassindexableSize(interpreterProxy->classByteArray(), fileRecordSize());
 	/* begin fileValueOf: */
@@ -195,13 +199,13 @@ EXPORT(int) initialiseModule(void) {
 }
 
 static int makeDirEntryNamesizecreateDatemodDateisDirfileSize(char *entryName, int entryNameSize, int createDate, int modifiedDate, int dirFlag, squeakFileOffsetType fileSize) {
-    char *stringPtr;
-    int results;
     int i;
-    int createDateOop;
     int modDateOop;
+    int createDateOop;
+    char *stringPtr;
     int nameString;
     int fileSizeOop;
+    int results;
 
 	interpreterProxy->pushRemappableOop(interpreterProxy->instantiateClassindexableSize(interpreterProxy->classArray(), 5));
 	interpreterProxy->pushRemappableOop(interpreterProxy->instantiateClassindexableSize(interpreterProxy->classString(), entryNameSize));
@@ -248,8 +252,8 @@ static int msg(char *s) {
 
 EXPORT(int) primitiveDirectoryCreate(void) {
     int dirName;
-    int okToCreate;
     char * dirNameIndex;
+    int okToCreate;
     int dirNameSize;
 
 	dirName = interpreterProxy->stackValue(0);
@@ -316,14 +320,14 @@ EXPORT(int) primitiveDirectoryDelimitor(void) {
 }
 
 EXPORT(int) primitiveDirectoryGetMacTypeAndCreator(void) {
-    int typeString;
-    int okToGet;
-    int fileName;
-    int creatorString;
-    int fileNameSize;
-    char * typeStringIndex;
     char * creatorStringIndex;
+    char * typeStringIndex;
+    int fileNameSize;
+    int okToGet;
     char * fileNameIndex;
+    int fileName;
+    int typeString;
+    int creatorString;
 
 	creatorString = interpreterProxy->stackValue(0);
 	typeString = interpreterProxy->stackValue(1);
@@ -361,18 +365,18 @@ EXPORT(int) primitiveDirectoryGetMacTypeAndCreator(void) {
 }
 
 EXPORT(int) primitiveDirectoryLookup(void) {
-    char entryName[256];
-    int pathNameSize;
-    int status;
-    int createDate;
     int dirFlag;
-    int entryNameSize;
-    int modifiedDate;
-    squeakFileOffsetType fileSize;
-    int okToList;
-    int pathName;
-    char * pathNameIndex;
     int index;
+    int status;
+    int pathName;
+    int entryNameSize;
+    int pathNameSize;
+    int okToList;
+    char * pathNameIndex;
+    int modifiedDate;
+    char entryName[256];
+    squeakFileOffsetType fileSize;
+    int createDate;
 
 	index = interpreterProxy->stackIntegerValue(0);
 	pathName = interpreterProxy->stackValue(1);
@@ -396,17 +400,17 @@ EXPORT(int) primitiveDirectoryLookup(void) {
 				entryName, &entryNameSize, &createDate, &modifiedDate,
 				&dirFlag, &fileSize);
 	} else {
-		status = 1;
+		status = DirNoMoreEntries;
 	}
 	if (interpreterProxy->failed()) {
 		return null;
 	}
-	if (status == 1) {
+	if (status == DirNoMoreEntries) {
 		interpreterProxy->pop(3);
 		interpreterProxy->push(interpreterProxy->nilObject());
 		return null;
 	}
-	if (status == 2) {
+	if (status == DirBadPath) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(3);
@@ -414,14 +418,14 @@ EXPORT(int) primitiveDirectoryLookup(void) {
 }
 
 EXPORT(int) primitiveDirectorySetMacTypeAndCreator(void) {
-    int okToSet;
-    int typeString;
-    int fileName;
-    int creatorString;
-    int fileNameSize;
-    char * typeStringIndex;
     char * creatorStringIndex;
+    char * typeStringIndex;
+    int fileNameSize;
+    int okToSet;
     char * fileNameIndex;
+    int fileName;
+    int typeString;
+    int creatorString;
 
 	creatorString = interpreterProxy->stackValue(0);
 	typeString = interpreterProxy->stackValue(1);
@@ -468,8 +472,8 @@ EXPORT(int) primitiveDisableFileAccess(void) {
 }
 
 EXPORT(int) primitiveFileAtEnd(void) {
-    SQFile * file;
     int atEnd;
+    SQFile * file;
     int objectPointer;
 
 	/* begin fileValueOf: */
@@ -512,10 +516,10 @@ l1:	/* end fileValueOf: */;
 }
 
 EXPORT(int) primitiveFileDelete(void) {
-    char * nameIndex;
-    int namePointer;
-    int okToDelete;
     int nameSize;
+    int okToDelete;
+    int namePointer;
+    char * nameIndex;
 
 	namePointer = interpreterProxy->stackValue(0);
 	if (!(interpreterProxy->isBytes(namePointer))) {
@@ -585,11 +589,11 @@ l1:	/* end fileValueOf: */;
 }
 
 EXPORT(int) primitiveFileOpen(void) {
-    int writeFlag;
-    char * nameIndex;
-    int namePointer;
-    int filePointer;
     int nameSize;
+    int filePointer;
+    int namePointer;
+    char * nameIndex;
+    int writeFlag;
 
 	writeFlag = interpreterProxy->booleanValueOf(interpreterProxy->stackValue(0));
 	namePointer = interpreterProxy->stackValue(1);
@@ -606,13 +610,13 @@ EXPORT(int) primitiveFileOpen(void) {
 }
 
 EXPORT(int) primitiveFileRead(void) {
-    size_t byteSize;
+    int bytesRead;
     size_t count;
     int array;
-    SQFile * file;
-    int bytesRead;
-    size_t startIndex;
+    size_t byteSize;
     char * arrayIndex;
+    size_t startIndex;
+    SQFile * file;
     int objectPointer;
 
 	count = interpreterProxy->positive32BitValueOf(interpreterProxy->stackValue(0));
@@ -650,13 +654,13 @@ l1:	/* end fileValueOf: */;
 }
 
 EXPORT(int) primitiveFileRename(void) {
-    char * newNameIndex;
-    char * oldNameIndex;
-    int newNamePointer;
-    int okToRename;
-    int oldNameSize;
-    int oldNamePointer;
     int newNameSize;
+    char * newNameIndex;
+    int okToRename;
+    int oldNamePointer;
+    char * oldNameIndex;
+    int oldNameSize;
+    int newNamePointer;
 
 	newNamePointer = interpreterProxy->stackValue(0);
 	oldNamePointer = interpreterProxy->stackValue(1);
@@ -685,9 +689,9 @@ EXPORT(int) primitiveFileRename(void) {
 }
 
 EXPORT(int) primitiveFileSetPosition(void) {
+    int sz;
     squeakFileOffsetType newPosition;
     SQFile * file;
-    int sz;
     int objectPointer;
 
 	if (!(((interpreterProxy->stackValue(0)) & 1))) {
@@ -739,8 +743,8 @@ l1:	/* end fileValueOf: */;
 
 EXPORT(int) primitiveFileTruncate(void) {
     SQFile * file;
-    squeakFileOffsetType truncatePosition;
     int sz;
+    squeakFileOffsetType truncatePosition;
     int objectPointer;
 
 	if (!(((interpreterProxy->stackValue(0)) & 1))) {
@@ -768,13 +772,13 @@ l1:	/* end fileValueOf: */;
 }
 
 EXPORT(int) primitiveFileWrite(void) {
-    size_t byteSize;
+    int bytesWritten;
     size_t count;
     int array;
-    SQFile * file;
-    int bytesWritten;
-    size_t startIndex;
+    size_t byteSize;
     char * arrayIndex;
+    size_t startIndex;
+    SQFile * file;
     int objectPointer;
 
 	count = interpreterProxy->positive32BitValueOf(interpreterProxy->stackValue(0));
