@@ -37,7 +37,7 @@ ASOPT=--warn -mcpu=arm1176jzf-s
 # available
 CCOPT=-O6 -ffreestanding -marm -mcpu=arm1176jzf-s -std=c99 -fpack-struct -Wno-packed-bitfield-compat
 
-CFLAGS=-DSQ_CONFIG_DONE=1 -DSQUEAK_BUILTIN_PLUGIN=1 -DNO_ISNAN=1 -fshort-wchar -DTYPE_LOWLEVEL -DTARGET_RPI -DLIB_HUB -DLIB_HID -DLIB_KBD -DFINAL -Iusb -Isqueak -Ibcm2835 -Ilib
+CFLAGS=-DSQ_CONFIG_DONE=1 -DSQUEAK_BUILTIN_PLUGIN=1 -DNO_ISNAN=1 -D__LITTLE_ENDIAN=1 -fshort-wchar -DTYPE_LOWLEVEL -DTARGET_RPI -DLIB_HUB -DLIB_HID -DLIB_KBD -DFINAL -Iusb -Isqueak -Ibcm2835 -Ilib
 
 BUILDDIR=build
 
