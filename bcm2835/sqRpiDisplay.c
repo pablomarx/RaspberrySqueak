@@ -1,4 +1,6 @@
 #include "sq.h"
+#include "sqRpiDisplay.h"
+
 #include "framebuffer.h"
 #include "types.h"
 #include "barrier.h"
@@ -123,8 +125,11 @@ int ioSetFullScreen(int fullScreen) {
 	return 0;
 }
 
+int ioScreenDepth(void) {
+	return ScreenDepth;
+}
+
 int ioHasDisplayDepth(int depth) {
-	printf("%s depth=%i\n", __PRETTY_FUNCTION__, depth);
 	if (depth == ScreenDepth) {
 		return true;
 	}

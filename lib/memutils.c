@@ -22,6 +22,12 @@ void * malloc ( unsigned int size )
 	return(ret);
 }
 
+void *calloc(unsigned int nmemb, unsigned int size) {
+	void *result = malloc(nmemb * size);
+	memclr(result, nmemb * size);
+	return result;
+}
+
 void *memalign(unsigned int alignment, unsigned int n) {
     void *ret;
 	printf("malloc(%i) => (malloc_base was: 0x%08x, ", n, malloc_base);

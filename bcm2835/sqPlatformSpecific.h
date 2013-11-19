@@ -8,6 +8,9 @@
 #undef sqImageFileWrite
 #undef sqAllocateMemory
 
+#undef ioMSecs
+#undef ioLowResMSecs
+#undef ioMicroMSecs
 
 typedef struct _rpiImageFile {
 	unsigned char *base;
@@ -16,6 +19,7 @@ typedef struct _rpiImageFile {
 } rpiImageFile;
 
 #define sqImageFile rpiImageFile *
+#define squeakFileOffsetType unsigned int
 
 void        sqImageFileClose(sqImageFile f);
 sqImageFile sqImageFileOpen(char *fileName, char *mode);
@@ -24,9 +28,5 @@ int         sqImageFileRead(void *ptr, int elementSize, int count, sqImageFile f
 void        sqImageFileSeek(sqImageFile f, int pos);
 int         sqImageFileWrite(void *ptr, int elementSize, int count, sqImageFile f);
 void *      sqAllocateMemory(int minHeapSize, int desiredHeapSize);
-
-#undef ioMSecs
-#undef ioLowResMSecs
-#undef ioMicroMSecs
 
 #define ScreenDepth       32

@@ -15,3 +15,4 @@ double NaN(void);
 int isNaN(double d);
 double Inf(int sign);
 int isInf(double d, int sign);
+int abs(int a);
