@@ -53,6 +53,10 @@
 /* #undef	VM_HOST_VENDOR */
 #define	VM_HOST_OS "none-eabi"
 
+#define SQ_VI_BYTES_PER_WORD 4
+#define SIZEOF_VOID_P 4
+#define HAVE_INTERP_H 1
+
 #undef	WORDS_BIGENDIAN 
 #undef	DOUBLE_WORD_ALIGNMENT 
 #define	DOUBLE_WORD_ORDER 1

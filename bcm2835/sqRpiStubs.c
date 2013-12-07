@@ -11,15 +11,14 @@ void *os_exports[][3]=
 
 int ioDisablePowerManager(int disableIfNonZero) { return true; }
 int ioSetInputSemaphore(int semaIndex) STUBBED_OUT
-int ioFindExternalFunctionIn(char *lookupName, int moduleHandle) {
+void *ioFindExternalFunctionIn(char *lookupName, void *moduleHandle) {
 //	printf("%s lookupName=%s\n", __PRETTY_FUNCTION__, lookupName);
-	return 0;
 }
-int ioLoadModule(char *pluginName) {
+void *ioLoadModule(char *pluginName) {
 //	printf("%s pluginName=%s\n", __PRETTY_FUNCTION__, pluginName);
-	return 0;
+	return NULL;
 }
-int ioFreeModule(int moduleHandle) STUBBED_OUT
+sqInt ioFreeModule(void *moduleHandle) STUBBED_OUT
 
 
 /*** Profiling Stubs ***/
@@ -36,22 +35,23 @@ int clipboardSize(void)                                                     STUB
 int clipboardWriteFromAt(int count, int byteArrayIndex, int startIndex)     STUBBED_OUT
 
 /* file i/o */
-int sqFileAtEnd(SQFile *f) STUBBED_OUT
-int sqFileClose(SQFile *f) STUBBED_OUT
-int sqFileDeleteNameSize(int sqFileNameIndex, int sqFileNameSize) STUBBED_OUT
+size_t  sqFileReadIntoAt(SQFile *f, size_t count, char* byteArrayIndex, size_t startIndex) STUBBED_OUT
+size_t  sqFileWriteFromAt(SQFile *f, size_t count, char* byteArrayIndex, size_t startIndex) STUBBED_OUT
+sqInt   sqFileAtEnd(SQFile *f) STUBBED_OUT
+sqInt   sqFileClose(SQFile *f) STUBBED_OUT
+sqInt   sqFileDeleteNameSize(char* sqFileNameIndex, sqInt sqFileNameSize) STUBBED_OUT
+sqInt   sqFileFlush(SQFile *f) STUBBED_OUT
+sqInt   sqGetFilenameFromString(char * aCharBuffer, char * aFilenameString, sqInt filenameLength, sqInt aBoolean) STUBBED_OUT
+sqInt   sqFileInit(void) STUBBED_OUT
+sqInt   sqFileOpen(SQFile *f, char* sqFileNameIndex, sqInt sqFileNameSize, sqInt writeFlag) STUBBED_OUT
+sqInt   sqFileRenameOldSizeNewSize(char* oldNameIndex, sqInt oldNameSize, char* newNameIndex, sqInt newNameSize) STUBBED_OUT
+sqInt   sqFileSetPosition(SQFile *f, squeakFileOffsetType position) STUBBED_OUT
+sqInt   sqFileShutdown(void) STUBBED_OUT
+sqInt   sqFileThisSession(void) STUBBED_OUT
+sqInt   sqFileTruncate(SQFile *f,squeakFileOffsetType offset) STUBBED_OUT
+sqInt   sqFileValid(SQFile *f) STUBBED_OUT
 squeakFileOffsetType sqFileGetPosition(SQFile *f) STUBBED_OUT
-int sqFileInit(void) { return true; }
-int sqFileShutdown(void) STUBBED_OUT
-int sqFileOpen(SQFile *f, int sqFileNameIndex, int sqFileNameSize, int writeFlag) STUBBED_OUT
-size_t sqFileReadIntoAt(SQFile *f, size_t count, int byteArrayIndex, size_t startIndex) STUBBED_OUT
-int sqFileRenameOldSizeNewSize(int oldNameIndex, int oldNameSize, int newNameIndex, int newNameSize) STUBBED_OUT
-int sqFileSetPosition(SQFile *f, squeakFileOffsetType position) STUBBED_OUT
 squeakFileOffsetType sqFileSize(SQFile *f) STUBBED_OUT
-int sqFileValid(SQFile *f) STUBBED_OUT
-size_t sqFileWriteFromAt(SQFile *f, size_t count, int byteArrayIndex, size_t startIndex) STUBBED_OUT
-int sqFileFlush(SQFile *f) STUBBED_OUT
-int sqFileTruncate(SQFile *f,squeakFileOffsetType offset) STUBBED_OUT
-int sqFileThisSession(void) STUBBED_OUT
 
 /* directories */
 int dir_Delimitor(void) {

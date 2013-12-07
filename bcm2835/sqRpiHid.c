@@ -158,7 +158,7 @@ void rpiRegisterKeyboardEvent(int keyCode, int pressCode, int modifiers) {
 	evt->pressCode = pressCode;
 	evt->modifiers = modifiers;
 
-	evt->reserved1=evt->reserved2= 0;
+	evt->reserved1=/*evt->reserved2=*/ 0;
 }
 
 void rpiProcessKeyboardEvents(void) {

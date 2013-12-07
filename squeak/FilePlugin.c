@@ -1,4 +1,6 @@
-/* Automatically generated from Squeak on #(19 March 2005 10:08:55 am) */
+/* Automatically generated from Squeak on an Array(10 April 2008 1:42:49 pm)
+by VMMaker 3.8b6
+ */
 
 #include <math.h>
 #include <stdio.h>
@@ -27,11 +29,7 @@
 #endif
 #include "FilePlugin.h"
 
-/* memory access macros */
-#define byteAt(i) (*((unsigned char *) (i)))
-#define byteAtput(i, val) (*((unsigned char *) (i)) = val)
-#define longAt(i) (*((int *) (i)))
-#define longAtput(i, val) (*((int *) (i)) = val)
+#include "sqMemoryAccess.h"
 
 
 /*** Constants ***/
@@ -39,49 +37,50 @@
 #define DirNoMoreEntries 1
 
 /*** Function Prototypes ***/
-static int asciiDirectoryDelimiter(void);
+static sqInt asciiDirectoryDelimiter(void);
 #pragma export on
-EXPORT(int) fileOpenNamesizewritesecure(char * nameIndex, int nameSize, int writeFlag, int secureFlag);
+EXPORT(sqInt) fileOpenNamesizewritesecure(char * nameIndex, sqInt nameSize, sqInt writeFlag, sqInt secureFlag);
 #pragma export off
-int fileRecordSize(void);
-SQFile * fileValueOf(int objectPointer);
+sqInt fileRecordSize(void);
+SQFile * fileValueOf(sqInt objectPointer);
+static VirtualMachine * getInterpreter(void);
 #pragma export on
 EXPORT(const char*) getModuleName(void);
-EXPORT(int) getThisSession(void);
+EXPORT(sqInt) getThisSession(void);
 #pragma export off
-static int halt(void);
+static sqInt halt(void);
 #pragma export on
-EXPORT(int) initialiseModule(void);
+EXPORT(sqInt) initialiseModule(void);
 #pragma export off
-static int makeDirEntryNamesizecreateDatemodDateisDirfileSize(char *entryName, int entryNameSize, int createDate, int modifiedDate, int dirFlag, squeakFileOffsetType fileSize);
+static sqInt makeDirEntryNamesizecreateDatemodDateisDirfileSize(char * entryName, sqInt entryNameSize, sqInt createDate, sqInt modifiedDate, sqInt dirFlag, squeakFileOffsetType  fileSize);
 #pragma export on
-EXPORT(int) moduleUnloaded(char * aModuleName);
+EXPORT(sqInt) moduleUnloaded(char * aModuleName);
 #pragma export off
-static int msg(char *s);
+static sqInt msg(char * s);
 #pragma export on
-EXPORT(int) primitiveDirectoryCreate(void);
-EXPORT(int) primitiveDirectoryDelete(void);
-EXPORT(int) primitiveDirectoryDelimitor(void);
-EXPORT(int) primitiveDirectoryGetMacTypeAndCreator(void);
-EXPORT(int) primitiveDirectoryLookup(void);
-EXPORT(int) primitiveDirectorySetMacTypeAndCreator(void);
-EXPORT(int) primitiveDisableFileAccess(void);
-EXPORT(int) primitiveFileAtEnd(void);
-EXPORT(int) primitiveFileClose(void);
-EXPORT(int) primitiveFileDelete(void);
-EXPORT(int) primitiveFileFlush(void);
-EXPORT(int) primitiveFileGetPosition(void);
-EXPORT(int) primitiveFileOpen(void);
-EXPORT(int) primitiveFileRead(void);
-EXPORT(int) primitiveFileRename(void);
-EXPORT(int) primitiveFileSetPosition(void);
-EXPORT(int) primitiveFileSize(void);
-EXPORT(int) primitiveFileTruncate(void);
-EXPORT(int) primitiveFileWrite(void);
-EXPORT(int) primitiveHasFileAccess(void);
-EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
-EXPORT(int) setMacFileTypeAndCreator(char * fileName, char * typeString, char * creatorString);
-EXPORT(int) shutdownModule(void);
+EXPORT(sqInt) primitiveDirectoryCreate(void);
+EXPORT(sqInt) primitiveDirectoryDelete(void);
+EXPORT(sqInt) primitiveDirectoryDelimitor(void);
+EXPORT(sqInt) primitiveDirectoryGetMacTypeAndCreator(void);
+EXPORT(sqInt) primitiveDirectoryLookup(void);
+EXPORT(sqInt) primitiveDirectorySetMacTypeAndCreator(void);
+EXPORT(sqInt) primitiveDisableFileAccess(void);
+EXPORT(sqInt) primitiveFileAtEnd(void);
+EXPORT(sqInt) primitiveFileClose(void);
+EXPORT(sqInt) primitiveFileDelete(void);
+EXPORT(sqInt) primitiveFileFlush(void);
+EXPORT(sqInt) primitiveFileGetPosition(void);
+EXPORT(sqInt) primitiveFileOpen(void);
+EXPORT(sqInt) primitiveFileRead(void);
+EXPORT(sqInt) primitiveFileRename(void);
+EXPORT(sqInt) primitiveFileSetPosition(void);
+EXPORT(sqInt) primitiveFileSize(void);
+EXPORT(sqInt) primitiveFileTruncate(void);
+EXPORT(sqInt) primitiveFileWrite(void);
+EXPORT(sqInt) primitiveHasFileAccess(void);
+EXPORT(sqInt) setInterpreter(struct VirtualMachine* anInterpreter);
+EXPORT(sqInt) setMacFileTypeAndCreator(char * fileName, char * typeString, char * creatorString);
+EXPORT(sqInt) shutdownModule(void);
 #pragma export off
 /*** Variables ***/
 
@@ -91,33 +90,33 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"FilePlugin 19 March 2005 (i)"
+	"FilePlugin 10 April 2008 (i)"
 #else
-	"FilePlugin 19 March 2005 (e)"
+	"FilePlugin 10 April 2008 (e)"
 #endif
 ;
-static int sCCPfn;
-static int sCDFfn;
-static int sCDPfn;
-static int sCGFTfn;
-static int sCLPfn;
-static int sCOFfn;
-static int sCRFfn;
-static int sCSFTfn;
-static int sDFAfn;
-static int sHFAfn;
+static void * sCCPfn;
+static void * sCDFfn;
+static void * sCDPfn;
+static void * sCGFTfn;
+static void * sCLPfn;
+static void * sCOFfn;
+static void * sCRFfn;
+static void * sCSFTfn;
+static void * sDFAfn;
+static void * sHFAfn;
 
 
-static int asciiDirectoryDelimiter(void) {
+static sqInt asciiDirectoryDelimiter(void) {
 	return dir_Delimitor();
 }
 
 
 /*	Open the named file, possibly checking security. Answer the file oop. */
 
-EXPORT(int) fileOpenNamesizewritesecure(char * nameIndex, int nameSize, int writeFlag, int secureFlag) {
-    int fileOop;
-    int okToOpen;
+EXPORT(sqInt) fileOpenNamesizewritesecure(char * nameIndex, sqInt nameSize, sqInt writeFlag, sqInt secureFlag) {
+    sqInt fileOop;
+    sqInt okToOpen;
     SQFile * file;
 
 	fileOop = interpreterProxy->instantiateClassindexableSize(interpreterProxy->classByteArray(), fileRecordSize());
@@ -132,7 +131,7 @@ l1:	/* end fileValueOf: */;
 	if (!(interpreterProxy->failed())) {
 		if (secureFlag) {
 			if (sCOFfn != 0) {
-				okToOpen = ((int (*) (char *, int, int)) sCOFfn)(nameIndex, nameSize, writeFlag);
+				okToOpen = ((sqInt (*) (char *, sqInt, sqInt)) sCOFfn)(nameIndex, nameSize, writeFlag);
 				if (!(okToOpen)) {
 					interpreterProxy->primitiveFail();
 				}
@@ -140,7 +139,7 @@ l1:	/* end fileValueOf: */;
 		}
 	}
 	if (!(interpreterProxy->failed())) {
-		sqFileOpen(file, (int)nameIndex, nameSize, writeFlag);
+		sqFileOpen(file, nameIndex, nameSize, writeFlag);
 	}
 	return fileOop;
 }
@@ -148,19 +147,26 @@ l1:	/* end fileValueOf: */;
 
 /*	Return the size of a Smalltalk file record in bytes. */
 
-int fileRecordSize(void) {
+sqInt fileRecordSize(void) {
 	return sizeof(SQFile);
 }
 
 
 /*	Return a pointer to the first byte of of the file record within the given Smalltalk object, or nil if objectPointer is not a file record. */
 
-SQFile * fileValueOf(int objectPointer) {
+SQFile * fileValueOf(sqInt objectPointer) {
 	if (!((interpreterProxy->isBytes(objectPointer)) && ((interpreterProxy->byteSizeOf(objectPointer)) == (fileRecordSize())))) {
 		interpreterProxy->primitiveFail();
 		return null;
 	}
 	return interpreterProxy->firstIndexableField(objectPointer);
+}
+
+
+/*	Note: This is coded so that plugins can be run from Squeak. */
+
+static VirtualMachine * getInterpreter(void) {
+	return interpreterProxy;
 }
 
 
@@ -174,17 +180,17 @@ EXPORT(const char*) getModuleName(void) {
 }
 
 
-/*	Exported entry point for the VM. */
+/*	Exported entry point for the VM. Only used by AsynchFilePlugin and needs to be reowrked now we have a VM global session Id capability */
 
-EXPORT(int) getThisSession(void) {
+EXPORT(sqInt) getThisSession(void) {
 	return sqFileThisSession();
 }
 
-static int halt(void) {
+static sqInt halt(void) {
 	;
 }
 
-EXPORT(int) initialiseModule(void) {
+EXPORT(sqInt) initialiseModule(void) {
 	sCCPfn = interpreterProxy->ioLoadFunctionFrom("secCanCreatePathOfSize", "SecurityPlugin");
 	sCDPfn = interpreterProxy->ioLoadFunctionFrom("secCanDeletePathOfSize", "SecurityPlugin");
 	sCGFTfn = interpreterProxy->ioLoadFunctionFrom("secCanGetFileTypeOfSize", "SecurityPlugin");
@@ -198,14 +204,14 @@ EXPORT(int) initialiseModule(void) {
 	return sqFileInit();
 }
 
-static int makeDirEntryNamesizecreateDatemodDateisDirfileSize(char *entryName, int entryNameSize, int createDate, int modifiedDate, int dirFlag, squeakFileOffsetType fileSize) {
-    int i;
-    int modDateOop;
-    int createDateOop;
-    char *stringPtr;
-    int nameString;
-    int fileSizeOop;
-    int results;
+static sqInt makeDirEntryNamesizecreateDatemodDateisDirfileSize(char * entryName, sqInt entryNameSize, sqInt createDate, sqInt modifiedDate, sqInt dirFlag, squeakFileOffsetType  fileSize) {
+    sqInt i;
+    sqInt modDateOop;
+    sqInt createDateOop;
+    char * stringPtr;
+    sqInt nameString;
+    sqInt fileSizeOop;
+    sqInt results;
 
 	interpreterProxy->pushRemappableOop(interpreterProxy->instantiateClassindexableSize(interpreterProxy->classArray(), 5));
 	interpreterProxy->pushRemappableOop(interpreterProxy->instantiateClassindexableSize(interpreterProxy->classString(), entryNameSize));
@@ -240,21 +246,21 @@ static int makeDirEntryNamesizecreateDatemodDateisDirfileSize(char *entryName, i
 /*	The module with the given name was just unloaded.
 	Make sure we have no dangling references. */
 
-EXPORT(int) moduleUnloaded(char * aModuleName) {
+EXPORT(sqInt) moduleUnloaded(char * aModuleName) {
 	if ((strcmp(aModuleName, "SecurityPlugin")) == 0) {
 		sCCPfn = sCDPfn = sCGFTfn = sCLPfn = sCSFTfn = sDFAfn = sCDFfn = sCOFfn = sCRFfn = sHFAfn = 0;
 	}
 }
 
-static int msg(char *s) {
+static sqInt msg(char * s) {
 	fprintf(stderr, "\n%s: %s", moduleName, s);
 }
 
-EXPORT(int) primitiveDirectoryCreate(void) {
-    int dirName;
+EXPORT(sqInt) primitiveDirectoryCreate(void) {
+    sqInt dirName;
     char * dirNameIndex;
-    int okToCreate;
-    int dirNameSize;
+    sqInt okToCreate;
+    sqInt dirNameSize;
 
 	dirName = interpreterProxy->stackValue(0);
 	if (!(interpreterProxy->isBytes(dirName))) {
@@ -263,27 +269,26 @@ EXPORT(int) primitiveDirectoryCreate(void) {
 	dirNameIndex = interpreterProxy->firstIndexableField(dirName);
 
 	/* If the security plugin can be loaded, use it to check for permission.
-	If 
-	not, assume it's ok */
+	If not, assume it's ok */
 
 	dirNameSize = interpreterProxy->byteSizeOf(dirName);
 	if (sCCPfn != 0) {
-		okToCreate =  ((int (*) (char *, int)) sCCPfn)(dirNameIndex, dirNameSize);
+		okToCreate =  ((sqInt (*)(char *, sqInt))sCCPfn)(dirNameIndex, dirNameSize);
 		if (!(okToCreate)) {
 			return interpreterProxy->primitiveFail();
 		}
 	}
-	if (!(dir_Create((char *) dirNameIndex, dirNameSize))) {
+	if (!(dir_Create(dirNameIndex, dirNameSize))) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(1);
 }
 
-EXPORT(int) primitiveDirectoryDelete(void) {
-    int okToDelete;
-    int dirName;
+EXPORT(sqInt) primitiveDirectoryDelete(void) {
+    sqInt okToDelete;
+    sqInt dirName;
     char * dirNameIndex;
-    int dirNameSize;
+    sqInt dirNameSize;
 
 	dirName = interpreterProxy->stackValue(0);
 	if (!(interpreterProxy->isBytes(dirName))) {
@@ -292,24 +297,23 @@ EXPORT(int) primitiveDirectoryDelete(void) {
 	dirNameIndex = interpreterProxy->firstIndexableField(dirName);
 
 	/* If the security plugin can be loaded, use it to check for permission.
-	If 
-	not, assume it's ok */
+	If not, assume it's ok */
 
 	dirNameSize = interpreterProxy->byteSizeOf(dirName);
 	if (sCDPfn != 0) {
-		okToDelete =  ((int (*) (char *, int)) sCDPfn)(dirNameIndex, dirNameSize);
+		okToDelete =  ((sqInt (*)(char *, sqInt))sCDPfn)(dirNameIndex, dirNameSize);
 		if (!(okToDelete)) {
 			return interpreterProxy->primitiveFail();
 		}
 	}
-	if (!(dir_Delete((char *) dirNameIndex, dirNameSize))) {
+	if (!(dir_Delete(dirNameIndex, dirNameSize))) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(1);
 }
 
-EXPORT(int) primitiveDirectoryDelimitor(void) {
-    int ascii;
+EXPORT(sqInt) primitiveDirectoryDelimitor(void) {
+    sqInt ascii;
 
 	ascii = asciiDirectoryDelimiter();
 	if (!((ascii >= 0) && (ascii <= 255))) {
@@ -319,15 +323,15 @@ EXPORT(int) primitiveDirectoryDelimitor(void) {
 	interpreterProxy->push(interpreterProxy->fetchPointerofObject(ascii, interpreterProxy->characterTable()));
 }
 
-EXPORT(int) primitiveDirectoryGetMacTypeAndCreator(void) {
+EXPORT(sqInt) primitiveDirectoryGetMacTypeAndCreator(void) {
     char * creatorStringIndex;
     char * typeStringIndex;
-    int fileNameSize;
-    int okToGet;
+    sqInt fileNameSize;
+    sqInt okToGet;
     char * fileNameIndex;
-    int fileName;
-    int typeString;
-    int creatorString;
+    sqInt fileName;
+    sqInt typeString;
+    sqInt creatorString;
 
 	creatorString = interpreterProxy->stackValue(0);
 	typeString = interpreterProxy->stackValue(1);
@@ -346,37 +350,34 @@ EXPORT(int) primitiveDirectoryGetMacTypeAndCreator(void) {
 	fileNameIndex = interpreterProxy->firstIndexableField(fileName);
 
 	/* If the security plugin can be loaded, use it to check for permission.
-	If 
-	not, assume it's ok */
+	If not, assume it's ok */
 
 	fileNameSize = interpreterProxy->byteSizeOf(fileName);
 	if (sCGFTfn != 0) {
-		okToGet =  ((int (*) (char *, int)) sCGFTfn)(fileNameIndex, fileNameSize);
+		okToGet =  ((sqInt (*)(char *, sqInt))sCGFTfn)(fileNameIndex, fileNameSize);
 		if (!(okToGet)) {
 			return interpreterProxy->primitiveFail();
 		}
 	}
-	if (!(dir_GetMacFileTypeAndCreator(
-			(char *) fileNameIndex, fileNameSize,
-			(char *) typeStringIndex, (char *) creatorStringIndex))) {
+	if (!(dir_GetMacFileTypeAndCreator(fileNameIndex, fileNameSize, typeStringIndex, creatorStringIndex))) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(3);
 }
 
-EXPORT(int) primitiveDirectoryLookup(void) {
-    int dirFlag;
-    int index;
-    int status;
-    int pathName;
-    int entryNameSize;
-    int pathNameSize;
-    int okToList;
+EXPORT(sqInt) primitiveDirectoryLookup(void) {
+    sqInt dirFlag;
+    sqInt index;
+    sqInt status;
+    sqInt pathName;
+    sqInt entryNameSize;
+    sqInt pathNameSize;
+    sqInt okToList;
     char * pathNameIndex;
-    int modifiedDate;
+    sqInt modifiedDate;
     char entryName[256];
     squeakFileOffsetType fileSize;
-    int createDate;
+    sqInt createDate;
 
 	index = interpreterProxy->stackIntegerValue(0);
 	pathName = interpreterProxy->stackValue(1);
@@ -390,15 +391,14 @@ EXPORT(int) primitiveDirectoryLookup(void) {
 
 	pathNameSize = interpreterProxy->byteSizeOf(pathName);
 	if (sCLPfn != 0) {
-		okToList =  ((int (*) (char *, int)) sCLPfn)(pathNameIndex, pathNameSize);
+		okToList = ((sqInt (*)(char *, sqInt))sCLPfn)(pathNameIndex, pathNameSize);
 	} else {
 		okToList = 1;
 	}
 	if (okToList) {
-		status = dir_Lookup(
-				(char *) pathNameIndex, pathNameSize, index,
-				entryName, &entryNameSize, &createDate, &modifiedDate,
-				&dirFlag, &fileSize);
+		status = dir_Lookup(pathNameIndex, pathNameSize, index,
+												entryName, &entryNameSize, &createDate,
+												&modifiedDate, &dirFlag, &fileSize);
 	} else {
 		status = DirNoMoreEntries;
 	}
@@ -406,26 +406,24 @@ EXPORT(int) primitiveDirectoryLookup(void) {
 		return null;
 	}
 	if (status == DirNoMoreEntries) {
-		interpreterProxy->pop(3);
-		interpreterProxy->push(interpreterProxy->nilObject());
+		interpreterProxy->popthenPush(3, interpreterProxy->nilObject());
 		return null;
 	}
 	if (status == DirBadPath) {
 		return interpreterProxy->primitiveFail();
 	}
-	interpreterProxy->pop(3);
-	interpreterProxy->push(makeDirEntryNamesizecreateDatemodDateisDirfileSize(entryName, entryNameSize, createDate, modifiedDate, dirFlag, fileSize));
+	interpreterProxy->popthenPush(3, makeDirEntryNamesizecreateDatemodDateisDirfileSize(entryName, entryNameSize, createDate, modifiedDate, dirFlag, fileSize));
 }
 
-EXPORT(int) primitiveDirectorySetMacTypeAndCreator(void) {
+EXPORT(sqInt) primitiveDirectorySetMacTypeAndCreator(void) {
     char * creatorStringIndex;
     char * typeStringIndex;
-    int fileNameSize;
-    int okToSet;
+    sqInt fileNameSize;
+    sqInt okToSet;
     char * fileNameIndex;
-    int fileName;
-    int typeString;
-    int creatorString;
+    sqInt fileName;
+    sqInt typeString;
+    sqInt creatorString;
 
 	creatorString = interpreterProxy->stackValue(0);
 	typeString = interpreterProxy->stackValue(1);
@@ -444,37 +442,34 @@ EXPORT(int) primitiveDirectorySetMacTypeAndCreator(void) {
 	fileNameIndex = interpreterProxy->firstIndexableField(fileName);
 
 	/* If the security plugin can be loaded, use it to check for permission.
-	If 
-	not, assume it's ok */
+	If not, assume it's ok */
 
 	fileNameSize = interpreterProxy->byteSizeOf(fileName);
 	if (sCSFTfn != 0) {
-		okToSet =  ((int (*) (char *, int)) sCSFTfn)(fileNameIndex, fileNameSize);
+		okToSet =  ((sqInt (*)(char *, sqInt))sCSFTfn)(fileNameIndex, fileNameSize);
 		if (!(okToSet)) {
 			return interpreterProxy->primitiveFail();
 		}
 	}
-	if (!(dir_SetMacFileTypeAndCreator(
-			(char *) fileNameIndex, fileNameSize,
-			(char *) typeStringIndex, (char *) creatorStringIndex))) {
+	if (!(dir_SetMacFileTypeAndCreator(fileNameIndex, fileNameSize,typeStringIndex, creatorStringIndex))) {
 		return interpreterProxy->primitiveFail();
 	}
 	interpreterProxy->pop(3);
 }
 
-EXPORT(int) primitiveDisableFileAccess(void) {
+EXPORT(sqInt) primitiveDisableFileAccess(void) {
 	if (sDFAfn != 0) {
-		 ((int (*) (void)) sDFAfn)();
+		 ((sqInt (*)(void))sDFAfn)();
 	}
 	if (!(interpreterProxy->failed())) {
 		interpreterProxy->pop(1);
 	}
 }
 
-EXPORT(int) primitiveFileAtEnd(void) {
-    int atEnd;
+EXPORT(sqInt) primitiveFileAtEnd(void) {
+    sqInt atEnd;
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	/* begin fileValueOf: */
 	objectPointer = interpreterProxy->stackValue(0);
@@ -494,9 +489,9 @@ l1:	/* end fileValueOf: */;
 	}
 }
 
-EXPORT(int) primitiveFileClose(void) {
+EXPORT(sqInt) primitiveFileClose(void) {
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	/* begin fileValueOf: */
 	objectPointer = interpreterProxy->stackValue(0);
@@ -515,10 +510,10 @@ l1:	/* end fileValueOf: */;
 	}
 }
 
-EXPORT(int) primitiveFileDelete(void) {
-    int nameSize;
-    int okToDelete;
-    int namePointer;
+EXPORT(sqInt) primitiveFileDelete(void) {
+    sqInt nameSize;
+    sqInt okToDelete;
+    sqInt namePointer;
     char * nameIndex;
 
 	namePointer = interpreterProxy->stackValue(0);
@@ -528,25 +523,24 @@ EXPORT(int) primitiveFileDelete(void) {
 	nameIndex = interpreterProxy->firstIndexableField(namePointer);
 
 	/* If the security plugin can be loaded, use it to check for permission.
-	If 
-	not, assume it's ok */
+	If not, assume it's ok */
 
 	nameSize = interpreterProxy->byteSizeOf(namePointer);
 	if (sCDFfn != 0) {
-		okToDelete =  ((int (*) (char *, int)) sCDFfn)(nameIndex, nameSize);
+		okToDelete =  ((sqInt (*)(char *, sqInt))sCDFfn)(nameIndex, nameSize);
 		if (!(okToDelete)) {
 			return interpreterProxy->primitiveFail();
 		}
 	}
-	sqFileDeleteNameSize(((int) nameIndex), nameSize);
+	sqFileDeleteNameSize(nameIndex, nameSize);
 	if (!(interpreterProxy->failed())) {
 		interpreterProxy->pop(1);
 	}
 }
 
-EXPORT(int) primitiveFileFlush(void) {
+EXPORT(sqInt) primitiveFileFlush(void) {
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	/* begin fileValueOf: */
 	objectPointer = interpreterProxy->stackValue(0);
@@ -565,10 +559,10 @@ l1:	/* end fileValueOf: */;
 	}
 }
 
-EXPORT(int) primitiveFileGetPosition(void) {
+EXPORT(sqInt) primitiveFileGetPosition(void) {
     squeakFileOffsetType position;
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	/* begin fileValueOf: */
 	objectPointer = interpreterProxy->stackValue(0);
@@ -583,17 +577,16 @@ l1:	/* end fileValueOf: */;
 		position = sqFileGetPosition(file);
 	}
 	if (!(interpreterProxy->failed())) {
-		interpreterProxy->pop(2);
-		interpreterProxy->push(interpreterProxy->positive64BitIntegerFor(position));
+		interpreterProxy->popthenPush(2, interpreterProxy->positive64BitIntegerFor(position));
 	}
 }
 
-EXPORT(int) primitiveFileOpen(void) {
-    int nameSize;
-    int filePointer;
-    int namePointer;
+EXPORT(sqInt) primitiveFileOpen(void) {
+    sqInt nameSize;
+    sqInt filePointer;
+    sqInt namePointer;
     char * nameIndex;
-    int writeFlag;
+    sqInt writeFlag;
 
 	writeFlag = interpreterProxy->booleanValueOf(interpreterProxy->stackValue(0));
 	namePointer = interpreterProxy->stackValue(1);
@@ -604,20 +597,19 @@ EXPORT(int) primitiveFileOpen(void) {
 	nameSize = interpreterProxy->byteSizeOf(namePointer);
 	filePointer = fileOpenNamesizewritesecure(nameIndex, nameSize, writeFlag, 1);
 	if (!(interpreterProxy->failed())) {
-		interpreterProxy->pop(3);
-		interpreterProxy->push(filePointer);
+		interpreterProxy->popthenPush(3, filePointer);
 	}
 }
 
-EXPORT(int) primitiveFileRead(void) {
-    int bytesRead;
+EXPORT(sqInt) primitiveFileRead(void) {
+    sqInt bytesRead;
     size_t count;
-    int array;
+    sqInt array;
     size_t byteSize;
     char * arrayIndex;
     size_t startIndex;
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	count = interpreterProxy->positive32BitValueOf(interpreterProxy->stackValue(0));
 	startIndex = interpreterProxy->positive32BitValueOf(interpreterProxy->stackValue(1));
@@ -646,21 +638,20 @@ l1:	/* end fileValueOf: */;
 	/* Note: adjust startIndex for zero-origin indexing */
 
 	arrayIndex = interpreterProxy->firstIndexableField(array);
-	bytesRead = sqFileReadIntoAt(file, count * byteSize, ((int) arrayIndex), (startIndex - 1) * byteSize);
+	bytesRead = sqFileReadIntoAt(file, count * byteSize, arrayIndex, (startIndex - 1) * byteSize);
 	if (!(interpreterProxy->failed())) {
-		interpreterProxy->pop(5);
-		interpreterProxy->pushInteger(bytesRead / byteSize);
+		interpreterProxy->popthenPush(5, (((bytesRead / byteSize) << 1) | 1));
 	}
 }
 
-EXPORT(int) primitiveFileRename(void) {
-    int newNameSize;
+EXPORT(sqInt) primitiveFileRename(void) {
+    sqInt newNameSize;
     char * newNameIndex;
-    int okToRename;
-    int oldNamePointer;
+    sqInt okToRename;
+    sqInt oldNamePointer;
     char * oldNameIndex;
-    int oldNameSize;
-    int newNamePointer;
+    sqInt oldNameSize;
+    sqInt newNamePointer;
 
 	newNamePointer = interpreterProxy->stackValue(0);
 	oldNamePointer = interpreterProxy->stackValue(1);
@@ -671,28 +662,27 @@ EXPORT(int) primitiveFileRename(void) {
 	newNameSize = interpreterProxy->byteSizeOf(newNamePointer);
 	oldNameIndex = interpreterProxy->firstIndexableField(oldNamePointer);
 
-	/* If the security plugin can be loaded, use it to check for rename 
-	permission.
+	/* If the security plugin can be loaded, use it to check for rename permission.
 	If not, assume it's ok */
 
 	oldNameSize = interpreterProxy->byteSizeOf(oldNamePointer);
 	if (sCRFfn != 0) {
-		okToRename =  ((int (*) (char *, int)) sCRFfn)(oldNameIndex, oldNameSize);
+		okToRename =  ((sqInt (*)(char *, sqInt))sCRFfn)(oldNameIndex, oldNameSize);
 		if (!(okToRename)) {
 			return interpreterProxy->primitiveFail();
 		}
 	}
-	sqFileRenameOldSizeNewSize(((int) oldNameIndex), oldNameSize, ((int) newNameIndex), newNameSize);
+	sqFileRenameOldSizeNewSize(oldNameIndex, oldNameSize, newNameIndex, newNameSize);
 	if (!(interpreterProxy->failed())) {
 		interpreterProxy->pop(2);
 	}
 }
 
-EXPORT(int) primitiveFileSetPosition(void) {
-    int sz;
+EXPORT(sqInt) primitiveFileSetPosition(void) {
+    sqInt sz;
     squeakFileOffsetType newPosition;
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	if (!(((interpreterProxy->stackValue(0)) & 1))) {
 		sz = sizeof(squeakFileOffsetType);
@@ -718,10 +708,10 @@ l1:	/* end fileValueOf: */;
 	}
 }
 
-EXPORT(int) primitiveFileSize(void) {
+EXPORT(sqInt) primitiveFileSize(void) {
     squeakFileOffsetType size;
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	/* begin fileValueOf: */
 	objectPointer = interpreterProxy->stackValue(0);
@@ -736,16 +726,18 @@ l1:	/* end fileValueOf: */;
 		size = sqFileSize(file);
 	}
 	if (!(interpreterProxy->failed())) {
-		interpreterProxy->pop(2);
-		interpreterProxy->push(interpreterProxy->positive64BitIntegerFor(size));
+		interpreterProxy->popthenPush(2, interpreterProxy->positive64BitIntegerFor(size));
 	}
 }
 
-EXPORT(int) primitiveFileTruncate(void) {
+
+/*	ftruncate is not an ansi function so we have a macro to point to a suitable platform implementation */
+
+EXPORT(sqInt) primitiveFileTruncate(void) {
     SQFile * file;
-    int sz;
+    sqInt sz;
     squeakFileOffsetType truncatePosition;
-    int objectPointer;
+    sqInt objectPointer;
 
 	if (!(((interpreterProxy->stackValue(0)) & 1))) {
 		sz = sizeof(squeakFileOffsetType);
@@ -771,15 +763,15 @@ l1:	/* end fileValueOf: */;
 	}
 }
 
-EXPORT(int) primitiveFileWrite(void) {
-    int bytesWritten;
+EXPORT(sqInt) primitiveFileWrite(void) {
+    sqInt bytesWritten;
     size_t count;
-    int array;
+    sqInt array;
     size_t byteSize;
     char * arrayIndex;
     size_t startIndex;
     SQFile * file;
-    int objectPointer;
+    sqInt objectPointer;
 
 	count = interpreterProxy->positive32BitValueOf(interpreterProxy->stackValue(0));
 	startIndex = interpreterProxy->positive32BitValueOf(interpreterProxy->stackValue(1));
@@ -809,19 +801,18 @@ l1:	/* end fileValueOf: */;
 		/* Note: adjust startIndex for zero-origin indexing */
 
 		arrayIndex = interpreterProxy->firstIndexableField(array);
-		bytesWritten = sqFileWriteFromAt(file, count * byteSize, ((int) arrayIndex), (startIndex - 1) * byteSize);
+		bytesWritten = sqFileWriteFromAt(file, count * byteSize, arrayIndex, (startIndex - 1) * byteSize);
 	}
 	if (!(interpreterProxy->failed())) {
-		interpreterProxy->pop(5);
-		interpreterProxy->pushInteger(bytesWritten / byteSize);
+		interpreterProxy->popthenPush(5, (((bytesWritten / byteSize) << 1) | 1));
 	}
 }
 
-EXPORT(int) primitiveHasFileAccess(void) {
-    int hasAccess;
+EXPORT(sqInt) primitiveHasFileAccess(void) {
+    sqInt hasAccess;
 
 	if (sHFAfn != 0) {
-		hasAccess =  ((int (*) (void)) sHFAfn)();
+		hasAccess =  ((sqInt (*)(void))sHFAfn)();
 	} else {
 		hasAccess = 1;
 	}
@@ -832,8 +823,8 @@ EXPORT(int) primitiveHasFileAccess(void) {
 
 /*	Note: This is coded so that is can be run from Squeak. */
 
-EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter) {
-    int ok;
+EXPORT(sqInt) setInterpreter(struct VirtualMachine* anInterpreter) {
+    sqInt ok;
 
 	interpreterProxy = anInterpreter;
 	ok = interpreterProxy->majorVersion() == VM_PROXY_MAJOR;
@@ -847,11 +838,11 @@ EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter) {
 
 /*	Exported entry point for the VM. Needed for image saving only and no-op on anything but Macs. */
 
-EXPORT(int) setMacFileTypeAndCreator(char * fileName, char * typeString, char * creatorString) {
+EXPORT(sqInt) setMacFileTypeAndCreator(char * fileName, char * typeString, char * creatorString) {
 	return dir_SetMacFileTypeAndCreator(fileName, strlen(fileName), typeString, creatorString);
 }
 
-EXPORT(int) shutdownModule(void) {
+EXPORT(sqInt) shutdownModule(void) {
 	return sqFileShutdown();
 }
 
@@ -860,37 +851,38 @@ EXPORT(int) shutdownModule(void) {
 
 
 void* FilePlugin_exports[][3] = {
+	{"FilePlugin", "primitiveFileClose", (void*)primitiveFileClose},
+	{"FilePlugin", "primitiveDirectoryGetMacTypeAndCreator", (void*)primitiveDirectoryGetMacTypeAndCreator},
+	{"FilePlugin", "shutdownModule", (void*)shutdownModule},
 	{"FilePlugin", "primitiveHasFileAccess", (void*)primitiveHasFileAccess},
-	{"FilePlugin", "primitiveFileFlush", (void*)primitiveFileFlush},
 	{"FilePlugin", "primitiveFileTruncate", (void*)primitiveFileTruncate},
-	{"FilePlugin", "initialiseModule", (void*)initialiseModule},
-	{"FilePlugin", "primitiveFileGetPosition", (void*)primitiveFileGetPosition},
-	{"FilePlugin", "primitiveDirectoryCreate", (void*)primitiveDirectoryCreate},
+	{"FilePlugin", "primitiveDirectoryDelete", (void*)primitiveDirectoryDelete},
+	{"FilePlugin", "setInterpreter", (void*)setInterpreter},
+	{"FilePlugin", "primitiveFileRead", (void*)primitiveFileRead},
 	{"FilePlugin", "fileOpenNamesizewritesecure", (void*)fileOpenNamesizewritesecure},
-	{"FilePlugin", "primitiveDirectoryDelimitor", (void*)primitiveDirectoryDelimitor},
-	{"FilePlugin", "primitiveDisableFileAccess", (void*)primitiveDisableFileAccess},
+	{"FilePlugin", "primitiveFileGetPosition", (void*)primitiveFileGetPosition},
 	{"FilePlugin", "getModuleName", (void*)getModuleName},
 	{"FilePlugin", "primitiveFileDelete", (void*)primitiveFileDelete},
-	{"FilePlugin", "primitiveDirectoryDelete", (void*)primitiveDirectoryDelete},
-	{"FilePlugin", "primitiveFileSetPosition", (void*)primitiveFileSetPosition},
-	{"FilePlugin", "setInterpreter", (void*)setInterpreter},
-	{"FilePlugin", "primitiveDirectoryLookup", (void*)primitiveDirectoryLookup},
-	{"FilePlugin", "primitiveFileAtEnd", (void*)primitiveFileAtEnd},
-	{"FilePlugin", "primitiveDirectorySetMacTypeAndCreator", (void*)primitiveDirectorySetMacTypeAndCreator},
-	{"FilePlugin", "primitiveFileClose", (void*)primitiveFileClose},
-	{"FilePlugin", "primitiveFileSize", (void*)primitiveFileSize},
-	{"FilePlugin", "primitiveFileRename", (void*)primitiveFileRename},
-	{"FilePlugin", "shutdownModule", (void*)shutdownModule},
+	{"FilePlugin", "primitiveFileFlush", (void*)primitiveFileFlush},
+	{"FilePlugin", "primitiveDisableFileAccess", (void*)primitiveDisableFileAccess},
 	{"FilePlugin", "primitiveFileOpen", (void*)primitiveFileOpen},
-	{"FilePlugin", "setMacFileTypeAndCreator", (void*)setMacFileTypeAndCreator},
-	{"FilePlugin", "moduleUnloaded", (void*)moduleUnloaded},
-	{"FilePlugin", "primitiveDirectoryGetMacTypeAndCreator", (void*)primitiveDirectoryGetMacTypeAndCreator},
-	{"FilePlugin", "getThisSession", (void*)getThisSession},
+	{"FilePlugin", "primitiveDirectoryDelimitor", (void*)primitiveDirectoryDelimitor},
+	{"FilePlugin", "primitiveDirectorySetMacTypeAndCreator", (void*)primitiveDirectorySetMacTypeAndCreator},
 	{"FilePlugin", "primitiveFileWrite", (void*)primitiveFileWrite},
-	{"FilePlugin", "primitiveFileRead", (void*)primitiveFileRead},
+	{"FilePlugin", "moduleUnloaded", (void*)moduleUnloaded},
+	{"FilePlugin", "primitiveFileSize", (void*)primitiveFileSize},
+	{"FilePlugin", "primitiveFileAtEnd", (void*)primitiveFileAtEnd},
+	{"FilePlugin", "initialiseModule", (void*)initialiseModule},
+	{"FilePlugin", "primitiveFileRename", (void*)primitiveFileRename},
+	{"FilePlugin", "primitiveFileSetPosition", (void*)primitiveFileSetPosition},
+	{"FilePlugin", "getThisSession", (void*)getThisSession},
+	{"FilePlugin", "setMacFileTypeAndCreator", (void*)setMacFileTypeAndCreator},
+	{"FilePlugin", "primitiveDirectoryCreate", (void*)primitiveDirectoryCreate},
+	{"FilePlugin", "primitiveDirectoryLookup", (void*)primitiveDirectoryLookup},
 	{NULL, NULL, NULL}
 };
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
+
 

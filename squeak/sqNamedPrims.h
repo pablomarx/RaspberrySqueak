@@ -1,3 +1,6 @@
+/* Automatically generated from Squeak on an Array(10 April 2008 2:04:57 pm)
+by VMMaker 3.8b6
+ */
 /* This is an automatically generated table of all builtin modules in the VM */
 
 extern sqExport vm_exports[];
@@ -24,3 +27,4 @@ sqExport *pluginExports[] = {
 	SecurityPlugin_exports,
 	NULL
 };
+

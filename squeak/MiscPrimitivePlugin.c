@@ -1,4 +1,6 @@
-/* Automatically generated from Squeak on #(19 March 2005 10:09:01 am) */
+/* Automatically generated from Squeak on an Array(10 April 2008 1:42:57 pm)
+by VMMaker 3.8b6
+ */
 
 #include <math.h>
 #include <stdio.h>
@@ -26,11 +28,7 @@
 #define EXPORT(returnType) static returnType
 #endif
 
-/* memory access macros */
-#define byteAt(i) (*((unsigned char *) (i)))
-#define byteAtput(i, val) (*((unsigned char *) (i)) = val)
-#define longAt(i) (*((int *) (i)))
-#define longAtput(i, val) (*((int *) (i)) = val)
+#include "sqMemoryAccess.h"
 
 
 
@@ -64,41 +62,42 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"MiscPrimitivePlugin 19 March 2005 (i)"
+	"MiscPrimitivePlugin 10 April 2008 (i)"
 #else
-	"MiscPrimitivePlugin 19 March 2005 (e)"
+	"MiscPrimitivePlugin 10 April 2008 (e)"
 #endif
 ;
 
 /*** Function Prototypes ***/
-static int encodeBytesOfinat(int anInt, unsigned char *ba, int i);
-static int encodeIntinat(int anInt, unsigned char *ba, int i);
+static sqInt encodeBytesOfinat(sqInt anInt, unsigned char *ba, sqInt i);
+static sqInt encodeIntinat(sqInt anInt, unsigned char *ba, sqInt i);
+static VirtualMachine * getInterpreter(void);
 #pragma export on
 EXPORT(const char*) getModuleName(void);
 #pragma export off
-static int halt(void);
-static int msg(char *s);
+static sqInt halt(void);
+static sqInt msg(char * s);
 #pragma export on
-EXPORT(int) primitiveCompareString(void);
-EXPORT(int) primitiveCompressToByteArray(void);
-EXPORT(int) primitiveConvert8BitSigned(void);
-EXPORT(int) primitiveDecompressFromByteArray(void);
-EXPORT(int) primitiveFindFirstInString(void);
-EXPORT(int) primitiveFindSubstring(void);
-EXPORT(int) primitiveIndexOfAsciiInString(void);
-EXPORT(int) primitiveStringHash(void);
-EXPORT(int) primitiveTranslateStringWithTable(void);
-EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
+EXPORT(sqInt) primitiveCompareString(void);
+EXPORT(sqInt) primitiveCompressToByteArray(void);
+EXPORT(sqInt) primitiveConvert8BitSigned(void);
+EXPORT(sqInt) primitiveDecompressFromByteArray(void);
+EXPORT(sqInt) primitiveFindFirstInString(void);
+EXPORT(sqInt) primitiveFindSubstring(void);
+EXPORT(sqInt) primitiveIndexOfAsciiInString(void);
+EXPORT(sqInt) primitiveStringHash(void);
+EXPORT(sqInt) primitiveTranslateStringWithTable(void);
+EXPORT(sqInt) setInterpreter(struct VirtualMachine* anInterpreter);
 #pragma export off
 
 
 /*	Copy the integer anInt into byteArray ba at index i, and return the next index */
 
-static int encodeBytesOfinat(int anInt, unsigned char *ba, int i) {
-    int j;
+static sqInt encodeBytesOfinat(sqInt anInt, unsigned char *ba, sqInt i) {
+    sqInt j;
 
 	for (j = 0; j <= 3; j += 1) {
-		ba[i + j] = ((((unsigned) anInt) >> ((3 - j) * 8)) & 255);
+		ba[i + j] = ((((usqInt) anInt) >> ((3 - j) * 8)) & 255);
 	}
 	return i + 4;
 }
@@ -110,18 +109,25 @@ static int encodeBytesOfinat(int anInt, unsigned char *ba, int i) {
 		224-254	(0-30)*256 + next byte (0-7935)
 		255		next 4 bytes */
 
-static int encodeIntinat(int anInt, unsigned char *ba, int i) {
+static sqInt encodeIntinat(sqInt anInt, unsigned char *ba, sqInt i) {
 	if (anInt <= 223) {
 		ba[i] = anInt;
 		return i + 1;
 	}
 	if (anInt <= 7935) {
-		ba[i] = ((((int) anInt >> 8)) + 224);
+		ba[i] = ((((sqInt) anInt >> 8)) + 224);
 		ba[i + 1] = (anInt % 256);
 		return i + 2;
 	}
 	ba[i] = 255;
 	return encodeBytesOfinat(anInt, ba, i + 1);
+}
+
+
+/*	Note: This is coded so that plugins can be run from Squeak. */
+
+static VirtualMachine * getInterpreter(void) {
+	return interpreterProxy;
 }
 
 
@@ -134,27 +140,27 @@ EXPORT(const char*) getModuleName(void) {
 	return moduleName;
 }
 
-static int halt(void) {
+static sqInt halt(void) {
 	;
 }
 
-static int msg(char *s) {
+static sqInt msg(char * s) {
 	fprintf(stderr, "\n%s: %s", moduleName, s);
 }
 
 
 /*	Return 1, 2 or 3, if string1 is <, =, or > string2, with the collating order of characters given by the order array. */
 
-EXPORT(int) primitiveCompareString(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveCompareString(void) {
+    sqInt rcvr;
     unsigned char *string1;
     unsigned char *string2;
     unsigned char *order;
-    int len2;
-    int len1;
-    int c2;
-    int i;
-    int c1;
+    sqInt len2;
+    sqInt len1;
+    sqInt c2;
+    sqInt i;
+    sqInt c1;
 
 	rcvr = stackValue(3);
 	string1 = arrayValueOf(stackValue(2));
@@ -235,18 +241,18 @@ EXPORT(int) primitiveCompareString(void) {
 			224-254	(0-30)*256 + next byte (0-7935)
 			255		next 4 bytes */
 
-EXPORT(int) primitiveCompressToByteArray(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveCompressToByteArray(void) {
+    sqInt rcvr;
     int *bm;
     unsigned char *ba;
-    int k;
-    int size;
-    int word;
-    int j;
-    int eqBytes;
-    int i;
-    int lowByte;
-    int m;
+    sqInt k;
+    sqInt size;
+    sqInt word;
+    sqInt j;
+    sqInt eqBytes;
+    sqInt i;
+    sqInt lowByte;
+    sqInt m;
 
 	rcvr = stackValue(2);
 	bm = arrayValueOf(stackValue(1));
@@ -262,7 +268,7 @@ EXPORT(int) primitiveCompressToByteArray(void) {
 	while (k <= size) {
 		word = bm[k];
 		lowByte = word & 255;
-		eqBytes = (((((unsigned) word) >> 8) & 255) == lowByte) && ((((((unsigned) word) >> 16) & 255) == lowByte) && (((((unsigned) word) >> 24) & 255) == lowByte));
+		eqBytes = (((((usqInt) word) >> 8) & 255) == lowByte) && ((((((usqInt) word) >> 16) & 255) == lowByte) && (((((usqInt) word) >> 24) & 255) == lowByte));
 		j = k;
 		while ((j < size) && (word == (bm[j + 1]))) {
 			j += 1;
@@ -309,13 +315,13 @@ EXPORT(int) primitiveCompressToByteArray(void) {
 
 /*	Copy the contents of the given array of signed 8-bit samples into the given array of 16-bit signed samples. */
 
-EXPORT(int) primitiveConvert8BitSigned(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveConvert8BitSigned(void) {
+    sqInt rcvr;
     unsigned char *aByteArray;
     unsigned short *aSoundBuffer;
-    int i;
-    int n;
-    int s;
+    sqInt i;
+    sqInt n;
+    sqInt s;
 
 	rcvr = stackValue(2);
 	aByteArray = arrayValueOf(stackValue(1));
@@ -329,9 +335,9 @@ EXPORT(int) primitiveConvert8BitSigned(void) {
 	for (i = 1; i <= n; i += 1) {
 		s = aByteArray[i];
 		if (s > 127) {
-			aSoundBuffer[i] = (((unsigned) (s - 256) << 8));
+			aSoundBuffer[i] = (((usqInt) (s - 256) << 8));
 		} else {
-			aSoundBuffer[i] = (((unsigned) s << 8));
+			aSoundBuffer[i] = (((usqInt) s << 8));
 		}
 	}
 	if (!(successFlag)) {
@@ -356,21 +362,21 @@ EXPORT(int) primitiveConvert8BitSigned(void) {
 			255		next 4 bytes */
 /*	NOTE:  If fed with garbage, this routine could read past the end of ba, but it should fail before writing past the ned of bm. */
 
-EXPORT(int) primitiveDecompressFromByteArray(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveDecompressFromByteArray(void) {
+    sqInt rcvr;
     int *bm;
     unsigned char *ba;
-    int index;
-    int anInt;
-    int pastEnd;
-    int code;
-    int end;
-    int k;
-    int j;
-    int i;
-    int n;
-    int m;
-    int data;
+    sqInt index;
+    sqInt anInt;
+    sqInt pastEnd;
+    sqInt code;
+    sqInt end;
+    sqInt k;
+    sqInt j;
+    sqInt i;
+    sqInt n;
+    sqInt m;
+    sqInt data;
 
 	rcvr = stackValue(3);
 	bm = arrayValueOf(stackValue(2));
@@ -401,12 +407,12 @@ EXPORT(int) primitiveDecompressFromByteArray(void) {
 			} else {
 				anInt = 0;
 				for (j = 1; j <= 4; j += 1) {
-					anInt = (((unsigned) anInt << 8)) + (ba[i]);
+					anInt = (((usqInt) anInt << 8)) + (ba[i]);
 					i += 1;
 				}
 			}
 		}
-		n = ((unsigned) anInt) >> 2;
+		n = ((usqInt) anInt) >> 2;
 		if ((k + n) > pastEnd) {
 			primitiveFail();
 			return null;
@@ -418,8 +424,8 @@ EXPORT(int) primitiveDecompressFromByteArray(void) {
 		if (code == 1) {
 			data = ba[i];
 			i += 1;
-			data = data | (((unsigned) data << 8));
-			data = data | (((unsigned) data << 16));
+			data = data | (((usqInt) data << 8));
+			data = data | (((usqInt) data << 16));
 			for (j = 1; j <= n; j += 1) {
 				bm[k] = data;
 				k += 1;
@@ -428,7 +434,7 @@ EXPORT(int) primitiveDecompressFromByteArray(void) {
 		if (code == 2) {
 			data = 0;
 			for (j = 1; j <= 4; j += 1) {
-				data = (((unsigned) data << 8)) | (ba[i]);
+				data = (((usqInt) data << 8)) | (ba[i]);
 				i += 1;
 			}
 			for (j = 1; j <= n; j += 1) {
@@ -440,7 +446,7 @@ EXPORT(int) primitiveDecompressFromByteArray(void) {
 			for (m = 1; m <= n; m += 1) {
 				data = 0;
 				for (j = 1; j <= 4; j += 1) {
-					data = (((unsigned) data << 8)) | (ba[i]);
+					data = (((usqInt) data << 8)) | (ba[i]);
 					i += 1;
 				}
 				bm[k] = data;
@@ -454,13 +460,13 @@ EXPORT(int) primitiveDecompressFromByteArray(void) {
 	pop(3);
 }
 
-EXPORT(int) primitiveFindFirstInString(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveFindFirstInString(void) {
+    sqInt rcvr;
     unsigned char *aString;
     char *inclusionMap;
-    int start;
-    int i;
-    int stringSize;
+    sqInt start;
+    sqInt i;
+    sqInt stringSize;
 
 	rcvr = stackValue(3);
 	aString = arrayValueOf(stackValue(2));
@@ -505,14 +511,14 @@ EXPORT(int) primitiveFindFirstInString(void) {
 
 	The algorithm below is not optimum -- it is intended to be translated to C which will go so fast that it wont matter. */
 
-EXPORT(int) primitiveFindSubstring(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveFindSubstring(void) {
+    sqInt rcvr;
     unsigned char *key;
     unsigned char *body;
-    int start;
+    sqInt start;
     unsigned char *matchTable;
-    int startIndex;
-    int index;
+    sqInt startIndex;
+    sqInt index;
 
 	rcvr = stackValue(4);
 	key = arrayValueOf(stackValue(3));
@@ -555,13 +561,13 @@ EXPORT(int) primitiveFindSubstring(void) {
 	return null;
 }
 
-EXPORT(int) primitiveIndexOfAsciiInString(void) {
-    int rcvr;
-    int anInteger;
+EXPORT(sqInt) primitiveIndexOfAsciiInString(void) {
+    sqInt rcvr;
+    sqInt anInteger;
     unsigned char *aString;
-    int start;
-    int pos;
-    int stringSize;
+    sqInt start;
+    sqInt pos;
+    sqInt stringSize;
 
 	rcvr = stackValue(3);
 	anInteger = stackIntegerValue(2);
@@ -598,14 +604,14 @@ EXPORT(int) primitiveIndexOfAsciiInString(void) {
 	The primitive should be renamed at a
 	suitable point in the future */
 
-EXPORT(int) primitiveStringHash(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveStringHash(void) {
+    sqInt rcvr;
     unsigned char *aByteArray;
-    int speciesHash;
-    int pos;
-    int low;
-    int byteArraySize;
-    int hash;
+    sqInt speciesHash;
+    sqInt pos;
+    sqInt low;
+    sqInt byteArraySize;
+    sqInt hash;
 
 	rcvr = stackValue(2);
 	aByteArray = arrayValueOf(stackValue(1));
@@ -622,7 +628,7 @@ EXPORT(int) primitiveStringHash(void) {
 
 		hash += aByteArray[pos];
 		low = hash & 16383;
-		hash = ((9741 * low) + ((((9741 * (((unsigned) hash >> 14))) + (101 * low)) & 16383) * 16384)) & 268435455;
+		hash = ((9741 * low) + ((((9741 * (((usqInt) hash >> 14))) + (101 * low)) & 16383) * 16384)) & 268435455;
 	}
 	if (!(successFlag)) {
 		return null;
@@ -635,13 +641,13 @@ EXPORT(int) primitiveStringHash(void) {
 
 /*	translate the characters in the string by the given table, in place */
 
-EXPORT(int) primitiveTranslateStringWithTable(void) {
-    int rcvr;
+EXPORT(sqInt) primitiveTranslateStringWithTable(void) {
+    sqInt rcvr;
     unsigned char *aString;
-    int start;
-    int stop;
+    sqInt start;
+    sqInt stop;
     unsigned char *table;
-    int i;
+    sqInt i;
 
 	rcvr = stackValue(4);
 	aString = arrayValueOf(stackValue(3));
@@ -665,8 +671,8 @@ EXPORT(int) primitiveTranslateStringWithTable(void) {
 
 /*	Note: This is coded so that is can be run from Squeak. */
 
-EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter) {
-    int ok;
+EXPORT(sqInt) setInterpreter(struct VirtualMachine* anInterpreter) {
+    sqInt ok;
 
 	interpreterProxy = anInterpreter;
 	ok = interpreterProxy->majorVersion() == VM_PROXY_MAJOR;
@@ -682,20 +688,21 @@ EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter) {
 
 
 void* MiscPrimitivePlugin_exports[][3] = {
-	{"MiscPrimitivePlugin", "primitiveIndexOfAsciiInString", (void*)primitiveIndexOfAsciiInString},
 	{"MiscPrimitivePlugin", "primitiveCompareString", (void*)primitiveCompareString},
-	{"MiscPrimitivePlugin", "primitiveStringHash", (void*)primitiveStringHash},
+	{"MiscPrimitivePlugin", "primitiveCompressToByteArray", (void*)primitiveCompressToByteArray},
+	{"MiscPrimitivePlugin", "primitiveDecompressFromByteArray", (void*)primitiveDecompressFromByteArray},
 	{"MiscPrimitivePlugin", "primitiveConvert8BitSigned", (void*)primitiveConvert8BitSigned},
 	{"MiscPrimitivePlugin", "primitiveFindFirstInString", (void*)primitiveFindFirstInString},
-	{"MiscPrimitivePlugin", "primitiveDecompressFromByteArray", (void*)primitiveDecompressFromByteArray},
-	{"MiscPrimitivePlugin", "primitiveTranslateStringWithTable", (void*)primitiveTranslateStringWithTable},
-	{"MiscPrimitivePlugin", "getModuleName", (void*)getModuleName},
-	{"MiscPrimitivePlugin", "primitiveFindSubstring", (void*)primitiveFindSubstring},
-	{"MiscPrimitivePlugin", "primitiveCompressToByteArray", (void*)primitiveCompressToByteArray},
+	{"MiscPrimitivePlugin", "primitiveIndexOfAsciiInString", (void*)primitiveIndexOfAsciiInString},
 	{"MiscPrimitivePlugin", "setInterpreter", (void*)setInterpreter},
+	{"MiscPrimitivePlugin", "primitiveFindSubstring", (void*)primitiveFindSubstring},
+	{"MiscPrimitivePlugin", "primitiveStringHash", (void*)primitiveStringHash},
+	{"MiscPrimitivePlugin", "getModuleName", (void*)getModuleName},
+	{"MiscPrimitivePlugin", "primitiveTranslateStringWithTable", (void*)primitiveTranslateStringWithTable},
 	{NULL, NULL, NULL}
 };
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
+
 

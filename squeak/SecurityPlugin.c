@@ -1,4 +1,6 @@
-/* Automatically generated from Squeak on #(19 March 2005 10:09:03 am) */
+/* Automatically generated from Squeak on an Array(10 April 2008 1:43 pm)
+by VMMaker 3.8b6
+ */
 
 #include <math.h>
 #include <stdio.h>
@@ -27,48 +29,45 @@
 #endif
 #include "SecurityPlugin.h"
 
-/* memory access macros */
-#define byteAt(i) (*((unsigned char *) (i)))
-#define byteAtput(i, val) (*((unsigned char *) (i)) = val)
-#define longAt(i) (*((int *) (i)))
-#define longAtput(i, val) (*((int *) (i)) = val)
+#include "sqMemoryAccess.h"
 
 
 /*** Constants ***/
 
 /*** Function Prototypes ***/
+static VirtualMachine * getInterpreter(void);
 #pragma export on
 EXPORT(const char*) getModuleName(void);
 #pragma export off
-static int halt(void);
+static sqInt halt(void);
 #pragma export on
-EXPORT(int) initialiseModule(void);
+EXPORT(sqInt) initialiseModule(void);
 #pragma export off
-static int msg(char *s);
+static sqInt msg(char * s);
 #pragma export on
-EXPORT(int) primitiveCanWriteImage(void);
-EXPORT(int) primitiveDisableImageWrite(void);
-EXPORT(int) primitiveGetSecureUserDirectory(void);
-EXPORT(int) primitiveGetUntrustedUserDirectory(void);
-EXPORT(int) secCanListenOnPort(int socket, int port);
-EXPORT(int) secCanConnectToPort(int addr, int port);
-EXPORT(int) secCanCreateSocketOfType(int netType, int socketType);
-EXPORT(int) secCanCreatePathOfSize(char * dirName, int dirNameSize);
-EXPORT(int) secCanDeleteFileOfSize(char * fileName, int fileNameSize);
-EXPORT(int) secCanDeletePathOfSize(char * dirName, int dirNameSize);
-EXPORT(int) secCanGetFileTypeOfSize(char * fileName, int fileNameSize);
-EXPORT(int) secCanListPathOfSize(char * pathName, int pathNameSize);
-EXPORT(int) secCanOpenAsyncFileOfSizeWritable(char * fileName, int fileNameSize, int writeFlag);
-EXPORT(int) secCanOpenFileOfSizeWritable(char * fileName, int fileNameSize, int writeFlag);
-EXPORT(int) secCanRenameFileOfSize(char * fileName, int fileNameSize);
-EXPORT(int) secCanRenameImage(void);
-EXPORT(int) secCanSetFileTypeOfSize(char * fileName, int fileNameSize);
-EXPORT(int) secCanWriteImage(void);
-EXPORT(int) secDisableFileAccess(void);
-EXPORT(int) secDisableSocketAccess(void);
-EXPORT(int) secHasFileAccess(void);
-EXPORT(int) secHasSocketAccess(void);
-EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
+EXPORT(sqInt) primitiveCanWriteImage(void);
+EXPORT(sqInt) primitiveDisableImageWrite(void);
+EXPORT(sqInt) primitiveGetSecureUserDirectory(void);
+EXPORT(sqInt) primitiveGetUntrustedUserDirectory(void);
+EXPORT(sqInt) secCanListenOnPort(sqInt socket, sqInt port);
+EXPORT(sqInt) secCanConnectToPort(sqInt addr, sqInt port);
+EXPORT(sqInt) secCanCreateSocketOfType(sqInt netType, sqInt socketType);
+EXPORT(sqInt) secCanCreatePathOfSize(char * dirName, sqInt dirNameSize);
+EXPORT(sqInt) secCanDeleteFileOfSize(char * fileName, sqInt fileNameSize);
+EXPORT(sqInt) secCanDeletePathOfSize(char * dirName, sqInt dirNameSize);
+EXPORT(sqInt) secCanGetFileTypeOfSize(char * fileName, sqInt fileNameSize);
+EXPORT(sqInt) secCanListPathOfSize(char * pathName, sqInt pathNameSize);
+EXPORT(sqInt) secCanOpenAsyncFileOfSizeWritable(char * fileName, sqInt fileNameSize, sqInt writeFlag);
+EXPORT(sqInt) secCanOpenFileOfSizeWritable(char * fileName, sqInt fileNameSize, sqInt writeFlag);
+EXPORT(sqInt) secCanRenameFileOfSize(char * fileName, sqInt fileNameSize);
+EXPORT(sqInt) secCanRenameImage(void);
+EXPORT(sqInt) secCanSetFileTypeOfSize(char * fileName, sqInt fileNameSize);
+EXPORT(sqInt) secCanWriteImage(void);
+EXPORT(sqInt) secDisableFileAccess(void);
+EXPORT(sqInt) secDisableSocketAccess(void);
+EXPORT(sqInt) secHasFileAccess(void);
+EXPORT(sqInt) secHasSocketAccess(void);
+EXPORT(sqInt) setInterpreter(struct VirtualMachine* anInterpreter);
 #pragma export off
 /*** Variables ***/
 
@@ -78,12 +77,19 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"SecurityPlugin 19 March 2005 (i)"
+	"SecurityPlugin 10 April 2008 (i)"
 #else
-	"SecurityPlugin 19 March 2005 (e)"
+	"SecurityPlugin 10 April 2008 (e)"
 #endif
 ;
 
+
+
+/*	Note: This is coded so that plugins can be run from Squeak. */
+
+static VirtualMachine * getInterpreter(void) {
+	return interpreterProxy;
+}
 
 
 /*	Note: This is hardcoded so it can be run from Squeak.
@@ -95,24 +101,24 @@ EXPORT(const char*) getModuleName(void) {
 	return moduleName;
 }
 
-static int halt(void) {
+static sqInt halt(void) {
 	;
 }
 
-EXPORT(int) initialiseModule(void) {
+EXPORT(sqInt) initialiseModule(void) {
 	return ioInitSecurity();
 }
 
-static int msg(char *s) {
+static sqInt msg(char * s) {
 	fprintf(stderr, "\n%s: %s", moduleName, s);
 }
 
-EXPORT(int) primitiveCanWriteImage(void) {
+EXPORT(sqInt) primitiveCanWriteImage(void) {
 	interpreterProxy->pop(1);
 	interpreterProxy->pushBool(ioCanWriteImage());
 }
 
-EXPORT(int) primitiveDisableImageWrite(void) {
+EXPORT(sqInt) primitiveDisableImageWrite(void) {
 	ioDisableImageWrite();
 	if (!(interpreterProxy->failed())) {
 		interpreterProxy->pop(1);
@@ -122,11 +128,11 @@ EXPORT(int) primitiveDisableImageWrite(void) {
 
 /*	Primitive. Return the secure directory for the current user. */
 
-EXPORT(int) primitiveGetSecureUserDirectory(void) {
-    int i;
+EXPORT(sqInt) primitiveGetSecureUserDirectory(void) {
+    sqInt i;
     char * dirName;
-    int dirLen;
-    int dirOop;
+    sqInt dirLen;
+    sqInt dirOop;
     char * dirPtr;
 
 	dirName = ioGetSecureUserDirectory();
@@ -142,18 +148,17 @@ EXPORT(int) primitiveGetSecureUserDirectory(void) {
 	for (i = 0; i <= (dirLen - 1); i += 1) {
 		dirPtr[i] = (dirName[i]);
 	}
-	interpreterProxy->pop(1);
-	interpreterProxy->push(dirOop);
+	interpreterProxy->popthenPush(1, dirOop);
 }
 
 
 /*	Primitive. Return the untrusted user directory name. */
 
-EXPORT(int) primitiveGetUntrustedUserDirectory(void) {
-    int i;
+EXPORT(sqInt) primitiveGetUntrustedUserDirectory(void) {
+    sqInt i;
     char * dirName;
-    int dirLen;
-    int dirOop;
+    sqInt dirLen;
+    sqInt dirOop;
     char * dirPtr;
 
 	dirName = ioGetUntrustedUserDirectory();
@@ -169,87 +174,86 @@ EXPORT(int) primitiveGetUntrustedUserDirectory(void) {
 	for (i = 0; i <= (dirLen - 1); i += 1) {
 		dirPtr[i] = (dirName[i]);
 	}
-	interpreterProxy->pop(1);
-	interpreterProxy->push(dirOop);
+	interpreterProxy->popthenPush(1, dirOop);
 }
 
-EXPORT(int) secCanListenOnPort(int socket, int port) {
+EXPORT(sqInt) secCanListenOnPort(sqInt socket, sqInt port) {
 	return ioCanListenOnPort(socket, port);
 }
 
-EXPORT(int) secCanConnectToPort(int addr, int port) {
+EXPORT(sqInt) secCanConnectToPort(sqInt addr, sqInt port) {
 	return ioCanConnectToPort(addr, port);
 }
 
-EXPORT(int) secCanCreateSocketOfType(int netType, int socketType) {
+EXPORT(sqInt) secCanCreateSocketOfType(sqInt netType, sqInt socketType) {
 	return ioCanCreateSocketOfType(netType, socketType);
 }
 
-EXPORT(int) secCanCreatePathOfSize(char * dirName, int dirNameSize) {
+EXPORT(sqInt) secCanCreatePathOfSize(char * dirName, sqInt dirNameSize) {
 	return ioCanCreatePathOfSize(dirName, dirNameSize);
 }
 
-EXPORT(int) secCanDeleteFileOfSize(char * fileName, int fileNameSize) {
+EXPORT(sqInt) secCanDeleteFileOfSize(char * fileName, sqInt fileNameSize) {
 	return ioCanDeleteFileOfSize(fileName, fileNameSize);
 }
 
-EXPORT(int) secCanDeletePathOfSize(char * dirName, int dirNameSize) {
+EXPORT(sqInt) secCanDeletePathOfSize(char * dirName, sqInt dirNameSize) {
 	return ioCanDeletePathOfSize(dirName, dirNameSize);
 }
 
-EXPORT(int) secCanGetFileTypeOfSize(char * fileName, int fileNameSize) {
+EXPORT(sqInt) secCanGetFileTypeOfSize(char * fileName, sqInt fileNameSize) {
 	return ioCanGetFileTypeOfSize(fileName, fileNameSize);
 }
 
-EXPORT(int) secCanListPathOfSize(char * pathName, int pathNameSize) {
+EXPORT(sqInt) secCanListPathOfSize(char * pathName, sqInt pathNameSize) {
 	return ioCanListPathOfSize(pathName, pathNameSize);
 }
 
-EXPORT(int) secCanOpenAsyncFileOfSizeWritable(char * fileName, int fileNameSize, int writeFlag) {
+EXPORT(sqInt) secCanOpenAsyncFileOfSizeWritable(char * fileName, sqInt fileNameSize, sqInt writeFlag) {
 	return ioCanOpenAsyncFileOfSizeWritable(fileName, fileNameSize, writeFlag);
 }
 
-EXPORT(int) secCanOpenFileOfSizeWritable(char * fileName, int fileNameSize, int writeFlag) {
+EXPORT(sqInt) secCanOpenFileOfSizeWritable(char * fileName, sqInt fileNameSize, sqInt writeFlag) {
 	return ioCanOpenFileOfSizeWritable(fileName, fileNameSize, writeFlag);
 }
 
-EXPORT(int) secCanRenameFileOfSize(char * fileName, int fileNameSize) {
+EXPORT(sqInt) secCanRenameFileOfSize(char * fileName, sqInt fileNameSize) {
 	return ioCanRenameFileOfSize(fileName, fileNameSize);
 }
 
-EXPORT(int) secCanRenameImage(void) {
+EXPORT(sqInt) secCanRenameImage(void) {
 	return ioCanRenameImage();
 }
 
-EXPORT(int) secCanSetFileTypeOfSize(char * fileName, int fileNameSize) {
+EXPORT(sqInt) secCanSetFileTypeOfSize(char * fileName, sqInt fileNameSize) {
 	return ioCanSetFileTypeOfSize(fileName, fileNameSize);
 }
 
-EXPORT(int) secCanWriteImage(void) {
+EXPORT(sqInt) secCanWriteImage(void) {
 	return ioCanWriteImage();
 }
 
-EXPORT(int) secDisableFileAccess(void) {
+EXPORT(sqInt) secDisableFileAccess(void) {
 	return ioDisableFileAccess();
 }
 
-EXPORT(int) secDisableSocketAccess(void) {
+EXPORT(sqInt) secDisableSocketAccess(void) {
 	return ioDisableSocketAccess();
 }
 
-EXPORT(int) secHasFileAccess(void) {
+EXPORT(sqInt) secHasFileAccess(void) {
 	return ioHasFileAccess();
 }
 
-EXPORT(int) secHasSocketAccess(void) {
+EXPORT(sqInt) secHasSocketAccess(void) {
 	return ioHasSocketAccess();
 }
 
 
 /*	Note: This is coded so that is can be run from Squeak. */
 
-EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter) {
-    int ok;
+EXPORT(sqInt) setInterpreter(struct VirtualMachine* anInterpreter) {
+    sqInt ok;
 
 	interpreterProxy = anInterpreter;
 	ok = interpreterProxy->majorVersion() == VM_PROXY_MAJOR;
@@ -265,34 +269,35 @@ EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter) {
 
 
 void* SecurityPlugin_exports[][3] = {
-	{"SecurityPlugin", "secCanSetFileTypeOfSize", (void*)secCanSetFileTypeOfSize},
-	{"SecurityPlugin", "secCanCreateSocketOfType", (void*)secCanCreateSocketOfType},
-	{"SecurityPlugin", "secHasSocketAccess", (void*)secHasSocketAccess},
 	{"SecurityPlugin", "secCanWriteImage", (void*)secCanWriteImage},
+	{"SecurityPlugin", "secCanRenameImage", (void*)secCanRenameImage},
+	{"SecurityPlugin", "primitiveGetSecureUserDirectory", (void*)primitiveGetSecureUserDirectory},
+	{"SecurityPlugin", "secCanListPathOfSize", (void*)secCanListPathOfSize},
+	{"SecurityPlugin", "secCanSetFileTypeOfSize", (void*)secCanSetFileTypeOfSize},
+	{"SecurityPlugin", "secHasFileAccess", (void*)secHasFileAccess},
+	{"SecurityPlugin", "secHasSocketAccess", (void*)secHasSocketAccess},
+	{"SecurityPlugin", "setInterpreter", (void*)setInterpreter},
+	{"SecurityPlugin", "secCanDeleteFileOfSize", (void*)secCanDeleteFileOfSize},
+	{"SecurityPlugin", "primitiveGetUntrustedUserDirectory", (void*)primitiveGetUntrustedUserDirectory},
+	{"SecurityPlugin", "getModuleName", (void*)getModuleName},
+	{"SecurityPlugin", "secCanConnectToPort", (void*)secCanConnectToPort},
+	{"SecurityPlugin", "secCanDeletePathOfSize", (void*)secCanDeletePathOfSize},
+	{"SecurityPlugin", "secDisableSocketAccess", (void*)secDisableSocketAccess},
+	{"SecurityPlugin", "primitiveDisableImageWrite", (void*)primitiveDisableImageWrite},
+	{"SecurityPlugin", "secCanCreateSocketOfType", (void*)secCanCreateSocketOfType},
+	{"SecurityPlugin", "secCanCreatePathOfSize", (void*)secCanCreatePathOfSize},
 	{"SecurityPlugin", "secCanGetFileTypeOfSize", (void*)secCanGetFileTypeOfSize},
 	{"SecurityPlugin", "initialiseModule", (void*)initialiseModule},
-	{"SecurityPlugin", "secCanListPathOfSize", (void*)secCanListPathOfSize},
-	{"SecurityPlugin", "getModuleName", (void*)getModuleName},
 	{"SecurityPlugin", "secCanRenameFileOfSize", (void*)secCanRenameFileOfSize},
-	{"SecurityPlugin", "setInterpreter", (void*)setInterpreter},
-	{"SecurityPlugin", "secCanListenOnPort", (void*)secCanListenOnPort},
-	{"SecurityPlugin", "secCanRenameImage", (void*)secCanRenameImage},
-	{"SecurityPlugin", "secHasFileAccess", (void*)secHasFileAccess},
-	{"SecurityPlugin", "secCanConnectToPort", (void*)secCanConnectToPort},
-	{"SecurityPlugin", "primitiveDisableImageWrite", (void*)primitiveDisableImageWrite},
-	{"SecurityPlugin", "secCanCreatePathOfSize", (void*)secCanCreatePathOfSize},
+	{"SecurityPlugin", "secCanOpenAsyncFileOfSizeWritable", (void*)secCanOpenAsyncFileOfSizeWritable},
 	{"SecurityPlugin", "secDisableFileAccess", (void*)secDisableFileAccess},
-	{"SecurityPlugin", "secDisableSocketAccess", (void*)secDisableSocketAccess},
 	{"SecurityPlugin", "secCanOpenFileOfSizeWritable", (void*)secCanOpenFileOfSizeWritable},
 	{"SecurityPlugin", "primitiveCanWriteImage", (void*)primitiveCanWriteImage},
-	{"SecurityPlugin", "primitiveGetUntrustedUserDirectory", (void*)primitiveGetUntrustedUserDirectory},
-	{"SecurityPlugin", "primitiveGetSecureUserDirectory", (void*)primitiveGetSecureUserDirectory},
-	{"SecurityPlugin", "secCanDeletePathOfSize", (void*)secCanDeletePathOfSize},
-	{"SecurityPlugin", "secCanDeleteFileOfSize", (void*)secCanDeleteFileOfSize},
-	{"SecurityPlugin", "secCanOpenAsyncFileOfSizeWritable", (void*)secCanOpenAsyncFileOfSizeWritable},
+	{"SecurityPlugin", "secCanListenOnPort", (void*)secCanListenOnPort},
 	{NULL, NULL, NULL}
 };
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
+
 
