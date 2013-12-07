@@ -46,7 +46,6 @@ sqInt   sqFileClose(SQFile *f) STUBBED_OUT
 sqInt   sqFileDeleteNameSize(char* sqFileNameIndex, sqInt sqFileNameSize) STUBBED_OUT
 sqInt   sqFileFlush(SQFile *f) STUBBED_OUT
 sqInt   sqGetFilenameFromString(char * aCharBuffer, char * aFilenameString, sqInt filenameLength, sqInt aBoolean) STUBBED_OUT
-sqInt   sqFileInit(void) STUBBED_OUT
 sqInt   sqFileOpen(SQFile *f, char* sqFileNameIndex, sqInt sqFileNameSize, sqInt writeFlag) STUBBED_OUT
 sqInt   sqFileRenameOldSizeNewSize(char* oldNameIndex, sqInt oldNameSize, char* newNameIndex, sqInt newNameSize) STUBBED_OUT
 sqInt   sqFileSetPosition(SQFile *f, squeakFileOffsetType position) STUBBED_OUT
