@@ -29,6 +29,7 @@ static char lastKeys[255];
 static int lastMouseX = 0;
 static int lastMouseY = 0;
 static int lastMouseButton = 0;
+static int lastPollTime = 0;
 
 void RecordKeystroke(unsigned char key, struct KeyboardModifiers modifiers) {
 	int keystate;
@@ -216,6 +217,11 @@ void rpiProcessKeyboardEvents(void) {
 }
 
 int ioGetNextEvent(sqInputEvent *evt) {
+	if (ioMSecs() - lastPollTime < 75) {
+		return false;
+	}
+	lastPollTime = ioMSecs();
+
 	ioProcessEvents();
 	rpiProcessMouseEvents();
 	rpiProcessKeyboardEvents();
