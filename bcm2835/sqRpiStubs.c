@@ -35,6 +35,10 @@ int clipboardSize(void)                                                     STUB
 int clipboardWriteFromAt(int count, int byteArrayIndex, int startIndex)     STUBBED_OUT
 
 /* file i/o */
+sqInt   sqFileInit(void) {
+	return true;
+}
+
 size_t  sqFileReadIntoAt(SQFile *f, size_t count, char* byteArrayIndex, size_t startIndex) STUBBED_OUT
 size_t  sqFileWriteFromAt(SQFile *f, size_t count, char* byteArrayIndex, size_t startIndex) STUBBED_OUT
 sqInt   sqFileAtEnd(SQFile *f) STUBBED_OUT
