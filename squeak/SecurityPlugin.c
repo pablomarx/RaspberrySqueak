@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:58 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:09:03 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -34,19 +34,7 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"SecurityPlugin 4 March 2003 (i)"
-#else
-	"SecurityPlugin 4 March 2003 (e)"
-#endif
-;
+/*** Constants ***/
 
 /*** Function Prototypes ***/
 #pragma export on
@@ -82,6 +70,20 @@ EXPORT(int) secHasFileAccess(void);
 EXPORT(int) secHasSocketAccess(void);
 EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
 #pragma export off
+/*** Variables ***/
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"SecurityPlugin 19 March 2005 (i)"
+#else
+	"SecurityPlugin 19 March 2005 (e)"
+#endif
+;
+
 
 
 /*	Note: This is hardcoded so it can be run from Squeak.
@@ -121,11 +123,11 @@ EXPORT(int) primitiveDisableImageWrite(void) {
 /*	Primitive. Return the secure directory for the current user. */
 
 EXPORT(int) primitiveGetSecureUserDirectory(void) {
+    int i;
     char * dirName;
     int dirLen;
-    char * dirPtr;
-    int i;
     int dirOop;
+    char * dirPtr;
 
 	dirName = ioGetSecureUserDirectory();
 	if ((dirName == null) || (interpreterProxy->failed())) {
@@ -148,11 +150,11 @@ EXPORT(int) primitiveGetSecureUserDirectory(void) {
 /*	Primitive. Return the untrusted user directory name. */
 
 EXPORT(int) primitiveGetUntrustedUserDirectory(void) {
+    int i;
     char * dirName;
     int dirLen;
-    char * dirPtr;
-    int i;
     int dirOop;
+    char * dirPtr;
 
 	dirName = ioGetUntrustedUserDirectory();
 	if ((dirName == null) || (interpreterProxy->failed())) {

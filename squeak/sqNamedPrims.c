@@ -6,7 +6,7 @@
 *   AUTHOR:  Andreas Raab (ar)
 *   ADDRESS: Walt Disney Imagineering, Glendale, CA
 *   EMAIL:   Andreas.Raab@disney.com
-*   RCSID:   $Id: sqNamedPrims.c,v 1.2 2002/05/09 01:36:50 rowledge Exp $
+*   RCSID:   $Id: sqNamedPrims.c 376 2002-05-09 01:36:51Z rowledge $
 *
 *   NOTES:
 *

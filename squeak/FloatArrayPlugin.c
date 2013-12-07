@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:52 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:08:55 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -33,19 +33,7 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"FloatArrayPlugin 4 March 2003 (i)"
-#else
-	"FloatArrayPlugin 4 March 2003 (e)"
-#endif
-;
+/*** Constants ***/
 
 /*** Function Prototypes ***/
 #pragma export on
@@ -67,8 +55,23 @@ EXPORT(int) primitiveMulFloatArray(void);
 EXPORT(int) primitiveMulScalar(void);
 EXPORT(int) primitiveSubFloatArray(void);
 EXPORT(int) primitiveSubScalar(void);
+EXPORT(int) primitiveSum(void);
 EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
 #pragma export off
+/*** Variables ***/
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"FloatArrayPlugin 19 March 2005 (i)"
+#else
+	"FloatArrayPlugin 19 March 2005 (e)"
+#endif
+;
+
 
 
 /*	Note: This is hardcoded so it can be run from Squeak.
@@ -92,11 +95,11 @@ static int msg(char *s) {
 /*	Primitive. Add the receiver and the argument, both FloatArrays and store the result into the receiver. */
 
 EXPORT(int) primitiveAddFloatArray(void) {
-    int i;
     int length;
+    int i;
     int rcvr;
-    float *rcvrPtr;
     float *argPtr;
+    float *rcvrPtr;
     int arg;
 
 	arg = interpreterProxy->stackObjectValue(0);
@@ -127,10 +130,10 @@ EXPORT(int) primitiveAddFloatArray(void) {
 
 EXPORT(int) primitiveAddScalar(void) {
     int i;
-    int length;
     int rcvr;
-    double value;
     float *rcvrPtr;
+    double value;
+    int length;
 
 	value = interpreterProxy->stackFloatValue(0);
 	rcvr = interpreterProxy->stackObjectValue(1);
@@ -151,8 +154,8 @@ EXPORT(int) primitiveAddScalar(void) {
 
 EXPORT(int) primitiveAt(void) {
     int rcvr;
-    int index;
     double floatValue;
+    int index;
     float *floatPtr;
 
 	index = interpreterProxy->stackIntegerValue(0);
@@ -172,10 +175,10 @@ EXPORT(int) primitiveAt(void) {
 }
 
 EXPORT(int) primitiveAtPut(void) {
-    int value;
+    double floatValue;
     int rcvr;
     int index;
-    double floatValue;
+    int value;
     float *floatPtr;
 
 	value = interpreterProxy->stackValue(0);
@@ -205,11 +208,11 @@ EXPORT(int) primitiveAtPut(void) {
 /*	Primitive. Add the receiver and the argument, both FloatArrays and store the result into the receiver. */
 
 EXPORT(int) primitiveDivFloatArray(void) {
-    int i;
     int length;
+    int i;
     int rcvr;
-    float *rcvrPtr;
     float *argPtr;
+    float *rcvrPtr;
     int arg;
 
 	arg = interpreterProxy->stackObjectValue(0);
@@ -247,12 +250,12 @@ EXPORT(int) primitiveDivFloatArray(void) {
 /*	Primitive. Add the argument, a scalar value to the receiver, a FloatArray */
 
 EXPORT(int) primitiveDivScalar(void) {
-    int i;
-    int length;
-    int rcvr;
     double value;
-    float *rcvrPtr;
+    int length;
+    int i;
+    int rcvr;
     double inverse;
+    float *rcvrPtr;
 
 	value = interpreterProxy->stackFloatValue(0);
 	rcvr = interpreterProxy->stackObjectValue(1);
@@ -280,12 +283,12 @@ EXPORT(int) primitiveDivScalar(void) {
 	The dot product is defined as the sum of the products of the individual elements. */
 
 EXPORT(int) primitiveDotProduct(void) {
-    int i;
     int length;
-    int rcvr;
-    float *rcvrPtr;
-    float *argPtr;
     double result;
+    int i;
+    int rcvr;
+    float *argPtr;
+    float *rcvrPtr;
     int arg;
 
 	arg = interpreterProxy->stackObjectValue(0);
@@ -314,11 +317,11 @@ EXPORT(int) primitiveDotProduct(void) {
 }
 
 EXPORT(int) primitiveEqual(void) {
-    int i;
     int length;
+    int i;
     int rcvr;
-    float *rcvrPtr;
     float *argPtr;
+    float *rcvrPtr;
     int arg;
 
 	arg = interpreterProxy->stackObjectValue(0);
@@ -348,9 +351,9 @@ EXPORT(int) primitiveEqual(void) {
 
 EXPORT(int) primitiveHashArray(void) {
     int i;
-    int length;
     int rcvr;
     int *rcvrPtr;
+    int length;
     int result;
 
 	rcvr = interpreterProxy->stackObjectValue(0);
@@ -375,11 +378,11 @@ EXPORT(int) primitiveHashArray(void) {
 /*	Primitive. Add the receiver and the argument, both FloatArrays and store the result into the receiver. */
 
 EXPORT(int) primitiveMulFloatArray(void) {
-    int i;
     int length;
+    int i;
     int rcvr;
-    float *rcvrPtr;
     float *argPtr;
+    float *rcvrPtr;
     int arg;
 
 	arg = interpreterProxy->stackObjectValue(0);
@@ -410,10 +413,10 @@ EXPORT(int) primitiveMulFloatArray(void) {
 
 EXPORT(int) primitiveMulScalar(void) {
     int i;
-    int length;
     int rcvr;
-    double value;
     float *rcvrPtr;
+    double value;
+    int length;
 
 	value = interpreterProxy->stackFloatValue(0);
 	rcvr = interpreterProxy->stackObjectValue(1);
@@ -436,11 +439,11 @@ EXPORT(int) primitiveMulScalar(void) {
 /*	Primitive. Add the receiver and the argument, both FloatArrays and store the result into the receiver. */
 
 EXPORT(int) primitiveSubFloatArray(void) {
-    int i;
     int length;
+    int i;
     int rcvr;
-    float *rcvrPtr;
     float *argPtr;
+    float *rcvrPtr;
     int arg;
 
 	arg = interpreterProxy->stackObjectValue(0);
@@ -471,10 +474,10 @@ EXPORT(int) primitiveSubFloatArray(void) {
 
 EXPORT(int) primitiveSubScalar(void) {
     int i;
-    int length;
     int rcvr;
-    double value;
     float *rcvrPtr;
+    double value;
+    int length;
 
 	value = interpreterProxy->stackFloatValue(0);
 	rcvr = interpreterProxy->stackObjectValue(1);
@@ -491,6 +494,33 @@ EXPORT(int) primitiveSubScalar(void) {
 		rcvrPtr[i] = ((rcvrPtr[i]) - value);
 	}
 	interpreterProxy->pop(1);
+}
+
+
+/*	Primitive. Find the sum of each float in the receiver, a FloatArray, and stash the result into the argument Float. */
+
+EXPORT(int) primitiveSum(void) {
+    int i;
+    double sum;
+    int rcvr;
+    float *rcvrPtr;
+    int length;
+
+	rcvr = interpreterProxy->stackObjectValue(0);
+	if (interpreterProxy->failed()) {
+		return null;
+	}
+	interpreterProxy->success(interpreterProxy->isWords(rcvr));
+	if (interpreterProxy->failed()) {
+		return null;
+	}
+	length = interpreterProxy->stSizeOf(rcvr);
+	rcvrPtr = ((float *) (interpreterProxy->firstIndexableField(rcvr)));
+	sum = 0.0;
+	for (i = 0; i <= (length - 1); i += 1) {
+		sum += rcvrPtr[i];
+	}
+	interpreterProxy->popthenPush(1, interpreterProxy->floatObjectOf(sum));
 }
 
 
@@ -522,6 +552,7 @@ void* FloatArrayPlugin_exports[][3] = {
 	{"FloatArrayPlugin", "primitiveSubScalar", (void*)primitiveSubScalar},
 	{"FloatArrayPlugin", "primitiveDivFloatArray", (void*)primitiveDivFloatArray},
 	{"FloatArrayPlugin", "primitiveMulFloatArray", (void*)primitiveMulFloatArray},
+	{"FloatArrayPlugin", "primitiveSum", (void*)primitiveSum},
 	{"FloatArrayPlugin", "primitiveAddFloatArray", (void*)primitiveAddFloatArray},
 	{"FloatArrayPlugin", "primitiveSubFloatArray", (void*)primitiveSubFloatArray},
 	{"FloatArrayPlugin", "primitiveAt", (void*)primitiveAt},

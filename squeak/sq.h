@@ -6,8 +6,14 @@
 *   AUTHOR:  
 *   ADDRESS: 
 *   EMAIL:   
-*   RCSID:   $Id: sq.h,v 1.5 2002/03/06 10:13:50 bertf Exp $
+*   RCSID:   $Id: sq.h 931 2004-12-08 01:32:15Z rowledge $
 *
+*	09/22/04	tim & jmm - add menu and window event types
+*	03/26/04	tim - add primitive dispatch macro/typedef
+*	11/12/03	nedkonz - float bug fix for gcc 3.3 optimization
+*	05/20/03	tim - move browser related macros in front of
+*			include of sqPlatformSpecific.h
+*	02/26/03	tim change browser plugin support code
 *	01/28/02	Tim add macro default for sqFilenameFromStringOpen
 *		and sqFTruncate
 *	01/22/2002 JMM change off_t to squeakOffsetFileType
@@ -54,22 +60,24 @@
    obviates sometimes having to word-swap floats when reading an image.
 */
 #if defined(DOUBLE_WORD_ALIGNMENT) || defined(DOUBLE_WORD_ORDER)
+/* this is to allow strict aliasing assumption in the optimizer */
+typedef union { double d; int i[sizeof(double) / sizeof(int)]; } _swapper;
 # ifdef DOUBLE_WORD_ORDER
 /* word-based copy with swapping for non-PowerPC order */
-#   define storeFloatAtfrom(i, floatVarName) \
-	*((int *) (i) + 0) = *((int *) &(floatVarName) + 1); \
-	*((int *) (i) + 1) = *((int *) &(floatVarName) + 0);
-#   define fetchFloatAtinto(i, floatVarName) \
-	*((int *) &(floatVarName) + 0) = *((int *) (i) + 1); \
-	*((int *) &(floatVarName) + 1) = *((int *) (i) + 0);
+#   define storeFloatAtfrom(intPointerToFloat, floatVarName) \
+	*((int *)(intPointerToFloat) + 0) = ((_swapper *)(&floatVarName))->i[1]; \
+	*((int *)(intPointerToFloat) + 1) = ((_swapper *)(&floatVarName))->i[0];
+#   define fetchFloatAtinto(intPointerToFloat, floatVarName) \
+	((_swapper *)(&floatVarName))->i[1] = *((int *)(intPointerToFloat) + 0); \
+	((_swapper *)(&floatVarName))->i[0] = *((int *)(intPointerToFloat) + 1);
 # else /*!DOUBLE_WORD_ORDER*/
 /* word-based copy for machines with alignment restrictions */
-#   define storeFloatAtfrom(i, floatVarName) \
-	*((int *) (i) + 0) = *((int *) &(floatVarName) + 0); \
-	*((int *) (i) + 1) = *((int *) &(floatVarName) + 1);
-#   define fetchFloatAtinto(i, floatVarName) \
-	*((int *) &(floatVarName) + 0) = *((int *) (i) + 0); \
-	*((int *) &(floatVarName) + 1) = *((int *) (i) + 1);
+#   define storeFloatAtfrom(intPointerToFloat, floatVarName) \
+	*((int *)(intPointerToFloat) + 0) = ((_swapper *)(&floatVarName))->i[0]; \
+	*((int *)(intPointerToFloat) + 1) = ((_swapper *)(&floatVarName))->i[1];
+#   define fetchFloatAtinto(intPointerToFloat, floatVarName) \
+	((_swapper *)(&floatVarName))->i[0] = *((int *)(intPointerToFloat) + 0); \
+	((_swapper *)(&floatVarName))->i[1] = *((int *)(intPointerToFloat) + 1);
 # endif /*!DOUBLE_WORD_ORDER*/
 #else /*!(DOUBLE_WORD_ORDER||DOUBLE_WORD_ALIGNMENT)*/
 /* for machines that allow doubles to be on any word boundary */
@@ -108,19 +116,16 @@
 
 /* platform-dependent millisecond clock macros */
 /* Note: The Squeak VM uses three different clocks functions for
-   timing. The primary one, ioMSecs(), is used to implement Delay
+   timing.
+   The primary one, ioMSecs(), is used to implement Delay
    and Time millisecondClockValue. The resolution of this clock
    determines the resolution of these basic timing functions. For
    doing real-time control of music and MIDI, a clock with resolution
    down to one millisecond is preferred, but a coarser clock (say,
-   1/60th second) can be used in a pinch. The VM calls a different
-   clock function, ioLowResMSecs(), in order to detect long-running
-   primitives. This function must be inexpensive to call because when
-   a Delay is active it is polled twice per primitive call. On several
-   platforms (Mac, Win32), the high-resolution system clock used in
-   ioMSecs() would incur enough overhead in this case to slow down the
-   the VM significantly. Thus, a cheaper clock with low resolution is
-   used to implement ioLowResMSecs() on these platforms. Finally, the
+   1/60th second) can be used in a pinch.
+   ioLowResMSecs() is used in a few places (mostly Mac code) where a high
+   resoltion clock value is not really important  
+   Finally, the
    function ioMicroMSecs() is used only to collect timing statistics
    for the garbage collector and other VM facilities. (The function
    name is meant to suggest that the function is based on a clock
@@ -128,7 +133,8 @@
    in units of milliseconds.) This clock must have enough precision to
    provide accurate timings, and normally isn't called frequently
    enough to slow down the VM. Thus, it can use a more expensive clock
-   that ioMSecs(). By default, all three clock functions are defined
+   that ioMSecs().
+   By default, all three clock functions are defined
    here as macros based on the standard C library function clock().
    Any of these macros can be overridden in sqPlatformSpecific.h.
 */
@@ -163,6 +169,31 @@ if (1) { \
 */
 #define sqFTruncate(filenum, fileoffset) true
 
+/* old browser plug-in support, maintained for a little while */
+#if 1
+void plugInForceTimeToReturn(void);
+int plugInInit(char *imageName);
+int plugInNotifyUser(char *msg);
+void plugInSetStartTime(void);
+int plugInShutdown(void);
+int plugInTimeToReturn(void);
+#endif
+/* macros to support Mac browser plugin needs without ugly
+ * code in Interpreter
+ */
+#define insufficientMemorySpecifiedError() error("Insufficient memory for this image")
+#define insufficientMemoryAvailableError() error("Failed to allocate memory for the heap")
+#define unableToReadImageError() error("Read failed or premature end of image file")
+#define browserPluginReturnIfNeeded()
+#define browserPluginInitialiseIfNeeded()
+
+
+/* typedef and macro to handle primitive dispatch
+ * the primitive table is now a table and we jump direct to the function */
+typedef  int (*fptr) (void);
+#define dispatchFunctionPointerOnin(index, table)  (((int (*) (void)) ((table)[(index)])) ())
+#define dispatchFunctionPointer(fnPtr) ((int (*) (void)) fnPtr) ()     
+
 /* this include file may redefine earlier definitions and macros: */
 #include "sqPlatformSpecific.h"
 
@@ -196,6 +227,7 @@ int ioSetCursorWithMask(int cursorBitsIndex, int cursorMaskIndex, int offsetX, i
 int ioShowDisplay(
 	int dispBitsIndex, int width, int height, int depth,
 	int affectedL, int affectedR, int affectedT, int affectedB);
+
 int ioHasDisplayDepth(int depth);
 int ioSetDisplayMode(int width, int height, int depth, int fullscreenFlag);
 
@@ -229,6 +261,8 @@ int ioProcessEvents(void);
 #define EventTypeMouse 1
 #define EventTypeKeyboard 2
 #define EventTypeDragDropFiles 3
+#define EventTypeMenu 4
+#define EventTypeWindow 5
 
 /* keypress state for keyboard events */
 #define EventKeyChar 0
@@ -256,7 +290,8 @@ typedef struct sqInputEvent {
 	int unused3;
 	int unused4;
 	int unused5;
-	int unused6;
+	int windowIndex; /* window index is the SmallInt key used in image to
+					  * refer to a host window structure */
 } sqInputEvent;
 
 /* mouse input event definition */
@@ -268,7 +303,7 @@ typedef struct sqMouseEvent {
 	int buttons; /* combination of xxxButtonBit */
 	int modifiers; /* combination of xxxKeyBit */
 	int reserved1; /* reserved for future use */
-	int reserved2; /* reserved for future use */
+	int windowIndex;
 } sqMouseEvent;
 
 /* keyboard input event definition */
@@ -280,7 +315,7 @@ typedef struct sqKeyboardEvent {
 	int modifiers; /* combination of xxxKeyBit */
 	int reserved1; /* reserved for future use */
 	int reserved2; /* reserved for future use */
-	int reserved3; /* reserved for future use */
+	int windowIndex;
 } sqKeyboardEvent;
 
 /* drop files event definition:
@@ -301,8 +336,41 @@ typedef struct sqDragDropFilesEvent {
 	int y; /* mouse position y */
 	int modifiers; /* combination of xxxKeyBit */
 	int numFiles; /* number of files in transaction */
-	int reserved1; /* reserved for future use */
+	int windowIndex;
 } sqDragDropFilesEvent;
+
+/* menu  event definition */
+typedef struct sqMenuEvent {
+    int type; /* type of event; EventTypeMenu */
+    unsigned int timeStamp; /* time stamp */
+     /* the interpretation of the following fields depend on the type  of the event */
+    int menu;        /*Platform dependent to indicate which menu was picked */
+    int menuItem;   /*Given a menu has 1 to N items this should map to the  menu item number */
+    int reserved1; /* reserved for future use */
+    int reserved2; /* reserved for future use */
+    int reserved3; /* reserved for future use */
+    int windowIndex; /* window index is the SmallInt key used in image to
+                      * refer to a host window structure */
+} sqMenuEvent;
+
+typedef struct sqWindowEvent {
+    int type; /* type of event;  EventTypeWindow */
+    unsigned int timeStamp; /* time stamp */
+     /* the interpretation of the following fields depend on the type  of the event */
+    int action;        /*Platform dependent to indicate which menu was picked */
+    int value1; /* used for rectangle edges */
+    int value2; /* used for rectangle edges */
+    int value3; /* used for rectangle edges */
+    int value4; /* used for rectangle edges */
+    int windowIndex; /* window index is the SmallInt key used in image to
+                      * refer to a host window structure */
+} sqWindowEvent;
+#define WindowEventMetricChange 1 /* size or position of window changed - value1-4 are left/top/right/bottom values */
+#define WindowEventClose 2 /* window close icon pressed */
+#define WindowEventIconise 3 /* window iconised  or hidden etc */
+#define WindowEventActivated 4 /* window made active - some platforms only - do not rely upon this */
+#define WindowEventPaint 5 /* window area (in value1-4) needs updating. Some platforms do not need to send this, do not rely on it in image */
+#define WindowEventStinks 6 /* this window stinks. */
 
 
 /* set an asynchronous input semaphore index for events */
@@ -312,6 +380,7 @@ int ioGetNextEvent(sqInputEvent *evt);
 
 /* image file and VM path names */
 extern char imageName[];
+char *getImageName();
 int imageNameGetLength(int sqImageNameIndex, int length);
 int imageNamePutLength(int sqImageNameIndex, int length);
 int imageNameSize(void);
@@ -339,13 +408,7 @@ int clipboardSize(void);
 int clipboardReadIntoAt(int count, int byteArrayIndex, int startIndex);
 int clipboardWriteFromAt(int count, int byteArrayIndex, int startIndex);
 
-/* browser plug-in support */
-void plugInForceTimeToReturn(void);
-int plugInInit(char *sqImageName);
-int plugInNotifyUser(char *msg);
-void plugInSetStartTime(void);
-int plugInShutdown(void);
-int plugInTimeToReturn(void);
+
 
 /* interpreter entry points needed by compiled primitives */
 void * arrayValueOf(int arrayOop);

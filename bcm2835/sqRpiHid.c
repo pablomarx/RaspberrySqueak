@@ -14,9 +14,9 @@ int keyBufPut = 0;                      /* index of next item of keyBuf to write
 int keyBufOverflows = 0;        /* number of characters dropped */
 
 /*** Variables -- Imported from Virtual Machine ***/
-extern int interruptCheckCounter;
-extern int interruptKeycode;
-extern int interruptPending;  /* set to true by RecordKeystroke if interrupt key is pressed */
+int interruptCheckCounter = 0;
+int interruptKeycode = -1;
+int interruptPending = 0;  /* set to true by RecordKeystroke if interrupt key is pressed */
 
 /*** Variables -- Event Recording ***/
 #define MillisecondClockMask 536870911
@@ -29,6 +29,7 @@ static char lastKeys[255];
 static int lastMouseX = 0;
 static int lastMouseY = 0;
 static int lastMouseButton = 0;
+static int lastPollTime = 0;
 
 void RecordKeystroke(unsigned char key, struct KeyboardModifiers modifiers) {
 	int keystate;
@@ -157,7 +158,7 @@ void rpiRegisterKeyboardEvent(int keyCode, int pressCode, int modifiers) {
 	evt->pressCode = pressCode;
 	evt->modifiers = modifiers;
 
-	evt->reserved1=evt->reserved2=evt->reserved3= 0;
+	evt->reserved1=evt->reserved2= 0;
 }
 
 void rpiProcessKeyboardEvents(void) {
@@ -216,6 +217,11 @@ void rpiProcessKeyboardEvents(void) {
 }
 
 int ioGetNextEvent(sqInputEvent *evt) {
+	if (ioMSecs() - lastPollTime < 75) {
+		return false;
+	}
+	lastPollTime = ioMSecs();
+
 	ioProcessEvents();
 	rpiProcessMouseEvents();
 	rpiProcessKeyboardEvents();

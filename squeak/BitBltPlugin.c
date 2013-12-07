@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:46 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:08:52 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -33,110 +33,39 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-static int affectedB;
-static int affectedL;
-static int affectedR;
-static int affectedT;
-static int bbH;
-static int bbW;
-static int bitBltOop;
-static int bitCount;
-static int clipHeight;
-static int clipWidth;
-static int clipX;
-static int clipY;
-static int cmBitsPerColor;
-static int cmFlags;
-static unsigned int *cmLookupTable;
-static int cmMask;
-static unsigned int *cmMaskTable;
-static int *cmShiftTable;
-static int combinationRule;
-static int destBits;
-static int destDelta;
-static int destDepth;
-static int destForm;
-static int destHeight;
-static int destIndex;
-static int destMSB;
-static int destMask;
-static int destPPW;
-static int destPitch;
-static int destWidth;
-static int destX;
-static int destY;
-static const int ditherMatrix4x4[16] = {
-0,	8,	2,	10,
-12,	4,	14,	6,
-3,	11,	1,	9,
-15,	7,	13,	5
-};
-static const int ditherThresholds16[8] = { 0, 2, 4, 6, 8, 12, 14, 16 };
-static const int ditherValues16[32] = {
-0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
-};
-static int dstBitShift;
-static int dx;
-static int dy;
-static int hDir;
-static int halftoneBase;
-static int halftoneForm;
-static int halftoneHeight;
-static int hasSurfaceLock;
-static int height;
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static int isWarping;
-static int lockSurfaceFn;
-static int mask1;
-static int mask2;
-static int maskTable[33] = {
-0, 1, 3, 0, 15, 31, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 65535,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
-};
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"BitBltPlugin 4 March 2003 (i)"
-#else
-	"BitBltPlugin 4 March 2003 (e)"
-#endif
-;
-static int nWords;
-static int noHalftone;
-static int noSource;
-static int opTable[42];
-static int preload;
-static int querySurfaceFn;
-static int skew;
-static int sourceAlpha;
-static int sourceBits;
-static int sourceDelta;
-static int sourceDepth;
-static int sourceForm;
-static int sourceHeight;
-static int sourceIndex;
-static int sourceMSB;
-static int sourcePPW;
-static int sourcePitch;
-static int sourceWidth;
-static int sourceX;
-static int sourceY;
-static int srcBitShift;
-static int sx;
-static int sy;
-static int unlockSurfaceFn;
-static int vDir;
-static int warpAlignMask;
-static int warpAlignShift;
-static int warpBitShiftTable[32];
-static int warpSrcMask;
-static int warpSrcShift;
-static int width;
+/*** Constants ***/
+#define AllOnes 4294967295U
+#define AlphaIndex 3
+#define BBClipHeightIndex 13
+#define BBClipWidthIndex 12
+#define BBClipXIndex 10
+#define BBClipYIndex 11
+#define BBColorMapIndex 14
+#define BBDestFormIndex 0
+#define BBDestXIndex 4
+#define BBDestYIndex 5
+#define BBHalftoneFormIndex 2
+#define BBHeightIndex 7
+#define BBRuleIndex 3
+#define BBSourceFormIndex 1
+#define BBSourceXIndex 8
+#define BBSourceYIndex 9
+#define BBWarpBase 15
+#define BBWidthIndex 6
+#define BinaryPoint 14
+#define BlueIndex 2
+#define ColorMapFixedPart 2
+#define ColorMapIndexedPart 4
+#define ColorMapNewStyle 8
+#define ColorMapPresent 1
+#define FixedPt1 16384
+#define FormBitsIndex 0
+#define FormDepthIndex 3
+#define FormHeightIndex 2
+#define FormWidthIndex 1
+#define GreenIndex 1
+#define OpTableSize 42
+#define RedIndex 0
 
 /*** Function Prototypes ***/
 static int OLDrgbDiffwith(int sourceWord, int destinationWord);
@@ -186,6 +115,7 @@ static int drawLoopXY(int xDelta, int yDelta);
 static int dstLongAt(int idx);
 static int dstLongAtput(int idx, int value);
 static int dstLongAtputmask(int idx, int srcValue, int dstMask);
+static int expensiveDither32To16threshold(int srcWord, int ditherValue);
 static int fetchIntOrFloatofObject(int fieldIndex, int objectPointer);
 static int fetchIntOrFloatofObjectifNil(int fieldIndex, int objectPointer, int defaultValue);
 static int fixAlphawith(int sourceWord, int destinationWord);
@@ -196,6 +126,7 @@ static int halftoneAt(int idx);
 static int halt(void);
 static int ignoreSourceOrHalftone(int formPointer);
 static int initBBOpTable(void);
+static int initDither8Lookup(void);
 #pragma export on
 EXPORT(int) initialiseModule(void);
 #pragma export off
@@ -260,7 +191,7 @@ static int sourceSkewAndPointerInit(void);
 static int sourceWordwith(int sourceWord, int destinationWord);
 static int srcLongAt(int idx);
 static int subWordwith(int sourceWord, int destinationWord);
-static int tableLookupat(int table, int index);
+static int tableLookupat(unsigned int * table, int index);
 static int tallyIntoMapwith(int sourceWord, int destinationWord);
 static int tallyMapAt(int idx);
 static int tallyMapAtput(int idx, int value);
@@ -271,6 +202,112 @@ static int warpLoop(void);
 static int warpLoopSetup(void);
 static int warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdstShiftInc(int nPixels, int xDeltah, int yDeltah, int xDeltav, int yDeltav, int sourceMap, int n, int dstShiftInc);
 static int warpPickSourcePixelsxDeltahyDeltahxDeltavyDeltavdstShiftIncflags(int nPixels, int xDeltah, int yDeltah, int xDeltav, int yDeltav, int dstShiftInc, int mapperFlags);
+/*** Variables ***/
+static int affectedB;
+static int affectedL;
+static int affectedR;
+static int affectedT;
+static int bbH;
+static int bbW;
+static int bitBltOop;
+static int bitCount;
+static int clipHeight;
+static int clipWidth;
+static int clipX;
+static int clipY;
+static int cmBitsPerColor;
+static int cmFlags;
+static unsigned int *cmLookupTable;
+static int cmMask;
+static unsigned int *cmMaskTable;
+static int *cmShiftTable;
+static int combinationRule;
+static int destBits;
+static int destDelta;
+static int destDepth;
+static int destForm;
+static int destHeight;
+static int destIndex;
+static int destMSB;
+static int destMask;
+static int destPPW;
+static int destPitch;
+static int destWidth;
+static int destX;
+static int destY;
+static  unsigned char dither8Lookup[4096];
+static const int ditherMatrix4x4[16] = {
+0,	8,	2,	10,
+12,	4,	14,	6,
+3,	11,	1,	9,
+15,	7,	13,	5
+};
+static const int ditherThresholds16[8] = { 0, 2, 4, 6, 8, 12, 14, 16 };
+static const int ditherValues16[32] = {
+0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+};
+static int dstBitShift;
+static int dx;
+static int dy;
+static int hDir;
+static int halftoneBase;
+static int halftoneForm;
+static int halftoneHeight;
+static int hasSurfaceLock;
+static int height;
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static int isWarping;
+static int lockSurfaceFn;
+static int mask1;
+static int mask2;
+static int maskTable[33] = {
+0, 1, 3, 0, 15, 31, 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 65535,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1
+};
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"BitBltPlugin 19 March 2005 (i)"
+#else
+	"BitBltPlugin 19 March 2005 (e)"
+#endif
+;
+static int nWords;
+static int noHalftone;
+static int noSource;
+static int opTable[42];
+static int preload;
+static int querySurfaceFn;
+static int skew;
+static int sourceAlpha;
+static int sourceBits;
+static int sourceDelta;
+static int sourceDepth;
+static int sourceForm;
+static int sourceHeight;
+static int sourceIndex;
+static int sourceMSB;
+static int sourcePPW;
+static int sourcePitch;
+static int sourceWidth;
+static int sourceX;
+static int sourceY;
+static int srcBitShift;
+static int sx;
+static int sy;
+static int unlockSurfaceFn;
+static int vDir;
+static int warpAlignMask;
+static int warpAlignShift;
+static int warpBitShiftTable[32];
+static int warpSrcMask;
+static int warpSrcShift;
+static int width;
+
 
 
 /*	Subract the pixels in the source and destination, color by color,
@@ -319,23 +356,23 @@ static int OLDrgbDiffwith(int sourceWord, int destinationWord) {
 
 static int OLDtallyIntoMapwith(int sourceWord, int destinationWord) {
     int shiftWord;
-    int i;
     int pixMask;
+    int i;
     int mapIndex;
     int srcPix;
-    int destPix;
     int d;
     int mask;
+    int destPix;
     int srcPix1;
-    int destPix1;
     int d1;
     int mask3;
+    int destPix1;
     int srcPix2;
-    int destPix2;
     int d2;
     int mask4;
+    int destPix2;
 
-	if (!((cmFlags & (1 | 4)) == (1 | 4))) {
+	if (!((cmFlags & (ColorMapPresent | ColorMapIndexedPart)) == (ColorMapPresent | ColorMapIndexedPart))) {
 		return destinationWord;
 	}
 	if (destDepth < 16) {
@@ -512,13 +549,12 @@ static int affectedTop(void) {
 	component.  The high byte of the result will be 0. */
 
 static int alphaBlendwith(int sourceWord, int destinationWord) {
-    int unAlpha;
-    int i;
-    int blend;
     int result;
-    int colorMask;
-    int alpha;
+    int unAlpha;
     int shift;
+    int colorMask;
+    int blend;
+    int alpha;
 
 
 	/* High 8 bits of source pixel */
@@ -533,14 +569,30 @@ static int alphaBlendwith(int sourceWord, int destinationWord) {
 	unAlpha = 255 - alpha;
 	colorMask = 255;
 
-	/* ar 9/9/2000 - include alpha in computation */
+	/* red */
 
 	result = 0;
-	for (i = 1; i <= 4; i += 1) {
-		shift = (i - 1) * 8;
-		blend = ((((((((unsigned) sourceWord) >> shift) & colorMask) * alpha) + (((((unsigned) destinationWord) >> shift) & colorMask) * unAlpha)) + 254) / 255) & colorMask;
-		result = result | (blend << shift);
-	}
+	shift = 0;
+	blend = ((((((((unsigned) sourceWord) >> shift) & colorMask) * alpha) + (((((unsigned) destinationWord) >> shift) & colorMask) * unAlpha)) + 254) / 255) & colorMask;
+
+	/* green */
+
+	result = result | (blend << shift);
+	shift = 8;
+	blend = ((((((((unsigned) sourceWord) >> shift) & colorMask) * alpha) + (((((unsigned) destinationWord) >> shift) & colorMask) * unAlpha)) + 254) / 255) & colorMask;
+
+	/* blue */
+
+	result = result | (blend << shift);
+	shift = 16;
+	blend = ((((((((unsigned) sourceWord) >> shift) & colorMask) * alpha) + (((((unsigned) destinationWord) >> shift) & colorMask) * unAlpha)) + 254) / 255) & colorMask;
+
+	/* alpha (pre-multiplied) */
+
+	result = result | (blend << shift);
+	shift = 24;
+	blend = ((((alpha * 255) + (((((unsigned) destinationWord) >> shift) & colorMask) * unAlpha)) + 254) / 255) & colorMask;
+	result = result | (blend << shift);
 	return result;
 }
 
@@ -563,20 +615,20 @@ static int alphaBlendConstwith(int sourceWord, int destinationWord) {
 	colormaps, as is the case with WarpBlt. */
 
 static int alphaBlendConstwithpaintMode(int sourceWord, int destinationWord, int paintMode) {
-    int unAlpha;
-    int i;
-    int blend;
-    int sourceShifted;
-    int result;
-    int rgbMask;
     int destShifted;
-    int j;
-    int pixMask;
-    int maskShifted;
+    int result;
+    int sourceShifted;
+    int rgbMask;
+    int unAlpha;
     int shift;
-    int pixBlend;
     int bitsPerColor;
+    int blend;
+    int pixMask;
     int sourcePixVal;
+    int i;
+    int pixBlend;
+    int maskShifted;
+    int j;
     int destPixVal;
 
 	if (destDepth < 16) {
@@ -638,13 +690,13 @@ static int alphaBlendConstwithpaintMode(int sourceWord, int destinationWord, int
 	e.g., it is assumed that the source color is already scaled. */
 
 static int alphaBlendScaledwith(int sourceWord, int destinationWord) {
-    int unAlpha;
-    int g;
-    int srcMask;
-    int b;
-    int dstMask;
-    int r;
     int a;
+    int dstMask;
+    int b;
+    int g;
+    int unAlpha;
+    int r;
+    int srcMask;
 
 
 	/* High 8 bits of source pixel */
@@ -693,28 +745,22 @@ static int alphaPaintConstwith(int sourceWord, int destinationWord) {
 	 */
 
 static int alphaSourceBlendBits16(void) {
-    int dstY;
-    int ditherThreshold;
-    int srcY;
-    int sourceWord;
-    int deltaY;
-    int ditherBase;
-    int dstIndex;
-    int dstMask;
-    int destWord;
-    int srcIndex;
     int srcAlpha;
+    int dstIndex;
     int deltaX;
-    int srcShift;
+    int dstMask;
+    int ditherBase;
+    int deltaY;
+    int dstY;
     int ditherIndex;
-    int pv;
-    int value;
-    int out;
-    int threshold;
-    int pv1;
-    int value1;
-    int out1;
-    int threshold1;
+    int srcY;
+    int srcShift;
+    int ditherThreshold;
+    int srcIndex;
+    int sourceWord;
+    int destWord;
+    int addThreshold;
+    int addThreshold1;
     int dstValue;
     int dstValue1;
 
@@ -756,47 +802,20 @@ static int alphaSourceBlendBits16(void) {
 			srcAlpha = ((unsigned) sourceWord) >> 24;
 			if (srcAlpha == 255) {
 				/* begin dither32To16:threshold: */
-				pv = sourceWord & 255;
-				threshold = ditherThresholds16[pv & 7];
-				value = ditherValues16[((unsigned) pv >> 3)];
-				if (ditherThreshold < threshold) {
-					out = value + 1;
-				} else {
-					out = value;
-				}
-				pv = (((unsigned) sourceWord >> 8)) & 255;
-				threshold = ditherThresholds16[pv & 7];
-				value = ditherValues16[((unsigned) pv >> 3)];
-				if (ditherThreshold < threshold) {
-					out = out | (((unsigned) (value + 1) << 5));
-				} else {
-					out = out | (((unsigned) value << 5));
-				}
-				pv = (((unsigned) sourceWord >> 16)) & 255;
-				threshold = ditherThresholds16[pv & 7];
-				value = ditherValues16[((unsigned) pv >> 3)];
-				if (ditherThreshold < threshold) {
-					out = out | (((unsigned) (value + 1) << 10));
-				} else {
-					out = out | (((unsigned) value << 10));
-				}
-				sourceWord = out;
+				addThreshold = ((unsigned) ditherThreshold << 8);
+				sourceWord = ((((unsigned) (dither8Lookup[addThreshold + ((((unsigned) sourceWord >> 16)) & 255)]) << 10)) + (((unsigned) (dither8Lookup[addThreshold + ((((unsigned) sourceWord >> 8)) & 255)]) << 5))) + (dither8Lookup[addThreshold + (sourceWord & 255)]);
 				if (sourceWord == 0) {
-					sourceWord = 1;
+					sourceWord = 1 << srcShift;
+				} else {
+					sourceWord = sourceWord << srcShift;
 				}
-
-				/* Store masked value */
-
-				sourceWord = sourceWord << srcShift;
 				/* begin dstLongAt:put:mask: */
 				dstValue = longAt(dstIndex);
 				dstValue = dstValue & dstMask;
 				dstValue = dstValue | sourceWord;
 				longAtput(dstIndex, dstValue);
 			} else {
-				if (srcAlpha == 0) {
-					null;
-				} else {
+				if (!(srcAlpha == 0)) {
 					destWord = longAt(dstIndex);
 					destWord = destWord & (~dstMask);
 
@@ -812,38 +831,13 @@ static int alphaSourceBlendBits16(void) {
 
 					sourceWord = alphaBlendScaledwith(sourceWord, destWord);
 					/* begin dither32To16:threshold: */
-					pv1 = sourceWord & 255;
-					threshold1 = ditherThresholds16[pv1 & 7];
-					value1 = ditherValues16[((unsigned) pv1 >> 3)];
-					if (ditherThreshold < threshold1) {
-						out1 = value1 + 1;
-					} else {
-						out1 = value1;
-					}
-					pv1 = (((unsigned) sourceWord >> 8)) & 255;
-					threshold1 = ditherThresholds16[pv1 & 7];
-					value1 = ditherValues16[((unsigned) pv1 >> 3)];
-					if (ditherThreshold < threshold1) {
-						out1 = out1 | (((unsigned) (value1 + 1) << 5));
-					} else {
-						out1 = out1 | (((unsigned) value1 << 5));
-					}
-					pv1 = (((unsigned) sourceWord >> 16)) & 255;
-					threshold1 = ditherThresholds16[pv1 & 7];
-					value1 = ditherValues16[((unsigned) pv1 >> 3)];
-					if (ditherThreshold < threshold1) {
-						out1 = out1 | (((unsigned) (value1 + 1) << 10));
-					} else {
-						out1 = out1 | (((unsigned) value1 << 10));
-					}
-					sourceWord = out1;
+					addThreshold1 = ((unsigned) ditherThreshold << 8);
+					sourceWord = ((((unsigned) (dither8Lookup[addThreshold1 + ((((unsigned) sourceWord >> 16)) & 255)]) << 10)) + (((unsigned) (dither8Lookup[addThreshold1 + ((((unsigned) sourceWord >> 8)) & 255)]) << 5))) + (dither8Lookup[addThreshold1 + (sourceWord & 255)]);
 					if (sourceWord == 0) {
-						sourceWord = 1;
+						sourceWord = 1 << srcShift;
+					} else {
+						sourceWord = sourceWord << srcShift;
 					}
-
-					/* Store back */
-
-					sourceWord = sourceWord << srcShift;
 					/* begin dstLongAt:put:mask: */
 					dstValue1 = longAt(dstIndex);
 					dstValue1 = dstValue1 & dstMask;
@@ -882,15 +876,15 @@ static int alphaSourceBlendBits16(void) {
 	 */
 
 static int alphaSourceBlendBits32(void) {
+    int srcAlpha;
+    register int dstIndex;
+    register int deltaX;
+    int deltaY;
     int dstY;
     int srcY;
-    register int sourceWord;
-    int deltaY;
-    register int dstIndex;
-    int destWord;
     register int srcIndex;
-    int srcAlpha;
-    register int deltaX;
+    register int sourceWord;
+    int destWord;
 
 
 	/* So we can pre-decrement */
@@ -961,26 +955,26 @@ static int alphaSourceBlendBits32(void) {
 	 */
 
 static int alphaSourceBlendBits8(void) {
-    int dstY;
-    int srcY;
-    int sourceWord;
-    int deltaY;
+    int srcAlpha;
     int dstIndex;
+    int deltaX;
     int dstMask;
     int mapperFlags;
-    int destWord;
+    int adjust;
+    int deltaY;
+    int dstY;
+    int srcY;
+    int srcShift;
     unsigned int *mappingTable;
     int srcIndex;
-    int srcAlpha;
-    int adjust;
-    int deltaX;
-    int srcShift;
+    int sourceWord;
+    int destWord;
     int pv;
     int val;
     int dstValue;
 
 	mappingTable = default8To32Table();
-	mapperFlags = cmFlags & (~8);
+	mapperFlags = cmFlags & (~ColorMapNewStyle);
 
 	/* So we can pre-decrement */
 
@@ -991,7 +985,7 @@ static int alphaSourceBlendBits8(void) {
 	if (destMSB) {
 		mask1 = 24 - mask1;
 	}
-	mask2 = 4294967295U ^ (255 << mask1);
+	mask2 = AllOnes ^ (255 << mask1);
 	if ((dx & 1) == 0) {
 		adjust = 0;
 	} else {
@@ -1026,8 +1020,8 @@ static int alphaSourceBlendBits8(void) {
 				}
 				/* begin mapPixel:flags: */
 				pv = sourceWord;
-				if ((mapperFlags & 1) != 0) {
-					if ((mapperFlags & 2) != 0) {
+				if ((mapperFlags & ColorMapPresent) != 0) {
+					if ((mapperFlags & ColorMapFixedPart) != 0) {
 						/* begin rgbMapPixel:flags: */
 						val = (((cmShiftTable[0]) < 0) ? ((unsigned) (sourceWord & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (sourceWord & (cmMaskTable[0])) << (cmShiftTable[0])));
 						val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (sourceWord & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (sourceWord & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -1037,7 +1031,7 @@ static int alphaSourceBlendBits8(void) {
 							pv = 1;
 						}
 					}
-					if ((mapperFlags & 4) != 0) {
+					if ((mapperFlags & ColorMapIndexedPart) != 0) {
 						pv = cmLookupTable[pv & cmMask];
 					}
 				}
@@ -1221,13 +1215,13 @@ static int clipRange(void) {
 
 EXPORT(int) copyBits(void) {
     int done;
-    int pixPerM1;
     int dxLowBits;
-    int dWid;
+    int pixPerM1;
     int sxLowBits;
+    int dWid;
     int t;
-    int pixPerM11;
     int endBits;
+    int pixPerM11;
     int startBits;
 
 	clipRange();
@@ -1260,7 +1254,7 @@ EXPORT(int) copyBits(void) {
 		done = 0;
 		goto l1;
 	}
-	if ((destDepth == 8) && ((cmFlags & 1) == 0)) {
+	if ((destDepth == 8) && ((cmFlags & ColorMapPresent) == 0)) {
 		done = 0;
 		goto l1;
 	}
@@ -1300,15 +1294,15 @@ l1:	/* end tryCopyingBitsQuickly */;
 	pixPerM11 = destPPW - 1;
 	startBits = destPPW - (dx & pixPerM11);
 	if (destMSB) {
-		mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+		mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 	} else {
-		mask1 = 4294967295U << (32 - (startBits * destDepth));
+		mask1 = AllOnes << (32 - (startBits * destDepth));
 	}
 	endBits = (((dx + bbW) - 1) & pixPerM11) + 1;
 	if (destMSB) {
-		mask2 = 4294967295U << (32 - (endBits * destDepth));
+		mask2 = AllOnes << (32 - (endBits * destDepth));
 	} else {
-		mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+		mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 	}
 	if (bbW < startBits) {
 		mask1 = mask1 & mask2;
@@ -1418,13 +1412,13 @@ EXPORT(int) copyBitsFromtoat(int startX, int stopX, int yValue) {
 
 static int copyBitsLockedAndClipped(void) {
     int done;
-    int pixPerM1;
     int dxLowBits;
-    int dWid;
+    int pixPerM1;
     int sxLowBits;
+    int dWid;
     int t;
-    int pixPerM11;
     int endBits;
+    int pixPerM11;
     int startBits;
 
 	/* begin tryCopyingBitsQuickly */
@@ -1448,7 +1442,7 @@ static int copyBitsLockedAndClipped(void) {
 		done = 0;
 		goto l1;
 	}
-	if ((destDepth == 8) && ((cmFlags & 1) == 0)) {
+	if ((destDepth == 8) && ((cmFlags & ColorMapPresent) == 0)) {
 		done = 0;
 		goto l1;
 	}
@@ -1489,15 +1483,15 @@ l1:	/* end tryCopyingBitsQuickly */;
 	pixPerM11 = destPPW - 1;
 	startBits = destPPW - (dx & pixPerM11);
 	if (destMSB) {
-		mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+		mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 	} else {
-		mask1 = 4294967295U << (32 - (startBits * destDepth));
+		mask1 = AllOnes << (32 - (startBits * destDepth));
 	}
 	endBits = (((dx + bbW) - 1) & pixPerM11) + 1;
 	if (destMSB) {
-		mask2 = 4294967295U << (32 - (endBits * destDepth));
+		mask2 = AllOnes << (32 - (endBits * destDepth));
 	} else {
-		mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+		mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 	}
 	if (bbW < startBits) {
 		mask1 = mask1 & mask2;
@@ -1590,47 +1584,59 @@ l1:	/* end tryCopyingBitsQuickly */;
 /*	This version of the inner loop assumes noSource = false. */
 
 static int copyLoop(void) {
-    int mergeWord;
+    int nWordsMinusOne;
+    int skewWord;
+    int vDirLocal;
+    int word;
     int skewMask;
     int notSkewMask;
-    int word;
-    int prevWord;
-    int unskew;
-    int (*mergeFnwith)(int, int);
-    int i;
-    int halftoneWord;
-    int skewWord;
+    int thisWord;
     int y;
     int destWord;
+    int hDirLocal;
+    int mergeWord;
     int hInc;
-    int thisWord;
+    int prevWord;
+    int halftoneWord;
+    int skewLocal;
+    int (*mergeFnwith)(int, int);
+    int i;
+    int unskew;
+    int sourceIndexLocal;
+    int destIndexLocal;
 
 	mergeFnwith = ((int (*)(int, int)) (opTable[combinationRule + 1]));
 	mergeFnwith;
+	hInc = hDir * 4;
+	skewLocal = skew;
+	sourceIndexLocal = sourceIndex;
+	destIndexLocal = destIndex;
+	vDirLocal = vDir;
+	hDirLocal = hDir;
 
 	/* Byte delta */
 	/* degenerate skew fixed for Sparc. 10/20/96 ikp */
 
-	hInc = hDir * 4;
-	if (skew == -32) {
-		skew = unskew = skewMask = 0;
+	nWordsMinusOne = nWords - 1;
+	if (skewLocal == -32) {
+		skewLocal = unskew = skewMask = 0;
 	} else {
-		if (skew < 0) {
-			unskew = skew + 32;
-			skewMask = 4294967295U << (0 - skew);
+		if (skewLocal < 0) {
+			unskew = skewLocal + 32;
+			skewMask = AllOnes << (0 - skewLocal);
 		} else {
-			if (skew == 0) {
+			if (skewLocal == 0) {
 				unskew = 0;
-				skewMask = 4294967295U;
+				skewMask = AllOnes;
 			} else {
-				unskew = skew - 32;
-				skewMask = ((unsigned) 4294967295U) >> skew;
+				unskew = skewLocal - 32;
+				skewMask = ((unsigned) AllOnes) >> skewLocal;
 			}
 		}
 	}
 	notSkewMask = ~skewMask;
 	if (noHalftone) {
-		halftoneWord = 4294967295U;
+		halftoneWord = AllOnes;
 		halftoneHeight = 0;
 	} else {
 		halftoneWord = longAt(halftoneBase + ((0 % halftoneHeight) * 4));
@@ -1639,11 +1645,11 @@ static int copyLoop(void) {
 	for (i = 1; i <= bbH; i += 1) {
 		if (halftoneHeight > 1) {
 			halftoneWord = longAt(halftoneBase + ((y % halftoneHeight) * 4));
-			y += vDir;
+			y += vDirLocal;
 		}
 		if (preload) {
-			prevWord = longAt(sourceIndex);
-			sourceIndex += hInc;
+			prevWord = longAt(sourceIndexLocal);
+			sourceIndexLocal += hInc;
 		} else {
 			prevWord = 0;
 		}
@@ -1651,67 +1657,67 @@ static int copyLoop(void) {
 
 		/* pick up next word */
 
-		thisWord = longAt(sourceIndex);
-		sourceIndex += hInc;
+		thisWord = longAt(sourceIndexLocal);
+		sourceIndexLocal += hInc;
 
 		/* 32-bit rotate */
 
-		skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skew < 0) ? ((unsigned) (thisWord & skewMask) >> -skew) : ((unsigned) (thisWord & skewMask) << skew)));
+		skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skewLocal < 0) ? ((unsigned) (thisWord & skewMask) >> -skewLocal) : ((unsigned) (thisWord & skewMask) << skewLocal)));
 		prevWord = thisWord;
-		destWord = longAt(destIndex);
+		destWord = longAt(destIndexLocal);
 		mergeWord = mergeFnwith(skewWord & halftoneWord, destWord);
 		destWord = (destMask & mergeWord) | (destWord & (~destMask));
-		longAtput(destIndex, destWord);
+		longAtput(destIndexLocal, destWord);
 
 		/* This central horizontal loop requires no store masking */
 
-		destIndex += hInc;
-		destMask = 4294967295U;
+		destIndexLocal += hInc;
+		destMask = AllOnes;
 		if (combinationRule == 3) {
-			if ((skew == 0) && (halftoneWord == 4294967295U)) {
-				if (hDir == -1) {
-					for (word = 2; word <= (nWords - 1); word += 1) {
-						thisWord = longAt(sourceIndex);
-						sourceIndex += hInc;
-						longAtput(destIndex, thisWord);
-						destIndex += hInc;
+			if ((skewLocal == 0) && (halftoneWord == AllOnes)) {
+				if (hDirLocal == -1) {
+					for (word = 2; word <= nWordsMinusOne; word += 1) {
+						thisWord = longAt(sourceIndexLocal);
+						sourceIndexLocal += hInc;
+						longAtput(destIndexLocal, thisWord);
+						destIndexLocal += hInc;
 					}
 				} else {
-					for (word = 2; word <= (nWords - 1); word += 1) {
-						longAtput(destIndex, prevWord);
-						destIndex += hInc;
-						prevWord = longAt(sourceIndex);
-						sourceIndex += hInc;
+					for (word = 2; word <= nWordsMinusOne; word += 1) {
+						longAtput(destIndexLocal, prevWord);
+						destIndexLocal += hInc;
+						prevWord = longAt(sourceIndexLocal);
+						sourceIndexLocal += hInc;
 					}
 				}
 			} else {
-				for (word = 2; word <= (nWords - 1); word += 1) {
-					thisWord = longAt(sourceIndex);
-					sourceIndex += hInc;
+				for (word = 2; word <= nWordsMinusOne; word += 1) {
+					thisWord = longAt(sourceIndexLocal);
+					sourceIndexLocal += hInc;
 
 					/* 32-bit rotate */
 
-					skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skew < 0) ? ((unsigned) (thisWord & skewMask) >> -skew) : ((unsigned) (thisWord & skewMask) << skew)));
+					skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skewLocal < 0) ? ((unsigned) (thisWord & skewMask) >> -skewLocal) : ((unsigned) (thisWord & skewMask) << skewLocal)));
 					prevWord = thisWord;
-					longAtput(destIndex, skewWord & halftoneWord);
-					destIndex += hInc;
+					longAtput(destIndexLocal, skewWord & halftoneWord);
+					destIndexLocal += hInc;
 				}
 			}
 		} else {
-			for (word = 2; word <= (nWords - 1); word += 1) {
+			for (word = 2; word <= nWordsMinusOne; word += 1) {
 
 				/* pick up next word */
 
-				thisWord = longAt(sourceIndex);
-				sourceIndex += hInc;
+				thisWord = longAt(sourceIndexLocal);
+				sourceIndexLocal += hInc;
 
 				/* 32-bit rotate */
 
-				skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skew < 0) ? ((unsigned) (thisWord & skewMask) >> -skew) : ((unsigned) (thisWord & skewMask) << skew)));
+				skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skewLocal < 0) ? ((unsigned) (thisWord & skewMask) >> -skewLocal) : ((unsigned) (thisWord & skewMask) << skewLocal)));
 				prevWord = thisWord;
-				mergeWord = mergeFnwith(skewWord & halftoneWord, longAt(destIndex));
-				longAtput(destIndex, mergeWord);
-				destIndex += hInc;
+				mergeWord = mergeFnwith(skewWord & halftoneWord, longAt(destIndexLocal));
+				longAtput(destIndexLocal, mergeWord);
+				destIndexLocal += hInc;
 			}
 		}
 		if (nWords > 1) {
@@ -1719,120 +1725,125 @@ static int copyLoop(void) {
 
 			/* pick up next word */
 
-			thisWord = longAt(sourceIndex);
-			sourceIndex += hInc;
+			thisWord = longAt(sourceIndexLocal);
+			sourceIndexLocal += hInc;
 
 			/* 32-bit rotate */
 
-			skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skew < 0) ? ((unsigned) (thisWord & skewMask) >> -skew) : ((unsigned) (thisWord & skewMask) << skew)));
-			destWord = longAt(destIndex);
+			skewWord = (((unskew < 0) ? ((unsigned) (prevWord & notSkewMask) >> -unskew) : ((unsigned) (prevWord & notSkewMask) << unskew))) | (((skewLocal < 0) ? ((unsigned) (thisWord & skewMask) >> -skewLocal) : ((unsigned) (thisWord & skewMask) << skewLocal)));
+			destWord = longAt(destIndexLocal);
 			mergeWord = mergeFnwith(skewWord & halftoneWord, destWord);
 			destWord = (destMask & mergeWord) | (destWord & (~destMask));
-			longAtput(destIndex, destWord);
-			destIndex += hInc;
+			longAtput(destIndexLocal, destWord);
+			destIndexLocal += hInc;
 		}
-		sourceIndex += sourceDelta;
-		destIndex += destDelta;
+		sourceIndexLocal += sourceDelta;
+		destIndexLocal += destDelta;
 	}
 }
 
 
-/*	Faster copyLoop when source not used.  hDir and vDir are both
+/*	Faster copyLoop when source not used. hDir and vDir are both  
 	positive, and perload and skew are unused */
 
 static int copyLoopNoSource(void) {
     int mergeWord;
+    int nWordsMinusOne;
+    int halftoneWord;
+    int (*mergeFnwith)(int, int);
     int word;
     int i;
-    int (*mergeFnwith)(int, int);
-    int halftoneWord;
     int destWord;
+    int destIndexLocal;
 
 	mergeFnwith = ((int (*)(int, int)) (opTable[combinationRule + 1]));
 	mergeFnwith;
+	destIndexLocal = destIndex;
+	nWordsMinusOne = nWords - 1;
 	for (i = 1; i <= bbH; i += 1) {
 		if (noHalftone) {
-			halftoneWord = 4294967295U;
+			halftoneWord = AllOnes;
 		} else {
 			halftoneWord = longAt(halftoneBase + ((((dy + i) - 1) % halftoneHeight) * 4));
 		}
 		destMask = mask1;
-		destWord = longAt(destIndex);
+		destWord = longAt(destIndexLocal);
 		mergeWord = mergeFnwith(halftoneWord, destWord);
 		destWord = (destMask & mergeWord) | (destWord & (~destMask));
-		longAtput(destIndex, destWord);
+		longAtput(destIndexLocal, destWord);
 
 		/* This central horizontal loop requires no store masking */
 
-		destIndex += 4;
-		destMask = 4294967295U;
+		destIndexLocal += 4;
+		destMask = AllOnes;
 		if (combinationRule == 3) {
 			destWord = halftoneWord;
-			for (word = 2; word <= (nWords - 1); word += 1) {
-				longAtput(destIndex, destWord);
-				destIndex += 4;
+			for (word = 2; word <= nWordsMinusOne; word += 1) {
+				longAtput(destIndexLocal, destWord);
+				destIndexLocal += 4;
 			}
 		} else {
-			for (word = 2; word <= (nWords - 1); word += 1) {
-				destWord = longAt(destIndex);
+			for (word = 2; word <= nWordsMinusOne; word += 1) {
+				destWord = longAt(destIndexLocal);
 				mergeWord = mergeFnwith(halftoneWord, destWord);
-				longAtput(destIndex, mergeWord);
-				destIndex += 4;
+				longAtput(destIndexLocal, mergeWord);
+				destIndexLocal += 4;
 			}
 		}
 		if (nWords > 1) {
 			destMask = mask2;
-			destWord = longAt(destIndex);
+			destWord = longAt(destIndexLocal);
 			mergeWord = mergeFnwith(halftoneWord, destWord);
 			destWord = (destMask & mergeWord) | (destWord & (~destMask));
-			longAtput(destIndex, destWord);
-			destIndex += 4;
+			longAtput(destIndexLocal, destWord);
+			destIndexLocal += 4;
 		}
-		destIndex += destDelta;
+		destIndexLocal += destDelta;
 	}
 }
 
 
-/*	This version of the inner loop maps source pixels
-	to a destination form with different depth.  Because it is already
-	unweildy, the loop is not unrolled as in the other versions.
-	Preload, skew and skewMask are all overlooked, since pickSourcePixels
-	delivers its destination word already properly aligned.
-	Note that pickSourcePixels could be copied in-line at the top of
+/*	This version of the inner loop maps source pixels  
+	to a destination form with different depth. Because it is already  
+	unweildy, the loop is not unrolled as in the other versions.  
+	Preload, skew and skewMask are all overlooked, since pickSourcePixels  
+	delivers its destination word already properly aligned.  
+	Note that pickSourcePixels could be copied in-line at the top of  
 	the horizontal loop, and some of its inits moved out of the loop. */
-/*	ar 12/7/1999:
-	The loop has been rewritten to use only one pickSourcePixels call.
-	The idea is that the call itself could be inlined. If we decide not
+/*	ar 12/7/1999:  
+	The loop has been rewritten to use only one pickSourcePixels call.  
+	The idea is that the call itself could be inlined. If we decide not  
 	to inline pickSourcePixels we could optimize the loop instead. */
 
 static int copyLoopPixMap(void) {
-    int mergeWord;
-    int i;
-    int (*mergeFnwith)(int, int);
-    int destPixMask;
     int nPix;
     int endBits;
-    int nSourceIncs;
-    int halftoneWord;
-    int sourcePixMask;
-    int skewWord;
-    int words;
-    int mapperFlags;
-    int destWord;
-    int dstShiftInc;
-    int startBits;
-    int dstShift;
-    int srcShiftInc;
     int dstShiftLeft;
+    int mapperFlags;
+    int skewWord;
+    int sourcePixMask;
     int srcShift;
+    int nSourceIncs;
     int scrStartBits;
-    int sourcePix;
+    int dstShiftInc;
+    int words;
+    int destWord;
+    int mergeWord;
+    int srcShiftInc;
+    int destPixMask;
+    int halftoneWord;
+    int (*mergeFnwith)(int, int);
+    int i;
+    int dstShift;
+    int startBits;
+    int destIndexLocal;
     int nPix1;
-    int sourceWord;
-    int destPix;
-    int destWord1;
-    int dstShift1;
+    int sourcePix;
     int srcShift1;
+    int sourceWord;
+    int dstShift1;
+    int destWord1;
+    int destPix;
     int idx;
     int idx1;
     int pv;
@@ -1840,10 +1851,14 @@ static int copyLoopPixMap(void) {
 
 	mergeFnwith = ((int (*)(int, int)) (opTable[combinationRule + 1]));
 	mergeFnwith;
+
+	/* Additional inits peculiar to unequal source and dest pix size... */
+
+	destIndexLocal = destIndex;
 	sourcePPW = 32 / sourceDepth;
 	sourcePixMask = maskTable[sourceDepth];
 	destPixMask = maskTable[destDepth];
-	mapperFlags = cmFlags & (~8);
+	mapperFlags = cmFlags & (~ColorMapNewStyle);
 	sourceIndex = (sourceBits + (sy * sourcePitch)) + ((sx / sourcePPW) * 4);
 	scrStartBits = sourcePPW - (sx & (sourcePPW - 1));
 	if (bbW < scrStartBits) {
@@ -1876,7 +1891,7 @@ static int copyLoopPixMap(void) {
 	}
 	for (i = 1; i <= bbH; i += 1) {
 		if (noHalftone) {
-			halftoneWord = 4294967295U;
+			halftoneWord = AllOnes;
 		} else {
 			halftoneWord = longAt(halftoneBase + ((((dy + i) - 1) % halftoneHeight) * 4));
 		}
@@ -1895,10 +1910,10 @@ static int copyLoopPixMap(void) {
 			srcShift1 = srcBitShift;
 			dstShift1 = dstBitShift;
 			nPix1 = nPix;
-			if (mapperFlags == (1 | 4)) {
+			if (mapperFlags == (ColorMapPresent | ColorMapIndexedPart)) {
 				do {
 					sourcePix = (((unsigned) sourceWord) >> srcShift1) & sourcePixMask;
-					destPix = (((int*) cmLookupTable))[sourcePix & cmMask];
+					destPix = tableLookupat(cmLookupTable, sourcePix & cmMask);
 					destWord1 = destWord1 | ((destPix & destPixMask) << dstShift1);
 					dstShift1 += dstShiftInc;
 					if (!(((srcShift1 += srcShiftInc) & 4294967264U) == 0)) {
@@ -1917,8 +1932,8 @@ static int copyLoopPixMap(void) {
 					sourcePix = (((unsigned) sourceWord) >> srcShift1) & sourcePixMask;
 					/* begin mapPixel:flags: */
 					pv = sourcePix;
-					if ((mapperFlags & 1) != 0) {
-						if ((mapperFlags & 2) != 0) {
+					if ((mapperFlags & ColorMapPresent) != 0) {
+						if ((mapperFlags & ColorMapFixedPart) != 0) {
 							/* begin rgbMapPixel:flags: */
 							val = (((cmShiftTable[0]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (sourcePix & (cmMaskTable[0])) << (cmShiftTable[0])));
 							val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (sourcePix & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -1928,7 +1943,7 @@ static int copyLoopPixMap(void) {
 								pv = 1;
 							}
 						}
-						if ((mapperFlags & 4) != 0) {
+						if ((mapperFlags & ColorMapIndexedPart) != 0) {
 							pv = cmLookupTable[pv & cmMask];
 						}
 					}
@@ -1950,26 +1965,26 @@ static int copyLoopPixMap(void) {
 			srcBitShift = srcShift1;
 			skewWord = destWord1;
 			dstBitShift = dstShiftLeft;
-			if (destMask == 4294967295U) {
-				mergeWord = mergeFnwith(skewWord & halftoneWord, longAt(destIndex));
-				longAtput(destIndex, destMask & mergeWord);
+			if (destMask == AllOnes) {
+				mergeWord = mergeFnwith(skewWord & halftoneWord, longAt(destIndexLocal));
+				longAtput(destIndexLocal, destMask & mergeWord);
 			} else {
-				destWord = longAt(destIndex);
+				destWord = longAt(destIndexLocal);
 				mergeWord = mergeFnwith(skewWord & halftoneWord, destWord & destMask);
 				destWord = (destMask & mergeWord) | (destWord & (~destMask));
-				longAtput(destIndex, destWord);
+				longAtput(destIndexLocal, destWord);
 			}
-			destIndex += 4;
+			destIndexLocal += 4;
 			if (words == 2) {
 				destMask = mask2;
 				nPix = endBits;
 			} else {
-				destMask = 4294967295U;
+				destMask = AllOnes;
 				nPix = destPPW;
 			}
 		} while(!((words -= 1) == 0));
 		sourceIndex += sourceDelta;
-		destIndex += destDelta;
+		destIndexLocal += destDelta;
 	}
 }
 
@@ -2033,12 +2048,12 @@ static unsigned int * default8To32Table(void) {
 
 static int deltaFromtonSteps(int x1, int x2, int n) {
 	if (x2 > x1) {
-		return (((x2 - x1) + 16384) / (n + 1)) + 1;
+		return (((x2 - x1) + FixedPt1) / (n + 1)) + 1;
 	} else {
 		if (x2 == x1) {
 			return 0;
 		}
-		return 0 - ((((x1 - x2) + 16384) / (n + 1)) + 1);
+		return 0 - ((((x1 - x2) + FixedPt1) / (n + 1)) + 1);
 	}
 }
 
@@ -2046,8 +2061,8 @@ static int deltaFromtonSteps(int x1, int x2, int n) {
 /*	Compute masks for left and right destination words */
 
 static int destMaskAndPointerInit(void) {
-    int pixPerM1;
     int endBits;
+    int pixPerM1;
     int startBits;
 
 
@@ -2057,15 +2072,15 @@ static int destMaskAndPointerInit(void) {
 	pixPerM1 = destPPW - 1;
 	startBits = destPPW - (dx & pixPerM1);
 	if (destMSB) {
-		mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+		mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 	} else {
-		mask1 = 4294967295U << (32 - (startBits * destDepth));
+		mask1 = AllOnes << (32 - (startBits * destDepth));
 	}
 	endBits = (((dx + bbW) - 1) & pixPerM1) + 1;
 	if (destMSB) {
-		mask2 = 4294967295U << (32 - (endBits * destDepth));
+		mask2 = AllOnes << (32 - (endBits * destDepth));
 	} else {
-		mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+		mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 	}
 	if (bbW < startBits) {
 		mask1 = mask1 & mask2;
@@ -2092,36 +2107,10 @@ static int destinationWordwith(int sourceWord, int destinationWord) {
 /*	Dither the given 32bit word to 16 bit. Ignore alpha. */
 
 static int dither32To16threshold(int srcWord, int ditherValue) {
-    int pv;
-    int value;
-    int out;
-    int threshold;
+    int addThreshold;
 
-	pv = srcWord & 255;
-	threshold = ditherThresholds16[pv & 7];
-	value = ditherValues16[((unsigned) pv >> 3)];
-	if (ditherValue < threshold) {
-		out = value + 1;
-	} else {
-		out = value;
-	}
-	pv = (((unsigned) srcWord >> 8)) & 255;
-	threshold = ditherThresholds16[pv & 7];
-	value = ditherValues16[((unsigned) pv >> 3)];
-	if (ditherValue < threshold) {
-		out = out | (((unsigned) (value + 1) << 5));
-	} else {
-		out = out | (((unsigned) value << 5));
-	}
-	pv = (((unsigned) srcWord >> 16)) & 255;
-	threshold = ditherThresholds16[pv & 7];
-	value = ditherValues16[((unsigned) pv >> 3)];
-	if (ditherValue < threshold) {
-		out = out | (((unsigned) (value + 1) << 10));
-	} else {
-		out = out | (((unsigned) value << 10));
-	}
-	return out;
+	addThreshold = ((unsigned) ditherValue << 8);
+	return ((((unsigned) (dither8Lookup[addThreshold + ((((unsigned) srcWord >> 16)) & 255)]) << 10)) + (((unsigned) (dither8Lookup[addThreshold + ((((unsigned) srcWord >> 8)) & 255)]) << 5))) + (dither8Lookup[addThreshold + (srcWord & 255)]);
 }
 
 
@@ -2129,16 +2118,16 @@ static int dither32To16threshold(int srcWord, int ditherValue) {
 	See the comments in BitBlt>>drawLoopX:Y: */
 
 static int drawLoopXY(int xDelta, int yDelta) {
-    int i;
-    int py;
     int affL;
-    int dy1;
-    int affR;
     int affB;
+    int affR;
+    int P;
+    int i;
     int affT;
     int dx1;
     int px;
-    int P;
+    int dy1;
+    int py;
 
 	if (xDelta > 0) {
 		dx1 = 1;
@@ -2241,8 +2230,8 @@ static int drawLoopXY(int xDelta, int yDelta) {
 	/* store destX, Y back */
 
 	affectedB = affB;
-	interpreterProxy->storeIntegerofObjectwithValue(4, bitBltOop, destX);
-	interpreterProxy->storeIntegerofObjectwithValue(5, bitBltOop, destY);
+	interpreterProxy->storeIntegerofObjectwithValue(BBDestXIndex, bitBltOop, destX);
+	interpreterProxy->storeIntegerofObjectwithValue(BBDestYIndex, bitBltOop, destY);
 }
 
 static int dstLongAt(int idx) {
@@ -2265,6 +2254,42 @@ static int dstLongAtputmask(int idx, int srcValue, int dstMask) {
 	dstValue = dstValue & dstMask;
 	dstValue = dstValue | srcValue;
 	longAtput(idx, dstValue);
+}
+
+
+/*	Dither the given 32bit word to 16 bit. Ignore alpha. */
+
+static int expensiveDither32To16threshold(int srcWord, int ditherValue) {
+    int value;
+    int out;
+    int pv;
+    int threshold;
+
+	pv = srcWord & 255;
+	threshold = ditherThresholds16[pv & 7];
+	value = ditherValues16[((unsigned) pv >> 3)];
+	if (ditherValue < threshold) {
+		out = value + 1;
+	} else {
+		out = value;
+	}
+	pv = (((unsigned) srcWord >> 8)) & 255;
+	threshold = ditherThresholds16[pv & 7];
+	value = ditherValues16[((unsigned) pv >> 3)];
+	if (ditherValue < threshold) {
+		out = out | (((unsigned) (value + 1) << 5));
+	} else {
+		out = out | (((unsigned) value << 5));
+	}
+	pv = (((unsigned) srcWord >> 16)) & 255;
+	threshold = ditherThresholds16[pv & 7];
+	value = ditherValues16[((unsigned) pv >> 3)];
+	if (ditherValue < threshold) {
+		out = out | (((unsigned) (value + 1) << 10));
+	} else {
+		out = out | (((unsigned) value << 10));
+	}
+	return out;
 }
 
 
@@ -2408,8 +2433,51 @@ static int initBBOpTable(void) {
 	opTable[40+1] = (int)fixAlphawith;
 }
 
+static int initDither8Lookup(void) {
+    int b;
+    int value;
+    int t;
+    int value1;
+    int out;
+    int pv;
+    int threshold;
+
+	for (b = 0; b <= 255; b += 1) {
+		for (t = 0; t <= 15; t += 1) {
+			/* begin expensiveDither32To16:threshold: */
+			pv = b & 255;
+			threshold = ditherThresholds16[pv & 7];
+			value1 = ditherValues16[((unsigned) pv >> 3)];
+			if (t < threshold) {
+				out = value1 + 1;
+			} else {
+				out = value1;
+			}
+			pv = (((unsigned) b >> 8)) & 255;
+			threshold = ditherThresholds16[pv & 7];
+			value1 = ditherValues16[((unsigned) pv >> 3)];
+			if (t < threshold) {
+				out = out | (((unsigned) (value1 + 1) << 5));
+			} else {
+				out = out | (((unsigned) value1 << 5));
+			}
+			pv = (((unsigned) b >> 16)) & 255;
+			threshold = ditherThresholds16[pv & 7];
+			value1 = ditherValues16[((unsigned) pv >> 3)];
+			if (t < threshold) {
+				out = out | (((unsigned) (value1 + 1) << 10));
+			} else {
+				out = out | (((unsigned) value1 << 10));
+			}
+			value = out;
+			dither8Lookup[(t << 8) + b] = value;
+		}
+	}
+}
+
 EXPORT(int) initialiseModule(void) {
 	initBBOpTable();
+	initDither8Lookup();
 	return 1;
 }
 
@@ -2420,7 +2488,7 @@ static int isIdentityMapwith(int *shifts, unsigned int *masks) {
 	if ((shifts == null) || (masks == null)) {
 		return 1;
 	}
-	if (((shifts[0]) == 0) && (((shifts[1]) == 0) && (((shifts[2]) == 0) && (((shifts[3]) == 0) && (((masks[0]) == 16711680) && (((masks[1]) == 65280) && (((masks[2]) == 255) && ((masks[3]) == 4278190080U)))))))) {
+	if (((shifts[RedIndex]) == 0) && (((shifts[GreenIndex]) == 0) && (((shifts[BlueIndex]) == 0) && (((shifts[AlphaIndex]) == 0) && (((masks[RedIndex]) == 16711680) && (((masks[GreenIndex]) == 65280) && (((masks[BlueIndex]) == 255) && ((masks[AlphaIndex]) == 4278190080U)))))))) {
 		return 1;
 	}
 	return 0;
@@ -2432,13 +2500,13 @@ static int isIdentityMapwith(int *shifts, unsigned int *masks) {
 static int loadBitBltDestForm(void) {
     int destBitsSize;
 
-	destBits = interpreterProxy->fetchPointerofObject(0, destForm);
-	destWidth = interpreterProxy->fetchIntegerofObject(1, destForm);
-	destHeight = interpreterProxy->fetchIntegerofObject(2, destForm);
+	destBits = interpreterProxy->fetchPointerofObject(FormBitsIndex, destForm);
+	destWidth = interpreterProxy->fetchIntegerofObject(FormWidthIndex, destForm);
+	destHeight = interpreterProxy->fetchIntegerofObject(FormHeightIndex, destForm);
 	if (!((destWidth >= 0) && (destHeight >= 0))) {
 		return 0;
 	}
-	destDepth = interpreterProxy->fetchIntegerofObject(3, destForm);
+	destDepth = interpreterProxy->fetchIntegerofObject(FormDepthIndex, destForm);
 	destMSB = destDepth > 0;
 	if (destDepth < 0) {
 		destDepth = 0 - destDepth;
@@ -2481,23 +2549,23 @@ static int loadBitBltFromwarping(int bbObj, int aBool) {
     int formPointer1;
     int destBitsSize;
     int halftoneBits;
+    int cmSize;
+    int cmOop;
     int oop;
     int oldStyle;
-    int cmOop;
-    int cmSize;
     int mapOop;
     int mapOop1;
 
 	bitBltOop = bbObj;
 	isWarping = aBool;
-	combinationRule = interpreterProxy->fetchIntegerofObject(3, bitBltOop);
-	if ((interpreterProxy->failed()) || ((combinationRule < 0) || (combinationRule > (42 - 2)))) {
+	combinationRule = interpreterProxy->fetchIntegerofObject(BBRuleIndex, bitBltOop);
+	if ((interpreterProxy->failed()) || ((combinationRule < 0) || (combinationRule > (OpTableSize - 2)))) {
 		return 0;
 	}
 	if ((combinationRule >= 16) && (combinationRule <= 17)) {
 		return 0;
 	}
-	sourceForm = interpreterProxy->fetchPointerofObject(1, bitBltOop);
+	sourceForm = interpreterProxy->fetchPointerofObject(BBSourceFormIndex, bitBltOop);
 	/* begin ignoreSourceOrHalftone: */
 	formPointer = sourceForm;
 	if (formPointer == (interpreterProxy->nilObject())) {
@@ -2522,7 +2590,7 @@ static int loadBitBltFromwarping(int bbObj, int aBool) {
 	}
 	noSource = 0;
 l2:	/* end ignoreSourceOrHalftone: */;
-	halftoneForm = interpreterProxy->fetchPointerofObject(2, bitBltOop);
+	halftoneForm = interpreterProxy->fetchPointerofObject(BBHalftoneFormIndex, bitBltOop);
 	/* begin ignoreSourceOrHalftone: */
 	formPointer1 = halftoneForm;
 	if (formPointer1 == (interpreterProxy->nilObject())) {
@@ -2547,19 +2615,19 @@ l2:	/* end ignoreSourceOrHalftone: */;
 	}
 	noHalftone = 0;
 l3:	/* end ignoreSourceOrHalftone: */;
-	destForm = interpreterProxy->fetchPointerofObject(0, bbObj);
+	destForm = interpreterProxy->fetchPointerofObject(BBDestFormIndex, bbObj);
 	if (!((interpreterProxy->isPointers(destForm)) && ((interpreterProxy->slotSizeOf(destForm)) >= 4))) {
 		return 0;
 	}
 	/* begin loadBitBltDestForm */
-	destBits = interpreterProxy->fetchPointerofObject(0, destForm);
-	destWidth = interpreterProxy->fetchIntegerofObject(1, destForm);
-	destHeight = interpreterProxy->fetchIntegerofObject(2, destForm);
+	destBits = interpreterProxy->fetchPointerofObject(FormBitsIndex, destForm);
+	destWidth = interpreterProxy->fetchIntegerofObject(FormWidthIndex, destForm);
+	destHeight = interpreterProxy->fetchIntegerofObject(FormHeightIndex, destForm);
 	if (!((destWidth >= 0) && (destHeight >= 0))) {
 		ok = 0;
 		goto l4;
 	}
-	destDepth = interpreterProxy->fetchIntegerofObject(3, destForm);
+	destDepth = interpreterProxy->fetchIntegerofObject(FormDepthIndex, destForm);
 	destMSB = destDepth > 0;
 	if (destDepth < 0) {
 		destDepth = 0 - destDepth;
@@ -2586,10 +2654,10 @@ l4:	/* end loadBitBltDestForm */;
 	if (!(ok)) {
 		return 0;
 	}
-	destX = fetchIntOrFloatofObjectifNil(4, bitBltOop, 0);
-	destY = fetchIntOrFloatofObjectifNil(5, bitBltOop, 0);
-	width = fetchIntOrFloatofObjectifNil(6, bitBltOop, destWidth);
-	height = fetchIntOrFloatofObjectifNil(7, bitBltOop, destHeight);
+	destX = fetchIntOrFloatofObjectifNil(BBDestXIndex, bitBltOop, 0);
+	destY = fetchIntOrFloatofObjectifNil(BBDestYIndex, bitBltOop, 0);
+	width = fetchIntOrFloatofObjectifNil(BBWidthIndex, bitBltOop, destWidth);
+	height = fetchIntOrFloatofObjectifNil(BBHeightIndex, bitBltOop, destHeight);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
@@ -2600,14 +2668,14 @@ l4:	/* end loadBitBltDestForm */;
 			return 0;
 		}
 		/* begin loadBitBltSourceForm */
-		sourceBits = interpreterProxy->fetchPointerofObject(0, sourceForm);
-		sourceWidth = fetchIntOrFloatofObject(1, sourceForm);
-		sourceHeight = fetchIntOrFloatofObject(2, sourceForm);
+		sourceBits = interpreterProxy->fetchPointerofObject(FormBitsIndex, sourceForm);
+		sourceWidth = fetchIntOrFloatofObject(FormWidthIndex, sourceForm);
+		sourceHeight = fetchIntOrFloatofObject(FormHeightIndex, sourceForm);
 		if (!((sourceWidth >= 0) && (sourceHeight >= 0))) {
 			ok = 0;
 			goto l1;
 		}
-		sourceDepth = interpreterProxy->fetchIntegerofObject(3, sourceForm);
+		sourceDepth = interpreterProxy->fetchIntegerofObject(FormDepthIndex, sourceForm);
 		sourceMSB = sourceDepth > 0;
 		if (sourceDepth < 0) {
 			sourceDepth = 0 - sourceDepth;
@@ -2639,12 +2707,12 @@ l4:	/* end loadBitBltDestForm */;
 		cmShiftTable = null;
 		cmMaskTable = null;
 		cmLookupTable = null;
-		cmOop = interpreterProxy->fetchPointerofObject(14, bitBltOop);
+		cmOop = interpreterProxy->fetchPointerofObject(BBColorMapIndex, bitBltOop);
 		if (cmOop == (interpreterProxy->nilObject())) {
 			ok = 1;
 			goto l8;
 		}
-		cmFlags = 1;
+		cmFlags = ColorMapPresent;
 		oldStyle = 0;
 		if (interpreterProxy->isWords(cmOop)) {
 			cmSize = interpreterProxy->slotSizeOf(cmOop);
@@ -2702,7 +2770,7 @@ l4:	/* end loadBitBltDestForm */;
 				cmSize = interpreterProxy->slotSizeOf(oop);
 				cmLookupTable = interpreterProxy->firstIndexableField(oop);
 			}
-			cmFlags = cmFlags | 8;
+			cmFlags = cmFlags | ColorMapNewStyle;
 		}
 		if (!((cmSize & (cmSize - 1)) == 0)) {
 			ok = 0;
@@ -2723,7 +2791,7 @@ l4:	/* end loadBitBltDestForm */;
 			cmLookupTable = null;
 			cmMask = 0;
 		} else {
-			cmFlags = cmFlags | 4;
+			cmFlags = cmFlags | ColorMapIndexedPart;
 		}
 		if (oldStyle) {
 			setupColorMasks();
@@ -2732,18 +2800,18 @@ l4:	/* end loadBitBltDestForm */;
 			cmMaskTable = null;
 			cmShiftTable = null;
 		} else {
-			cmFlags = cmFlags | 2;
+			cmFlags = cmFlags | ColorMapFixedPart;
 		}
 		ok = 1;
 	l8:	/* end loadColorMap */;
 		if (!(ok)) {
 			return 0;
 		}
-		if ((cmFlags & 8) == 0) {
+		if ((cmFlags & ColorMapNewStyle) == 0) {
 			setupColorMasks();
 		}
-		sourceX = fetchIntOrFloatofObjectifNil(8, bitBltOop, 0);
-		sourceY = fetchIntOrFloatofObjectifNil(9, bitBltOop, 0);
+		sourceX = fetchIntOrFloatofObjectifNil(BBSourceXIndex, bitBltOop, 0);
+		sourceY = fetchIntOrFloatofObjectifNil(BBSourceYIndex, bitBltOop, 0);
 	}
 	/* begin loadHalftoneForm */
 	if (noHalftone) {
@@ -2752,8 +2820,8 @@ l4:	/* end loadBitBltDestForm */;
 		goto l5;
 	}
 	if ((interpreterProxy->isPointers(halftoneForm)) && ((interpreterProxy->slotSizeOf(halftoneForm)) >= 4)) {
-		halftoneBits = interpreterProxy->fetchPointerofObject(0, halftoneForm);
-		halftoneHeight = interpreterProxy->fetchIntegerofObject(2, halftoneForm);
+		halftoneBits = interpreterProxy->fetchPointerofObject(FormBitsIndex, halftoneForm);
+		halftoneHeight = interpreterProxy->fetchIntegerofObject(FormHeightIndex, halftoneForm);
 		if (!(interpreterProxy->isWords(halftoneBits))) {
 			noHalftone = 1;
 		}
@@ -2771,10 +2839,10 @@ l5:	/* end loadHalftoneForm */;
 	if (!(ok)) {
 		return 0;
 	}
-	clipX = fetchIntOrFloatofObjectifNil(10, bitBltOop, 0);
-	clipY = fetchIntOrFloatofObjectifNil(11, bitBltOop, 0);
-	clipWidth = fetchIntOrFloatofObjectifNil(12, bitBltOop, destWidth);
-	clipHeight = fetchIntOrFloatofObjectifNil(13, bitBltOop, destHeight);
+	clipX = fetchIntOrFloatofObjectifNil(BBClipXIndex, bitBltOop, 0);
+	clipY = fetchIntOrFloatofObjectifNil(BBClipYIndex, bitBltOop, 0);
+	clipWidth = fetchIntOrFloatofObjectifNil(BBClipWidthIndex, bitBltOop, destWidth);
+	clipHeight = fetchIntOrFloatofObjectifNil(BBClipHeightIndex, bitBltOop, destHeight);
 	if (interpreterProxy->failed()) {
 		return 0;
 	}
@@ -2801,13 +2869,13 @@ l5:	/* end loadHalftoneForm */;
 static int loadBitBltSourceForm(void) {
     int sourceBitsSize;
 
-	sourceBits = interpreterProxy->fetchPointerofObject(0, sourceForm);
-	sourceWidth = fetchIntOrFloatofObject(1, sourceForm);
-	sourceHeight = fetchIntOrFloatofObject(2, sourceForm);
+	sourceBits = interpreterProxy->fetchPointerofObject(FormBitsIndex, sourceForm);
+	sourceWidth = fetchIntOrFloatofObject(FormWidthIndex, sourceForm);
+	sourceHeight = fetchIntOrFloatofObject(FormHeightIndex, sourceForm);
 	if (!((sourceWidth >= 0) && (sourceHeight >= 0))) {
 		return 0;
 	}
-	sourceDepth = interpreterProxy->fetchIntegerofObject(3, sourceForm);
+	sourceDepth = interpreterProxy->fetchIntegerofObject(FormDepthIndex, sourceForm);
 	sourceMSB = sourceDepth > 0;
 	if (sourceDepth < 0) {
 		sourceDepth = 0 - sourceDepth;
@@ -2836,10 +2904,10 @@ static int loadBitBltSourceForm(void) {
 	or N = 9, 12, or 15 (3, 4, 5 bits per color) for 16 or 32 bits. */
 
 static int loadColorMap(void) {
+    int cmSize;
+    int cmOop;
     int oop;
     int oldStyle;
-    int cmOop;
-    int cmSize;
     int mapOop;
     int mapOop1;
 
@@ -2847,14 +2915,14 @@ static int loadColorMap(void) {
 	cmShiftTable = null;
 	cmMaskTable = null;
 	cmLookupTable = null;
-	cmOop = interpreterProxy->fetchPointerofObject(14, bitBltOop);
+	cmOop = interpreterProxy->fetchPointerofObject(BBColorMapIndex, bitBltOop);
 	if (cmOop == (interpreterProxy->nilObject())) {
 		return 1;
 	}
 
 	/* even if identity or somesuch - may be cleared later */
 
-	cmFlags = 1;
+	cmFlags = ColorMapPresent;
 	oldStyle = 0;
 	if (interpreterProxy->isWords(cmOop)) {
 		cmSize = interpreterProxy->slotSizeOf(cmOop);
@@ -2910,7 +2978,7 @@ static int loadColorMap(void) {
 			cmSize = interpreterProxy->slotSizeOf(oop);
 			cmLookupTable = interpreterProxy->firstIndexableField(oop);
 		}
-		cmFlags = cmFlags | 8;
+		cmFlags = cmFlags | ColorMapNewStyle;
 	}
 	if (!((cmSize & (cmSize - 1)) == 0)) {
 		return 0;
@@ -2930,7 +2998,7 @@ static int loadColorMap(void) {
 		cmLookupTable = null;
 		cmMask = 0;
 	} else {
-		cmFlags = cmFlags | 4;
+		cmFlags = cmFlags | ColorMapIndexedPart;
 	}
 	if (oldStyle) {
 		setupColorMasks();
@@ -2939,7 +3007,7 @@ static int loadColorMap(void) {
 		cmMaskTable = null;
 		cmShiftTable = null;
 	} else {
-		cmFlags = cmFlags | 2;
+		cmFlags = cmFlags | ColorMapFixedPart;
 	}
 	return 1;
 }
@@ -2970,8 +3038,8 @@ static int loadHalftoneForm(void) {
 		return 1;
 	}
 	if ((interpreterProxy->isPointers(halftoneForm)) && ((interpreterProxy->slotSizeOf(halftoneForm)) >= 4)) {
-		halftoneBits = interpreterProxy->fetchPointerofObject(0, halftoneForm);
-		halftoneHeight = interpreterProxy->fetchIntegerofObject(2, halftoneForm);
+		halftoneBits = interpreterProxy->fetchPointerofObject(FormBitsIndex, halftoneForm);
+		halftoneHeight = interpreterProxy->fetchIntegerofObject(FormHeightIndex, halftoneForm);
 		if (!(interpreterProxy->isWords(halftoneBits))) {
 			noHalftone = 1;
 		}
@@ -3035,12 +3103,12 @@ static int loadWarpBltFrom(int bbObj) {
 
 static int lockSurfaces(void) {
     int sourceHandle;
-    int destHandle;
-    int b;
     int l;
+    int b;
+    int destHandle;
     int r;
-    int t;
     int (*fn)(int, int*, int, int, int, int);
+    int t;
 
 	hasSurfaceLock = 0;
 	if (destBits == 0) {
@@ -3050,12 +3118,12 @@ static int lockSurfaces(void) {
 			}
 		}
 		fn = ((int (*)(int, int*, int, int, int, int)) lockSurfaceFn);
-		destHandle = interpreterProxy->fetchIntegerofObject(0, destForm);
+		destHandle = interpreterProxy->fetchIntegerofObject(FormBitsIndex, destForm);
 		if ((sourceBits == 0) && (!noSource)) {
 
 			/* Handle the special case of equal source and dest handles */
 
-			sourceHandle = interpreterProxy->fetchIntegerofObject(0, sourceForm);
+			sourceHandle = interpreterProxy->fetchIntegerofObject(FormBitsIndex, sourceForm);
 			if (sourceHandle == destHandle) {
 				if (isWarping) {
 					l = ((sx < dx) ? sx : dx);
@@ -3076,7 +3144,7 @@ static int lockSurfaces(void) {
 		hasSurfaceLock = 1;
 	}
 	if ((sourceBits == 0) && (!noSource)) {
-		sourceHandle = interpreterProxy->fetchIntegerofObject(0, sourceForm);
+		sourceHandle = interpreterProxy->fetchIntegerofObject(FormBitsIndex, sourceForm);
 		if (lockSurfaceFn == 0) {
 			if (!(loadSurfacePlugin())) {
 				return null;
@@ -3104,8 +3172,8 @@ static int mapPixelflags(int sourcePixel, int mapperFlags) {
     int val;
 
 	pv = sourcePixel;
-	if ((mapperFlags & 1) != 0) {
-		if ((mapperFlags & 2) != 0) {
+	if ((mapperFlags & ColorMapPresent) != 0) {
+		if ((mapperFlags & ColorMapFixedPart) != 0) {
 			/* begin rgbMapPixel:flags: */
 			val = (((cmShiftTable[0]) < 0) ? ((unsigned) (sourcePixel & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (sourcePixel & (cmMaskTable[0])) << (cmShiftTable[0])));
 			val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (sourcePixel & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (sourcePixel & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -3115,7 +3183,7 @@ static int mapPixelflags(int sourcePixel, int mapperFlags) {
 				pv = 1;
 			}
 		}
-		if ((mapperFlags & 4) != 0) {
+		if ((mapperFlags & ColorMapIndexedPart) != 0) {
 			pv = cmLookupTable[pv & cmMask];
 		}
 	}
@@ -3153,8 +3221,8 @@ static int msg(char *s) {
 	Used for erasing, eg, brush shapes prior to ORing in a color */
 
 static int partitionedANDtonBitsnPartitions(int word1, int word2, int nBits, int nParts) {
-    int i;
     int result;
+    int i;
     int mask;
 
 
@@ -3179,10 +3247,10 @@ static int partitionedANDtonBitsnPartitions(int word1, int word2, int nBits, int
 	This is useful for packed pixels, or packed colors */
 
 static int partitionedAddtonBitsnPartitions(int word1, int word2, int nBits, int nParts) {
-    int i;
-    int result;
-    int mask;
     int sum;
+    int result;
+    int i;
+    int mask;
 
 
 	/* partition mask starts at the right */
@@ -3208,8 +3276,8 @@ static int partitionedAddtonBitsnPartitions(int word1, int word2, int nBits, int
 /*	Max word1 to word2 as nParts partitions of nBits each */
 
 static int partitionedMaxwithnBitsnPartitions(int word1, int word2, int nBits, int nParts) {
-    int i;
     int result;
+    int i;
     int mask;
 
 
@@ -3231,8 +3299,8 @@ static int partitionedMaxwithnBitsnPartitions(int word1, int word2, int nBits, i
 /*	Min word1 to word2 as nParts partitions of nBits each */
 
 static int partitionedMinwithnBitsnPartitions(int word1, int word2, int nBits, int nParts) {
-    int i;
     int result;
+    int i;
     int mask;
 
 
@@ -3256,10 +3324,10 @@ static int partitionedMinwithnBitsnPartitions(int word1, int word2, int nBits, i
 	Bug in loop version when non-white background */
 
 static int partitionedMulwithnBitsnPartitions(int word1, int word2, int nBits, int nParts) {
-    int sMask;
     int result;
-    int dMask;
+    int sMask;
     int product;
+    int dMask;
 
 
 	/* partition mask starts at the right */
@@ -3282,11 +3350,11 @@ static int partitionedMulwithnBitsnPartitions(int word1, int word2, int nBits, i
 	This is useful for packed pixels, or packed colors */
 
 static int partitionedSubfromnBitsnPartitions(int word1, int word2, int nBits, int nParts) {
-    int i;
-    int p2;
     int result;
-    int mask;
     int p1;
+    int i;
+    int mask;
+    int p2;
 
 
 	/* partition mask starts at the right */
@@ -3314,28 +3382,28 @@ static int partitionedSubfromnBitsnPartitions(int word1, int word2, int nBits, i
 	perform the appropriate inner loop function. */
 
 static int performCopyLoop(void) {
-    int pixPerM1;
     int dxLowBits;
-    int dWid;
+    int pixPerM1;
     int sxLowBits;
+    int dWid;
     int t;
-    int pixPerM11;
     int endBits;
+    int pixPerM11;
     int startBits;
 
 	/* begin destMaskAndPointerInit */
 	pixPerM11 = destPPW - 1;
 	startBits = destPPW - (dx & pixPerM11);
 	if (destMSB) {
-		mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+		mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 	} else {
-		mask1 = 4294967295U << (32 - (startBits * destDepth));
+		mask1 = AllOnes << (32 - (startBits * destDepth));
 	}
 	endBits = (((dx + bbW) - 1) & pixPerM11) + 1;
 	if (destMSB) {
-		mask2 = 4294967295U << (32 - (endBits * destDepth));
+		mask2 = AllOnes << (32 - (endBits * destDepth));
 	} else {
-		mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+		mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 	}
 	if (bbW < startBits) {
 		mask1 = mask1 & mask2;
@@ -3412,13 +3480,13 @@ static int performCopyLoop(void) {
 	color map, and justify them according to dstBitIndex in the resulting destWord. */
 
 static int pickSourcePixelsflagssrcMaskdestMasksrcShiftIncdstShiftInc(int nPixels, int mapperFlags, int srcMask, int dstMask, int srcShiftInc, int dstShiftInc) {
-    int sourcePix;
     int nPix;
-    int sourceWord;
-    int destPix;
-    int destWord;
-    int dstShift;
+    int sourcePix;
     int srcShift;
+    int sourceWord;
+    int dstShift;
+    int destWord;
+    int destPix;
     int idx;
     int idx1;
     int pv;
@@ -3438,10 +3506,10 @@ static int pickSourcePixelsflagssrcMaskdestMasksrcShiftIncdstShiftInc(int nPixel
 	/* always > 0 so we can use do { } while(--nPix); */
 
 	nPix = nPixels;
-	if (mapperFlags == (1 | 4)) {
+	if (mapperFlags == (ColorMapPresent | ColorMapIndexedPart)) {
 		do {
 			sourcePix = (((unsigned) sourceWord) >> srcShift) & srcMask;
-			destPix = (((int*) cmLookupTable))[sourcePix & cmMask];
+			destPix = tableLookupat(cmLookupTable, sourcePix & cmMask);
 
 			/* adjust dest pix index */
 
@@ -3466,8 +3534,8 @@ static int pickSourcePixelsflagssrcMaskdestMasksrcShiftIncdstShiftInc(int nPixel
 			sourcePix = (((unsigned) sourceWord) >> srcShift) & srcMask;
 			/* begin mapPixel:flags: */
 			pv = sourcePix;
-			if ((mapperFlags & 1) != 0) {
-				if ((mapperFlags & 2) != 0) {
+			if ((mapperFlags & ColorMapPresent) != 0) {
+				if ((mapperFlags & ColorMapFixedPart) != 0) {
 					/* begin rgbMapPixel:flags: */
 					val = (((cmShiftTable[0]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (sourcePix & (cmMaskTable[0])) << (cmShiftTable[0])));
 					val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (sourcePix & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -3477,7 +3545,7 @@ static int pickSourcePixelsflagssrcMaskdestMasksrcShiftIncdstShiftInc(int nPixel
 						pv = 1;
 					}
 				}
-				if ((mapperFlags & 4) != 0) {
+				if ((mapperFlags & ColorMapIndexedPart) != 0) {
 					pv = cmLookupTable[pv & cmMask];
 				}
 			}
@@ -3515,13 +3583,13 @@ static int pickSourcePixelsflagssrcMaskdestMasksrcShiftIncdstShiftInc(int nPixel
 	and still relatively important when smoothing is used. */
 
 static int pickWarpPixelAtXy(int xx, int yy) {
-    int x;
     int sourcePix;
+    int x;
+    int srcIndex;
     int sourceWord;
     int y;
-    int srcIndex;
 
-	if ((xx < 0) || ((yy < 0) || (((x = ((unsigned) xx) >> 14) >= sourceWidth) || ((y = ((unsigned) yy) >> 14) >= sourceHeight)))) {
+	if ((xx < 0) || ((yy < 0) || (((x = ((unsigned) xx) >> BinaryPoint) >= sourceWidth) || ((y = ((unsigned) yy) >> BinaryPoint) >= sourceHeight)))) {
 		return 0;
 	}
 	srcIndex = (sourceBits + (y * sourcePitch)) + ((((unsigned) x) >> warpAlignShift) * 4);
@@ -3538,11 +3606,11 @@ static int pickWarpPixelAtXy(int xx, int yy) {
 /*	Clear all pixels in destinationWord for which the pixels of sourceWord have the same values. Used to clear areas of some constant color to zero. */
 
 static int pixClearwith(int sourceWord, int destinationWord) {
-    int i;
-    int pv;
     int result;
-    int mask;
     int nBits;
+    int pv;
+    int i;
+    int mask;
 
 	if (destDepth == 32) {
 		if (sourceWord == destinationWord) {
@@ -3572,8 +3640,8 @@ static int pixClearwith(int sourceWord, int destinationWord) {
 }
 
 static int pixMaskwith(int sourceWord, int destinationWord) {
-    int i;
     int result;
+    int i;
     int mask;
 
 	/* begin partitionedAND:to:nBits:nPartitions: */
@@ -3600,10 +3668,10 @@ static int pixPaintwith(int sourceWord, int destinationWord) {
 
 static int pixSwapwith(int sourceWord, int destWord) {
     int lowMask;
-    int i;
     int result;
-    int highMask;
     int shift;
+    int i;
+    int highMask;
 
 	if (destPPW == 1) {
 		return destWord;
@@ -3659,21 +3727,21 @@ EXPORT(int) primitiveCopyBits(void) {
 
 EXPORT(int) primitiveDisplayString(void) {
     int maxGlyph;
-    int left;
-    int sourceString;
-    int glyphIndex;
-    int quickBlt;
-    int stopIndex;
-    int bbObj;
-    int xTable;
-    int kernDelta;
-    int startIndex;
     int glyphMap;
     unsigned char * sourcePtr;
     int charIndex;
+    int sourceString;
+    int quickBlt;
+    int stopIndex;
+    int left;
+    int bbObj;
+    int startIndex;
+    int glyphIndex;
+    int kernDelta;
     int ascii;
-    int pixPerM1;
+    int xTable;
     int endBits;
+    int pixPerM1;
     int startBits;
 
 	if (!((interpreterProxy->methodArgumentCount()) == 6)) {
@@ -3682,7 +3750,7 @@ EXPORT(int) primitiveDisplayString(void) {
 	kernDelta = interpreterProxy->stackIntegerValue(0);
 	xTable = interpreterProxy->stackObjectValue(1);
 	glyphMap = interpreterProxy->stackObjectValue(2);
-	if (!(((interpreterProxy->fetchClassOf(xTable)) == (interpreterProxy->classArray())) && ((interpreterProxy->fetchClassOf(glyphMap)) == (interpreterProxy->classArray())))) {
+	if (!((interpreterProxy->isArray(xTable)) && (interpreterProxy->isArray(glyphMap)))) {
 		return interpreterProxy->primitiveFail();
 	}
 	if (!((interpreterProxy->slotSizeOf(glyphMap)) == 256)) {
@@ -3729,15 +3797,15 @@ EXPORT(int) primitiveDisplayString(void) {
 				pixPerM1 = destPPW - 1;
 				startBits = destPPW - (dx & pixPerM1);
 				if (destMSB) {
-					mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+					mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 				} else {
-					mask1 = 4294967295U << (32 - (startBits * destDepth));
+					mask1 = AllOnes << (32 - (startBits * destDepth));
 				}
 				endBits = (((dx + bbW) - 1) & pixPerM1) + 1;
 				if (destMSB) {
-					mask2 = 4294967295U << (32 - (endBits * destDepth));
+					mask2 = AllOnes << (32 - (endBits * destDepth));
 				} else {
-					mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+					mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 				}
 				if (bbW < startBits) {
 					mask1 = mask1 & mask2;
@@ -3776,16 +3844,16 @@ EXPORT(int) primitiveDrawLoop(void) {
     int yDelta;
     int xDelta;
     int rcvr;
-    int i;
-    int py;
     int affL;
-    int dy1;
-    int affR;
     int affB;
+    int affR;
+    int P;
+    int i;
     int affT;
     int dx1;
     int px;
-    int P;
+    int dy1;
+    int py;
 
 	rcvr = interpreterProxy->stackValue(2);
 	xDelta = interpreterProxy->stackIntegerValue(1);
@@ -3884,8 +3952,8 @@ EXPORT(int) primitiveDrawLoop(void) {
 		affectedR = affR;
 		affectedT = affT;
 		affectedB = affB;
-		interpreterProxy->storeIntegerofObjectwithValue(4, bitBltOop, destX);
-		interpreterProxy->storeIntegerofObjectwithValue(5, bitBltOop, destY);
+		interpreterProxy->storeIntegerofObjectwithValue(BBDestXIndex, bitBltOop, destX);
+		interpreterProxy->storeIntegerofObjectwithValue(BBDestYIndex, bitBltOop, destY);
 	l1:	/* end drawLoopX:Y: */;
 		/* begin showDisplayBits */
 		interpreterProxy->showDisplayBitsLeftTopRightBottom(destForm, affectedL, affectedT, affectedR, affectedB);
@@ -3901,8 +3969,8 @@ EXPORT(int) primitiveDrawLoop(void) {
 EXPORT(int) primitiveWarpBits(void) {
     int rcvr;
     int ns;
-    int pixPerM1;
     int endBits;
+    int pixPerM1;
     int startBits;
 
 	rcvr = interpreterProxy->stackValue(interpreterProxy->methodArgumentCount());
@@ -3923,15 +3991,15 @@ EXPORT(int) primitiveWarpBits(void) {
 	pixPerM1 = destPPW - 1;
 	startBits = destPPW - (dx & pixPerM1);
 	if (destMSB) {
-		mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+		mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 	} else {
-		mask1 = 4294967295U << (32 - (startBits * destDepth));
+		mask1 = AllOnes << (32 - (startBits * destDepth));
 	}
 	endBits = (((dx + bbW) - 1) & pixPerM1) + 1;
 	if (destMSB) {
-		mask2 = 4294967295U << (32 - (endBits * destDepth));
+		mask2 = AllOnes << (32 - (endBits * destDepth));
 	} else {
-		mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+		mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 	}
 	if (bbW < startBits) {
 		mask1 = mask1 & mask2;
@@ -4024,15 +4092,15 @@ static int rgbAddwith(int sourceWord, int destinationWord) {
 	For non-rgb, return the number of differing pixels. */
 
 static int rgbDiffwith(int sourceWord, int destinationWord) {
-    int i;
-    int sourceShifted;
-    int diff;
-    int rgbMask;
     int destShifted;
-    int pixMask;
-    int maskShifted;
+    int diff;
+    int sourceShifted;
+    int rgbMask;
     int bitsPerColor;
+    int pixMask;
     int sourcePixVal;
+    int i;
+    int maskShifted;
     int destPixVal;
 
 	pixMask = maskTable[destDepth];
@@ -4090,9 +4158,9 @@ static int rgbMap32To32(int sourcePixel) {
 
 static int rgbMapfromto(int sourcePixel, int nBitsIn, int nBitsOut) {
     int srcPix;
-    int destPix;
     int d;
     int mask;
+    int destPix;
 
 	if ((d = nBitsOut - nBitsIn) > 0) {
 
@@ -4148,11 +4216,11 @@ static int rgbMapPixelflags(int sourcePixel, int mapperFlags) {
 }
 
 static int rgbMaxwith(int sourceWord, int destinationWord) {
-    int i;
     int result;
+    int i;
     int mask;
-    int i1;
     int result1;
+    int i1;
     int mask3;
 
 	if (destDepth < 16) {
@@ -4180,11 +4248,11 @@ static int rgbMaxwith(int sourceWord, int destinationWord) {
 }
 
 static int rgbMinwith(int sourceWord, int destinationWord) {
-    int i;
     int result;
+    int i;
     int mask;
-    int i1;
     int result1;
+    int i1;
     int mask3;
 
 	if (destDepth < 16) {
@@ -4213,11 +4281,11 @@ static int rgbMinwith(int sourceWord, int destinationWord) {
 
 static int rgbMinInvertwith(int wordToInvert, int destinationWord) {
     int sourceWord;
-    int i;
     int result;
+    int i;
     int mask;
-    int i1;
     int result1;
+    int i1;
     int mask3;
 
 	sourceWord = ~wordToInvert;
@@ -4319,10 +4387,10 @@ static int setupColorMasks(void) {
 /*	Setup color masks for converting an incoming RGB pixel value from srcBits to targetBits. */
 
 static int setupColorMasksFromto(int srcBits, int targetBits) {
-    int mask;
-    static int shifts[4] = {0, 0, 0, 0};
-    int deltaBits;
     static unsigned int masks[4] = {0, 0, 0, 0};
+    int mask;
+    int deltaBits;
+    static int shifts[4] = {0, 0, 0, 0};
 
 	;
 	deltaBits = targetBits - srcBits;
@@ -4334,26 +4402,26 @@ static int setupColorMasksFromto(int srcBits, int targetBits) {
 		/* Mask for extracting a color part of the source */
 
 		mask = (1 << targetBits) - 1;
-		masks[0] = (mask << ((srcBits * 2) - deltaBits));
-		masks[1] = (mask << (srcBits - deltaBits));
-		masks[2] = (mask << (0 - deltaBits));
-		masks[3] = 0;
+		masks[RedIndex] = (mask << ((srcBits * 2) - deltaBits));
+		masks[GreenIndex] = (mask << (srcBits - deltaBits));
+		masks[BlueIndex] = (mask << (0 - deltaBits));
+		masks[AlphaIndex] = 0;
 	} else {
 
 		/* Mask for extracting a color part of the source */
 
 		mask = (1 << srcBits) - 1;
-		masks[0] = (mask << (srcBits * 2));
-		masks[1] = (mask << srcBits);
-		masks[2] = mask;
+		masks[RedIndex] = (mask << (srcBits * 2));
+		masks[GreenIndex] = (mask << srcBits);
+		masks[BlueIndex] = mask;
 	}
-	shifts[0] = (deltaBits * 3);
-	shifts[1] = (deltaBits * 2);
-	shifts[2] = deltaBits;
-	shifts[3] = 0;
+	shifts[RedIndex] = (deltaBits * 3);
+	shifts[GreenIndex] = (deltaBits * 2);
+	shifts[BlueIndex] = deltaBits;
+	shifts[AlphaIndex] = 0;
 	cmShiftTable = shifts;
 	cmMaskTable = masks;
-	cmFlags = cmFlags | (1 | 2);
+	cmFlags = cmFlags | (ColorMapPresent | ColorMapFixedPart);
 }
 
 static int showDisplayBits(void) {
@@ -4365,10 +4433,10 @@ static int showDisplayBits(void) {
 	ie, when the barrel-shift copy loop is used. */
 
 static int sourceSkewAndPointerInit(void) {
-    int pixPerM1;
     int dxLowBits;
-    int dWid;
+    int pixPerM1;
     int sxLowBits;
+    int dWid;
 
 
 	/* A mask, assuming power of two */
@@ -4424,8 +4492,8 @@ static int subWordwith(int sourceWord, int destinationWord) {
 
 /*	Note: Nasty coercion only necessary for the non-inlined version of this method in C. Duh? Oh well, here's the full story. The code below will definitely be inlined so everything that calls this method is fine. But... the translator doesn't quite prune this method so it generates a C function that tries to attempt an array access on an int - and most compilers don't like this. If you don't know what I'm talking about try to remove the C coercion and you'll see what happens when you try to compile a new VM... */
 
-static int tableLookupat(int table, int index) {
-	return (((int*) table))[index];
+static int tableLookupat(unsigned int * table, int index) {
+	return table[index];
 }
 
 
@@ -4435,22 +4503,22 @@ static int tableLookupat(int table, int index) {
 	to be performed at setup. */
 
 static int tallyIntoMapwith(int sourceWord, int destinationWord) {
-    int i;
     int destShifted;
-    int pixVal;
     int pixMask;
+    int i;
+    int pixVal;
     int maskShifted;
     int mapIndex;
     int srcPix;
-    int destPix;
     int d;
     int mask;
+    int destPix;
     int srcPix1;
-    int destPix1;
     int d1;
     int mask3;
+    int destPix1;
 
-	if (!((cmFlags & (1 | 4)) == (1 | 4))) {
+	if (!((cmFlags & (ColorMapPresent | ColorMapIndexedPart)) == (ColorMapPresent | ColorMapIndexedPart))) {
 		return destinationWord;
 	}
 	pixMask = maskTable[destDepth];
@@ -4593,7 +4661,7 @@ static int tryCopyingBitsQuickly(void) {
 	if (destDepth < 8) {
 		return 0;
 	}
-	if ((destDepth == 8) && ((cmFlags & 1) == 0)) {
+	if ((destDepth == 8) && ((cmFlags & ColorMapPresent) == 0)) {
 		return 0;
 	}
 	if (destDepth == 32) {
@@ -4617,10 +4685,10 @@ static int tryCopyingBitsQuickly(void) {
 /*	See the comment in lockSurfaces. Similar rules apply. That is, the area provided in ioUnlockSurface can be used to determine the dirty region after drawing. If a source is unlocked, then the area will be (0,0,0,0) to indicate that no portion is dirty. */
 
 static int unlockSurfaces(void) {
-    int destLocked;
     int sourceHandle;
     int destHandle;
     int (*fn)(int, int, int, int, int);
+    int destLocked;
 
 	if (hasSurfaceLock) {
 		if (unlockSurfaceFn == 0) {
@@ -4630,7 +4698,7 @@ static int unlockSurfaces(void) {
 		}
 		fn = ((int (*)(int, int, int, int, int)) unlockSurfaceFn);
 		destLocked = 0;
-		destHandle = interpreterProxy->fetchPointerofObject(0, destForm);
+		destHandle = interpreterProxy->fetchPointerofObject(FormBitsIndex, destForm);
 		if ((destHandle & 1)) {
 
 			/* The destBits are always assumed to be dirty */
@@ -4641,7 +4709,7 @@ static int unlockSurfaces(void) {
 			destLocked = 1;
 		}
 		if (!(noSource)) {
-			sourceHandle = interpreterProxy->fetchPointerofObject(0, sourceForm);
+			sourceHandle = interpreterProxy->fetchPointerofObject(FormBitsIndex, sourceForm);
 			if ((sourceHandle & 1)) {
 
 				/* Only unlock sourceHandle if different from destHandle */
@@ -4659,8 +4727,8 @@ static int unlockSurfaces(void) {
 
 static int warpBits(void) {
     int ns;
-    int pixPerM1;
     int endBits;
+    int pixPerM1;
     int startBits;
 
 	ns = noSource;
@@ -4676,15 +4744,15 @@ static int warpBits(void) {
 	pixPerM1 = destPPW - 1;
 	startBits = destPPW - (dx & pixPerM1);
 	if (destMSB) {
-		mask1 = ((unsigned) 4294967295U) >> (32 - (startBits * destDepth));
+		mask1 = ((unsigned) AllOnes) >> (32 - (startBits * destDepth));
 	} else {
-		mask1 = 4294967295U << (32 - (startBits * destDepth));
+		mask1 = AllOnes << (32 - (startBits * destDepth));
 	}
 	endBits = (((dx + bbW) - 1) & pixPerM1) + 1;
 	if (destMSB) {
-		mask2 = 4294967295U << (32 - (endBits * destDepth));
+		mask2 = AllOnes << (32 - (endBits * destDepth));
 	} else {
-		mask2 = ((unsigned) 4294967295U) >> (32 - (endBits * destDepth));
+		mask2 = ((unsigned) AllOnes) >> (32 - (endBits * destDepth));
 	}
 	if (bbW < startBits) {
 		mask1 = mask1 & mask2;
@@ -4719,127 +4787,127 @@ static int warpBits(void) {
 	source, thus producing a general affine transformation. */
 
 static int warpLoop(void) {
-    int mergeWord;
-    int i;
-    int deltaP43x;
-    int (*mergeFnwith)(int, int);
-    int yDelta;
     int nPix;
-    int pBx;
     int endBits;
-    int deltaP12y;
-    int xDelta;
-    int halftoneWord;
-    int smoothingCount;
-    int pAy;
-    int skewWord;
-    int words;
-    int mapperFlags;
-    int destWord;
-    int sourceMapOop;
-    int dstShiftInc;
-    int startBits;
-    int deltaP43y;
-    int nSteps;
-    int pBy;
-    int dstShiftLeft;
-    int deltaP12x;
     int pAx;
-    int sourcePix;
+    int deltaP43x;
+    int dstShiftLeft;
+    int mapperFlags;
+    int yDelta;
+    int xDelta;
+    int pBy;
+    int skewWord;
+    int dstShiftInc;
+    int words;
+    int deltaP12y;
+    int smoothingCount;
+    int destWord;
+    int mergeWord;
+    int pBx;
+    int sourceMapOop;
+    int nSteps;
+    int halftoneWord;
+    int pAy;
+    int deltaP43y;
+    int (*mergeFnwith)(int, int);
+    int deltaP12x;
+    int i;
+    int startBits;
     int nPix1;
-    int destPix;
+    int sourcePix;
     int dstMask;
     int destWord1;
+    int destPix;
     int i1;
     int words1;
-    int x;
     int sourcePix1;
+    int x;
+    int srcIndex;
     int sourceWord;
     int y;
-    int srcIndex;
-    int x1;
     int sourcePix2;
+    int x1;
+    int srcIndex1;
     int sourceWord1;
     int y1;
-    int srcIndex1;
     int pv;
     int val;
 
 	mergeFnwith = ((int (*)(int, int)) (opTable[combinationRule + 1]));
 	mergeFnwith;
-	if (!((interpreterProxy->slotSizeOf(bitBltOop)) >= (15 + 12))) {
+	if (!((interpreterProxy->slotSizeOf(bitBltOop)) >= (BBWarpBase + 12))) {
 		return interpreterProxy->primitiveFail();
 	}
 	nSteps = height - 1;
 	if (nSteps <= 0) {
 		nSteps = 1;
 	}
-	pAx = fetchIntOrFloatofObject(15, bitBltOop);
-	words = fetchIntOrFloatofObject(15 + 3, bitBltOop);
+	pAx = fetchIntOrFloatofObject(BBWarpBase, bitBltOop);
+	words = fetchIntOrFloatofObject(BBWarpBase + 3, bitBltOop);
 	/* begin deltaFrom:to:nSteps: */
 	if (words > pAx) {
-		deltaP12x = (((words - pAx) + 16384) / (nSteps + 1)) + 1;
+		deltaP12x = (((words - pAx) + FixedPt1) / (nSteps + 1)) + 1;
 		goto l3;
 	} else {
 		if (words == pAx) {
 			deltaP12x = 0;
 			goto l3;
 		}
-		deltaP12x = 0 - ((((pAx - words) + 16384) / (nSteps + 1)) + 1);
+		deltaP12x = 0 - ((((pAx - words) + FixedPt1) / (nSteps + 1)) + 1);
 		goto l3;
 	}
 l3:	/* end deltaFrom:to:nSteps: */;
 	if (deltaP12x < 0) {
 		pAx = words - (nSteps * deltaP12x);
 	}
-	pAy = fetchIntOrFloatofObject(15 + 1, bitBltOop);
-	words = fetchIntOrFloatofObject(15 + 4, bitBltOop);
+	pAy = fetchIntOrFloatofObject(BBWarpBase + 1, bitBltOop);
+	words = fetchIntOrFloatofObject(BBWarpBase + 4, bitBltOop);
 	/* begin deltaFrom:to:nSteps: */
 	if (words > pAy) {
-		deltaP12y = (((words - pAy) + 16384) / (nSteps + 1)) + 1;
+		deltaP12y = (((words - pAy) + FixedPt1) / (nSteps + 1)) + 1;
 		goto l4;
 	} else {
 		if (words == pAy) {
 			deltaP12y = 0;
 			goto l4;
 		}
-		deltaP12y = 0 - ((((pAy - words) + 16384) / (nSteps + 1)) + 1);
+		deltaP12y = 0 - ((((pAy - words) + FixedPt1) / (nSteps + 1)) + 1);
 		goto l4;
 	}
 l4:	/* end deltaFrom:to:nSteps: */;
 	if (deltaP12y < 0) {
 		pAy = words - (nSteps * deltaP12y);
 	}
-	pBx = fetchIntOrFloatofObject(15 + 9, bitBltOop);
-	words = fetchIntOrFloatofObject(15 + 6, bitBltOop);
+	pBx = fetchIntOrFloatofObject(BBWarpBase + 9, bitBltOop);
+	words = fetchIntOrFloatofObject(BBWarpBase + 6, bitBltOop);
 	/* begin deltaFrom:to:nSteps: */
 	if (words > pBx) {
-		deltaP43x = (((words - pBx) + 16384) / (nSteps + 1)) + 1;
+		deltaP43x = (((words - pBx) + FixedPt1) / (nSteps + 1)) + 1;
 		goto l5;
 	} else {
 		if (words == pBx) {
 			deltaP43x = 0;
 			goto l5;
 		}
-		deltaP43x = 0 - ((((pBx - words) + 16384) / (nSteps + 1)) + 1);
+		deltaP43x = 0 - ((((pBx - words) + FixedPt1) / (nSteps + 1)) + 1);
 		goto l5;
 	}
 l5:	/* end deltaFrom:to:nSteps: */;
 	if (deltaP43x < 0) {
 		pBx = words - (nSteps * deltaP43x);
 	}
-	pBy = fetchIntOrFloatofObject(15 + 10, bitBltOop);
-	words = fetchIntOrFloatofObject(15 + 7, bitBltOop);
+	pBy = fetchIntOrFloatofObject(BBWarpBase + 10, bitBltOop);
+	words = fetchIntOrFloatofObject(BBWarpBase + 7, bitBltOop);
 	/* begin deltaFrom:to:nSteps: */
 	if (words > pBy) {
-		deltaP43y = (((words - pBy) + 16384) / (nSteps + 1)) + 1;
+		deltaP43y = (((words - pBy) + FixedPt1) / (nSteps + 1)) + 1;
 		goto l6;
 	} else {
 		if (words == pBy) {
 			deltaP43y = 0;
 			goto l6;
 		}
-		deltaP43y = 0 - ((((pBy - words) + 16384) / (nSteps + 1)) + 1);
+		deltaP43y = 0 - ((((pBy - words) + FixedPt1) / (nSteps + 1)) + 1);
 		goto l6;
 	}
 l6:	/* end deltaFrom:to:nSteps: */;
@@ -4898,7 +4966,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 			warpBitShiftTable[i1] = (i1 << warpSrcShift);
 		}
 	}
-	if ((smoothingCount > 1) && ((cmFlags & 8) == 0)) {
+	if ((smoothingCount > 1) && ((cmFlags & ColorMapNewStyle) == 0)) {
 		if (cmLookupTable == null) {
 			if (destDepth == 16) {
 				setupColorMasksFromto(8, 5);
@@ -4907,7 +4975,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 			setupColorMasksFromto(8, cmBitsPerColor);
 		}
 	}
-	mapperFlags = cmFlags & (~8);
+	mapperFlags = cmFlags & (~ColorMapNewStyle);
 	if (destMSB) {
 		dstShiftInc = 0 - destDepth;
 		dstShiftLeft = 32 - destDepth;
@@ -4918,14 +4986,14 @@ l6:	/* end deltaFrom:to:nSteps: */;
 	for (i = 1; i <= bbH; i += 1) {
 		/* begin deltaFrom:to:nSteps: */
 		if (pBx > pAx) {
-			xDelta = (((pBx - pAx) + 16384) / (nSteps + 1)) + 1;
+			xDelta = (((pBx - pAx) + FixedPt1) / (nSteps + 1)) + 1;
 			goto l1;
 		} else {
 			if (pBx == pAx) {
 				xDelta = 0;
 				goto l1;
 			}
-			xDelta = 0 - ((((pAx - pBx) + 16384) / (nSteps + 1)) + 1);
+			xDelta = 0 - ((((pAx - pBx) + FixedPt1) / (nSteps + 1)) + 1);
 			goto l1;
 		}
 	l1:	/* end deltaFrom:to:nSteps: */;
@@ -4936,14 +5004,14 @@ l6:	/* end deltaFrom:to:nSteps: */;
 		}
 		/* begin deltaFrom:to:nSteps: */
 		if (pBy > pAy) {
-			yDelta = (((pBy - pAy) + 16384) / (nSteps + 1)) + 1;
+			yDelta = (((pBy - pAy) + FixedPt1) / (nSteps + 1)) + 1;
 			goto l2;
 		} else {
 			if (pBy == pAy) {
 				yDelta = 0;
 				goto l2;
 			}
-			yDelta = 0 - ((((pAy - pBy) + 16384) / (nSteps + 1)) + 1);
+			yDelta = 0 - ((((pAy - pBy) + FixedPt1) / (nSteps + 1)) + 1);
 			goto l2;
 		}
 	l2:	/* end deltaFrom:to:nSteps: */;
@@ -4962,7 +5030,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 			sy += (clipX - destX) * yDelta;
 		}
 		if (noHalftone) {
-			halftoneWord = 4294967295U;
+			halftoneWord = AllOnes;
 		} else {
 			halftoneWord = longAt(halftoneBase + ((((dy + i) - 1) % halftoneHeight) * 4));
 		}
@@ -4978,10 +5046,10 @@ l6:	/* end deltaFrom:to:nSteps: */;
 				dstMask = maskTable[destDepth];
 				destWord1 = 0;
 				nPix1 = nPix;
-				if (mapperFlags == (1 | 4)) {
+				if (mapperFlags == (ColorMapPresent | ColorMapIndexedPart)) {
 					do {
 						/* begin pickWarpPixelAtX:y: */
-						if ((sx < 0) || ((sy < 0) || (((x = ((unsigned) sx) >> 14) >= sourceWidth) || ((y = ((unsigned) sy) >> 14) >= sourceHeight)))) {
+						if ((sx < 0) || ((sy < 0) || (((x = ((unsigned) sx) >> BinaryPoint) >= sourceWidth) || ((y = ((unsigned) sy) >> BinaryPoint) >= sourceHeight)))) {
 							sourcePix = 0;
 							goto l7;
 						}
@@ -5000,7 +5068,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 				} else {
 					do {
 						/* begin pickWarpPixelAtX:y: */
-						if ((sx < 0) || ((sy < 0) || (((x1 = ((unsigned) sx) >> 14) >= sourceWidth) || ((y1 = ((unsigned) sy) >> 14) >= sourceHeight)))) {
+						if ((sx < 0) || ((sy < 0) || (((x1 = ((unsigned) sx) >> BinaryPoint) >= sourceWidth) || ((y1 = ((unsigned) sy) >> BinaryPoint) >= sourceHeight)))) {
 							sourcePix = 0;
 							goto l8;
 						}
@@ -5012,8 +5080,8 @@ l6:	/* end deltaFrom:to:nSteps: */;
 					l8:	/* end pickWarpPixelAtX:y: */;
 						/* begin mapPixel:flags: */
 						pv = sourcePix;
-						if ((mapperFlags & 1) != 0) {
-							if ((mapperFlags & 2) != 0) {
+						if ((mapperFlags & ColorMapPresent) != 0) {
+							if ((mapperFlags & ColorMapFixedPart) != 0) {
 								/* begin rgbMapPixel:flags: */
 								val = (((cmShiftTable[0]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (sourcePix & (cmMaskTable[0])) << (cmShiftTable[0])));
 								val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (sourcePix & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -5023,7 +5091,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 									pv = 1;
 								}
 							}
-							if ((mapperFlags & 4) != 0) {
+							if ((mapperFlags & ColorMapIndexedPart) != 0) {
 								pv = cmLookupTable[pv & cmMask];
 							}
 						}
@@ -5039,7 +5107,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 				skewWord = warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdstShiftInc(nPix, xDelta, yDelta, deltaP12x, deltaP12y, sourceMapOop, smoothingCount, dstShiftInc);
 			}
 			dstBitShift = dstShiftLeft;
-			if (destMask == 4294967295U) {
+			if (destMask == AllOnes) {
 				mergeWord = mergeFnwith(skewWord & halftoneWord, longAt(destIndex));
 				longAtput(destIndex, destMask & mergeWord);
 			} else {
@@ -5053,7 +5121,7 @@ l6:	/* end deltaFrom:to:nSteps: */;
 				destMask = mask2;
 				nPix = endBits;
 			} else {
-				destMask = 4294967295U;
+				destMask = AllOnes;
 				nPix = destPPW;
 			}
 		} while(!((words -= 1) == 0));
@@ -5109,30 +5177,30 @@ static int warpLoopSetup(void) {
 	This version is only called from WarpBlt with smoothingCount > 1 */
 
 static int warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdstShiftInc(int nPixels, int xDeltah, int yDeltah, int xDeltav, int yDeltav, int sourceMap, int n, int dstShiftInc) {
-    int x;
-    int g;
-    int i;
-    int k;
     int nPix;
-    int b;
-    int yy;
-    int ydv;
-    int dstMask;
-    int y;
-    int ydh;
-    int destWord;
-    int xx;
-    int xdv;
-    int j;
+    int a;
+    int k;
+    int rgb;
     int xdh;
     int r;
-    int rgb;
-    int a;
-    int x1;
+    int j;
+    int y;
+    int destWord;
+    int xx;
+    int yy;
+    int dstMask;
+    int b;
+    int g;
+    int ydv;
+    int i;
+    int x;
+    int ydh;
+    int xdv;
     int sourcePix;
+    int x1;
+    int srcIndex;
     int sourceWord;
     int y1;
-    int srcIndex;
     int pv;
     int val;
 
@@ -5168,7 +5236,7 @@ static int warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdst
 			k = n;
 			do {
 				/* begin pickWarpPixelAtX:y: */
-				if ((xx < 0) || ((yy < 0) || (((x1 = ((unsigned) xx) >> 14) >= sourceWidth) || ((y1 = ((unsigned) yy) >> 14) >= sourceHeight)))) {
+				if ((xx < 0) || ((yy < 0) || (((x1 = ((unsigned) xx) >> BinaryPoint) >= sourceWidth) || ((y1 = ((unsigned) yy) >> BinaryPoint) >= sourceHeight)))) {
 					rgb = 0;
 					goto l1;
 				}
@@ -5228,8 +5296,8 @@ static int warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdst
 			}
 			/* begin mapPixel:flags: */
 			pv = rgb;
-			if ((cmFlags & 1) != 0) {
-				if ((cmFlags & 2) != 0) {
+			if ((cmFlags & ColorMapPresent) != 0) {
+				if ((cmFlags & ColorMapFixedPart) != 0) {
 					/* begin rgbMapPixel:flags: */
 					val = (((cmShiftTable[0]) < 0) ? ((unsigned) (rgb & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (rgb & (cmMaskTable[0])) << (cmShiftTable[0])));
 					val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (rgb & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (rgb & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -5239,7 +5307,7 @@ static int warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdst
 						pv = 1;
 					}
 				}
-				if ((cmFlags & 4) != 0) {
+				if ((cmFlags & ColorMapIndexedPart) != 0) {
 					pv = cmLookupTable[pv & cmMask];
 				}
 			}
@@ -5259,31 +5327,31 @@ static int warpPickSmoothPixelsxDeltahyDeltahxDeltavyDeltavsourceMapsmoothingdst
 	This version is only called from WarpBlt with smoothingCount = 1 */
 
 static int warpPickSourcePixelsxDeltahyDeltahxDeltavyDeltavdstShiftIncflags(int nPixels, int xDeltah, int yDeltah, int xDeltav, int yDeltav, int dstShiftInc, int mapperFlags) {
-    int sourcePix;
     int nPix;
-    int destPix;
+    int sourcePix;
     int dstMask;
     int destWord;
-    int x;
+    int destPix;
     int sourcePix1;
+    int x;
+    int srcIndex;
     int sourceWord;
     int y;
-    int srcIndex;
-    int x1;
     int sourcePix2;
+    int x1;
+    int srcIndex1;
     int sourceWord1;
     int y1;
-    int srcIndex1;
     int pv;
     int val;
 
 	dstMask = maskTable[destDepth];
 	destWord = 0;
 	nPix = nPixels;
-	if (mapperFlags == (1 | 4)) {
+	if (mapperFlags == (ColorMapPresent | ColorMapIndexedPart)) {
 		do {
 			/* begin pickWarpPixelAtX:y: */
-			if ((sx < 0) || ((sy < 0) || (((x = ((unsigned) sx) >> 14) >= sourceWidth) || ((y = ((unsigned) sy) >> 14) >= sourceHeight)))) {
+			if ((sx < 0) || ((sy < 0) || (((x = ((unsigned) sx) >> BinaryPoint) >= sourceWidth) || ((y = ((unsigned) sy) >> BinaryPoint) >= sourceHeight)))) {
 				sourcePix = 0;
 				goto l1;
 			}
@@ -5302,7 +5370,7 @@ static int warpPickSourcePixelsxDeltahyDeltahxDeltavyDeltavdstShiftIncflags(int 
 	} else {
 		do {
 			/* begin pickWarpPixelAtX:y: */
-			if ((sx < 0) || ((sy < 0) || (((x1 = ((unsigned) sx) >> 14) >= sourceWidth) || ((y1 = ((unsigned) sy) >> 14) >= sourceHeight)))) {
+			if ((sx < 0) || ((sy < 0) || (((x1 = ((unsigned) sx) >> BinaryPoint) >= sourceWidth) || ((y1 = ((unsigned) sy) >> BinaryPoint) >= sourceHeight)))) {
 				sourcePix = 0;
 				goto l2;
 			}
@@ -5314,8 +5382,8 @@ static int warpPickSourcePixelsxDeltahyDeltahxDeltavyDeltavdstShiftIncflags(int 
 		l2:	/* end pickWarpPixelAtX:y: */;
 			/* begin mapPixel:flags: */
 			pv = sourcePix;
-			if ((mapperFlags & 1) != 0) {
-				if ((mapperFlags & 2) != 0) {
+			if ((mapperFlags & ColorMapPresent) != 0) {
+				if ((mapperFlags & ColorMapFixedPart) != 0) {
 					/* begin rgbMapPixel:flags: */
 					val = (((cmShiftTable[0]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[0])) >> -(cmShiftTable[0])) : ((unsigned) (sourcePix & (cmMaskTable[0])) << (cmShiftTable[0])));
 					val = val | ((((cmShiftTable[1]) < 0) ? ((unsigned) (sourcePix & (cmMaskTable[1])) >> -(cmShiftTable[1])) : ((unsigned) (sourcePix & (cmMaskTable[1])) << (cmShiftTable[1]))));
@@ -5325,7 +5393,7 @@ static int warpPickSourcePixelsxDeltahyDeltahxDeltavyDeltavdstShiftIncflags(int 
 						pv = 1;
 					}
 				}
-				if ((mapperFlags & 4) != 0) {
+				if ((mapperFlags & ColorMapIndexedPart) != 0) {
 					pv = cmLookupTable[pv & cmMask];
 				}
 			}

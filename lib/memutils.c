@@ -9,13 +9,13 @@ extern void abort(void);
 void * malloc ( unsigned int size )
 {
     void *ret;
-	printf("malloc(%i now:", size);
+//	printf("malloc(%i now:", size);
 	size = ROUND_UP(size, 8);
-	printf("%i) => ", size);
+//	printf("%i) => ", size);
 
     ret=(void *)malloc_base;
 
-	printf("0x%08x\n", ret);
+//	printf("0x%08x\n", ret);
 
     malloc_base+=size;
     
@@ -30,14 +30,14 @@ void *calloc(unsigned int nmemb, unsigned int size) {
 
 void *memalign(unsigned int alignment, unsigned int n) {
     void *ret;
-	printf("malloc(%i) => (malloc_base was: 0x%08x, ", n, malloc_base);
+//	printf("malloc(%i) => (malloc_base was: 0x%08x, ", n, malloc_base);
 	
 	ret = (void *)ROUND_UP(malloc_base, alignment);
 	
 	malloc_base += n;
 	malloc_base = ROUND_UP(malloc_base, alignment);
 
-	printf("malloc_base now: 0x%08x) ret => 0x%08x\n", malloc_base, ret);
+//	printf("malloc_base now: 0x%08x) ret => 0x%08x\n", malloc_base, ret);
 	return ret;
 }
 

@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:56 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:08:59 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -33,22 +33,7 @@
 #define longAtput(i, val) (*((int *) (i)) = val)
 
 
-/*** Variables ***/
-static const int  andOpIndex = 0;
-
-#ifdef SQUEAK_BUILTIN_PLUGIN
-extern
-#endif
-struct VirtualMachine* interpreterProxy;
-static const char *moduleName =
-#ifdef SQUEAK_BUILTIN_PLUGIN
-	"LargeIntegers v1.2 4 March 2003 (i)"
-#else
-	"LargeIntegers v1.2 4 March 2003 (e)"
-#endif
-;
-static const int  orOpIndex = 1;
-static const int  xorOpIndex = 2;
+/*** Constants ***/
 
 /*** Function Prototypes ***/
 #pragma export on
@@ -91,6 +76,7 @@ EXPORT(const char*) getModuleName(void);
 static int halt(void);
 static int highBitOfBytes(int aBytesOop);
 static void initialize(void);
+static int isNormalized(int anInteger);
 static int msg(char *s);
 static int negative(int aLarge);
 static int normalize(int aLargeInteger);
@@ -125,6 +111,23 @@ EXPORT(int) setInterpreter(struct VirtualMachine* anInterpreter);
 static int sqAssert(int aBool);
 static int think(void);
 static int unsafeByteOfat(int bytesOop, int ix);
+/*** Variables ***/
+static const int  andOpIndex = 0;
+
+#ifdef SQUEAK_BUILTIN_PLUGIN
+extern
+#endif
+struct VirtualMachine* interpreterProxy;
+static const char *moduleName =
+#ifdef SQUEAK_BUILTIN_PLUGIN
+	"LargeIntegers v1.3 19 March 2005 (i)"
+#else
+	"LargeIntegers v1.3 19 March 2005 (e)"
+#endif
+;
+static const int  orOpIndex = 1;
+static const int  xorOpIndex = 2;
+
 
 EXPORT(int) _primDigitBitShift(void) {
 	int rShift;
@@ -179,15 +182,15 @@ EXPORT(int) _primDigitBitShift(void) {
 /*	Tests for any magnitude bits in the interval from start to stopArg. */
 
 static int anyBitOfBytesfromto(int aBytesOop, int start, int stopArg) {
-	int magnitude;
-	int lastByteIx;
-	int mask;
-	int stop;
-	int digit;
-	int ix;
-	int leftShift;
 	int firstByteIx;
 	int rightShift;
+	int leftShift;
+	int lastByteIx;
+	int magnitude;
+	int stop;
+	int mask;
+	int digit;
+	int ix;
 
 	/* missing DebugCode */;
 	if ((start < 1) || (stopArg < 1)) {
@@ -244,10 +247,10 @@ static int byteSizeOfBytes(int bytesOop) {
 /*	Does not normalize. */
 
 static int bytesLshift(int aBytesOop, int shiftCount) {
-	int newBytes;
+	int oldLen;
 	int highBit;
 	int newLen;
-	int oldLen;
+	int newBytes;
 
 	oldLen = interpreterProxy->slotSizeOf(aBytesOop);
 	if ((highBit = cBytesHighBitlen(interpreterProxy->firstIndexableField(aBytesOop), oldLen)) == 0) {
@@ -269,15 +272,15 @@ static int bytesLshift(int aBytesOop, int shiftCount) {
 /*	Does not normalize. */
 
 static int bytesRshiftbyteslookfirst(int aBytesOop, int anInteger, int b, int a) {
-	int m;
-	int newLen;
-	int n;
 	int f;
+	int oldLen;
+	int n;
 	int x;
+	int i;
+	int newLen;
+	int m;
 	int digit;
 	int newBytes;
-	int i;
-	int oldLen;
 
 	n = 0 - anInteger;
 	x = 0;
@@ -327,9 +330,9 @@ l2:	/* end digitOfBytes:at: */;
 /*	Does not normalize. */
 
 static int bytesgrowTo(int aBytesObject, int newLen) {
-	int newBytes;
-	int oldLen;
 	int copyLen;
+	int oldLen;
+	int newBytes;
 
 	interpreterProxy->pushRemappableOop(aBytesObject);
 	newBytes = interpreterProxy->instantiateClassindexableSize(interpreterProxy->fetchClassOf(aBytesObject), newLen);
@@ -349,9 +352,9 @@ static int bytesgrowTo(int aBytesObject, int newLen) {
 	          return. */
 
 static int bytesOrIntgrowTo(int oop, int len) {
-	int newBytes;
-	int class;
 	int val;
+	int class;
+	int newBytes;
 
 	if ((oop & 1)) {
 		val = (oop >> 1);
@@ -372,8 +375,8 @@ static int bytesOrIntgrowTo(int oop, int len) {
 /*	pByteRes len = longLen. */
 
 static int cByteOpshortlenlongleninto(int opIndex, unsigned char * pByteShort, int shortLen, unsigned char * pByteLong, int longLen, unsigned char * pByteRes) {
-	int i;
 	int limit;
+	int i;
 
 	limit = shortLen - 1;
 	if (opIndex == andOpIndex) {
@@ -447,15 +450,15 @@ static int cBytesHighBitlen(unsigned char *  pByte, int len) {
 /*	C indexed! */
 
 static int cBytesLshiftfromlentolen(int shiftCount, unsigned char * pFrom, int lenFrom, unsigned char * pTo, int lenTo) {
+	int limit;
 	int lastIx;
-	int bitShift;
+	int i;
 	int carry;
+	int byteShift;
 	int rShift;
 	int mask;
 	int digit;
-	int i;
-	int byteShift;
-	int limit;
+	int bitShift;
 
 	byteShift = ((int) shiftCount >> 3);
 	bitShift = shiftCount % 8;
@@ -499,8 +502,8 @@ static int cBytesReplacefromtowithstartingAt(unsigned char * pTo, int start, int
 }
 
 static int cCopyIntValtoBytes(int val, int bytes) {
-	int ix;
 	unsigned char *  pByte;
+	int ix;
 
 	pByte = interpreterProxy->firstIndexableField(bytes);
 	for (ix = 1; ix <= (cDigitLengthOfCSI(val)); ix += 1) {
@@ -509,9 +512,9 @@ static int cCopyIntValtoBytes(int val, int bytes) {
 }
 
 static int cCoreBytesRshiftCountnmfbytesfromlentolen(int count, int n, int m, int f, int b, unsigned char * pFrom, int fromLen, unsigned char * pTo, int toLen) {
+	int j;
 	int x;
 	int digit;
-	int j;
 
 	/* begin sqAssert: */
 	/* missing DebugCode */;
@@ -535,22 +538,22 @@ l2:	/* end sqAssert: */;
 
 static int cCoreDigitDivDivlenremlenquolen(unsigned char * pDiv, int divLen, unsigned char * pRem, int remLen, unsigned char * pQuo, int quoLen) {
 	int cond;
+	int a;
+	int k;
+	int dnh;
 	int i;
+	int hi;
+	int l;
+	int dl;
+	int q;
+	int r1r2;
 	int j;
 	int mul;
-	int k;
-	int dh;
-	int ql;
-	int l;
-	int lo;
-	int dl;
-	int dnh;
-	int r3;
-	int q;
-	int a;
-	int r1r2;
-	int hi;
 	int t;
+	int ql;
+	int lo;
+	int dh;
+	int r3;
 
 
 	/* Last actual byte of data (ST ix) */
@@ -636,8 +639,8 @@ static int cCoreDigitDivDivlenremlenquolen(unsigned char * pDiv, int divLen, uns
 /*	pByteRes len = longLen; returns over.. */
 
 static unsigned char cDigitAddlenwithleninto(unsigned char * pByteShort, int shortLen, unsigned char * pByteLong, int longLen, unsigned char * pByteRes) {
-	int i;
 	int limit;
+	int i;
 	int accum;
 
 	accum = 0;
@@ -658,9 +661,9 @@ static unsigned char cDigitAddlenwithleninto(unsigned char * pByteShort, int sho
 /*	Precondition: pFirst len = pSecond len. */
 
 static int cDigitComparewithlen(unsigned char * pFirst, unsigned char * pSecond, int len) {
-	int ix;
-	int secondDigit;
 	int firstDigit;
+	int secondDigit;
+	int ix;
 
 	ix = len - 1;
 	while (ix >= 0) {
@@ -697,14 +700,14 @@ static int cDigitLengthOfCSI(int csi) {
 /*	pByteRes len = longLen * shortLen */
 
 static unsigned char cDigitMultiplylenwithleninto(unsigned char * pByteShort, int shortLen, unsigned char * pByteLong, int longLen, unsigned char * pByteRes) {
-	int limitShort;
-	int carry;
-	int digit;
-	int i;
-	int ab;
-	int j;
-	int limitLong;
 	int k;
+	int limitLong;
+	int limitShort;
+	int ab;
+	int carry;
+	int i;
+	int j;
+	int digit;
 
 	if ((shortLen == 1) && ((pByteShort[0]) == 0)) {
 		return 0;
@@ -756,9 +759,9 @@ static int cDigitOfCSIat(int csi, int ix) {
 }
 
 static int cDigitSublenwithleninto(unsigned char * pByteSmall, int smallLen, unsigned char * pByteLarge, int largeLen, unsigned char * pByteRes) {
+	int limit;
 	int z;
 	int i;
-	int limit;
 
 
 	/* Loop invariant is -1<=z<=1 */
@@ -803,11 +806,11 @@ static int cHighBit(int uint) {
 /*	anOop has to be a SmallInteger! */
 
 static int createLargeFromSmallInteger(int anOop) {
-	int size;
 	int val;
 	int res;
-	unsigned char *  pByte;
+	int size;
 	int class;
+	unsigned char *  pByte;
 	int ix;
 
 	val = (anOop >> 1);
@@ -829,16 +832,16 @@ static int createLargeFromSmallInteger(int anOop) {
 /*	Does not need to normalize! */
 
 static int digitAddLargewith(int firstInteger, int secondInteger) {
-	int shortInt;
-	int secondLen;
-	int longInt;
-	int resClass;
-	int firstLen;
-	unsigned char  over;
-	int shortLen;
-	int longLen;
 	int newSum;
 	int sum;
+	int secondLen;
+	int longLen;
+	int resClass;
+	int shortLen;
+	int shortInt;
+	int longInt;
+	unsigned char  over;
+	int firstLen;
 
 	firstLen = interpreterProxy->slotSizeOf(firstInteger);
 	secondLen = interpreterProxy->slotSizeOf(secondInteger);
@@ -879,15 +882,15 @@ static int digitAddLargewith(int firstInteger, int secondInteger) {
 	or arg is negative, it fails. */
 
 static int digitBitLogicwithopIndex(int firstInteger, int secondInteger, int opIx) {
-	int firstLarge;
-	int shortLarge;
-	int secondLen;
-	int firstLen;
 	int secondLarge;
-	int result;
-	int shortLen;
+	int secondLen;
 	int longLen;
 	int longLarge;
+	int firstLarge;
+	int shortLen;
+	int shortLarge;
+	int result;
+	int firstLen;
 
 	if ((firstInteger & 1)) {
 		if (((firstInteger >> 1)) < 0) {
@@ -965,15 +968,15 @@ static int digitCompareLargewith(int firstInteger, int secondInteger) {
 /*	Division by zero has to be checked in caller. */
 
 static int digitDivLargewithnegative(int firstInteger, int secondInteger, int neg) {
-	int d;
-	int div;
+	int l;
 	int secondLen;
+	int rem;
+	int div;
+	int d;
+	int result;
+	int quo;
 	int firstLen;
 	int resultClass;
-	int quo;
-	int result;
-	int rem;
-	int l;
 
 	firstLen = interpreterProxy->slotSizeOf(firstInteger);
 	secondLen = interpreterProxy->slotSizeOf(secondInteger);
@@ -1033,14 +1036,14 @@ static int digitLength(int oop) {
 /*	Normalizes. */
 
 static int digitMultiplyLargewithnegative(int firstInteger, int secondInteger, int neg) {
-	int shortInt;
 	int secondLen;
-	int longInt;
+	int longLen;
+	int shortLen;
+	int shortInt;
 	int prod;
+	int longInt;
 	int firstLen;
 	int resultClass;
-	int shortLen;
-	int longLen;
 
 	firstLen = interpreterProxy->slotSizeOf(firstInteger);
 	secondLen = interpreterProxy->slotSizeOf(secondInteger);
@@ -1105,17 +1108,17 @@ static int digitOfBytesat(int aBytesOop, int ix) {
 /*	Normalizes. */
 
 static int digitSubLargewith(int firstInteger, int secondInteger) {
-	int larger;
-	int secondLen;
-	int largerLen;
-	int neg;
 	int res;
-	int firstNeg;
-	int firstLen;
-	int class;
-	int smallerLen;
-	int resLen;
+	int secondLen;
 	int smaller;
+	int resLen;
+	int firstNeg;
+	int smallerLen;
+	int largerLen;
+	int class;
+	int larger;
+	int neg;
+	int firstLen;
 
 	firstNeg = (interpreterProxy->fetchClassOf(firstInteger)) == (interpreterProxy->classLargeNegativeInteger());
 	firstLen = interpreterProxy->slotSizeOf(firstInteger);
@@ -1186,6 +1189,67 @@ static void initialize(void) {
 	"nothing to do here";
 }
 
+static int isNormalized(int anInteger) {
+	int sLen;
+	int minVal;
+	int maxVal;
+	int len;
+	int ix;
+
+	if ((anInteger & 1)) {
+		return 1;
+	}
+	/* begin digitLength: */
+	if ((anInteger & 1)) {
+		len = cDigitLengthOfCSI((anInteger >> 1));
+		goto l1;
+	} else {
+		len = interpreterProxy->slotSizeOf(anInteger);
+		goto l1;
+	}
+l1:	/* end digitLength: */;
+	if (len == 0) {
+		return 0;
+	}
+	if ((((interpreterProxy->stObjectat(anInteger, len)) >> 1)) == 0) {
+		return 0;
+	}
+
+	/* maximal digitLength of aSmallInteger */
+
+	sLen = 4;
+	if (len > sLen) {
+		return 1;
+	}
+	if (len < sLen) {
+		return 0;
+	}
+	if ((interpreterProxy->fetchClassOf(anInteger)) == (interpreterProxy->classLargePositiveInteger())) {
+
+		/* SmallInteger maxVal */
+		/* all bytes of maxVal but the highest one are just FF's */
+
+		maxVal = 1073741823;
+		return (((interpreterProxy->stObjectat(anInteger, sLen)) >> 1)) > (cDigitOfCSIat(maxVal, sLen));
+	} else {
+
+		/* SmallInteger minVal */
+		/* all bytes of minVal but the highest one are just 00's */
+
+		minVal = -1073741824;
+		if ((((interpreterProxy->stObjectat(anInteger, sLen)) >> 1)) < (cDigitOfCSIat(minVal, sLen))) {
+			return 0;
+		} else {
+			for (ix = 1; ix <= sLen; ix += 1) {
+				if (!((((interpreterProxy->stObjectat(anInteger, ix)) >> 1)) == (cDigitOfCSIat(minVal, ix)))) {
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 static int msg(char *s) {
 	fprintf(stderr, "\n%s: %s", moduleName, s);
 }
@@ -1212,11 +1276,11 @@ static int normalize(int aLargeInteger) {
 
 static int normalizeNegative(int aLargeNegativeInteger) {
 	int val;
+	int sLen;
+	int oldLen;
+	int minVal;
 	int len;
 	int i;
-	int minVal;
-	int oldLen;
-	int sLen;
 
 	len = oldLen = digitLength(aLargeNegativeInteger);
 	while ((len != 0) && ((((interpreterProxy->stObjectat(aLargeNegativeInteger, len)) >> 1)) == 0)) {
@@ -1262,10 +1326,10 @@ static int normalizeNegative(int aLargeNegativeInteger) {
 
 static int normalizePositive(int aLargePositiveInteger) {
 	int val;
-	int i;
-	int len;
-	int oldLen;
 	int sLen;
+	int oldLen;
+	int len;
+	int i;
 
 	len = oldLen = digitLength(aLargePositiveInteger);
 	while ((len != 0) && ((((interpreterProxy->stObjectat(aLargePositiveInteger, len)) >> 1)) == 0)) {
@@ -1370,9 +1434,9 @@ EXPORT(int) primCheckIfCModuleExists(void) {
 /*	 */
 
 EXPORT(int) primDigitAdd(void) {
+	int secondLarge;
 	int firstLarge;
 	int firstInteger;
-	int secondLarge;
 	int secondInteger;
 	int _return_value;
 
@@ -1410,8 +1474,8 @@ EXPORT(int) primDigitAdd(void) {
 /*	 */
 
 EXPORT(int) primDigitAddWith(void) {
-	int firstLarge;
 	int secondLarge;
+	int firstLarge;
 	int firstInteger;
 	int secondInteger;
 	int _return_value;
@@ -1523,8 +1587,8 @@ EXPORT(int) primDigitBitOr(void) {
 }
 
 EXPORT(int) primDigitBitShift(void) {
-	int rShift;
 	int anInteger;
+	int rShift;
 	int aLarge;
 	int shiftCount;
 	int _return_value;
@@ -1571,8 +1635,8 @@ EXPORT(int) primDigitBitShift(void) {
 }
 
 EXPORT(int) primDigitBitShiftMagnitude(void) {
-	int rShift;
 	int anInteger;
+	int rShift;
 	int aLarge;
 	int shiftCount;
 	int _return_value;
@@ -1644,9 +1708,9 @@ EXPORT(int) primDigitBitXor(void) {
 }
 
 EXPORT(int) primDigitCompare(void) {
-	int secondVal;
 	int firstVal;
 	int firstInteger;
+	int secondVal;
 	int secondInteger;
 	int _return_value;
 
@@ -1712,8 +1776,8 @@ EXPORT(int) primDigitCompare(void) {
 }
 
 EXPORT(int) primDigitCompareWith(void) {
-	int secondVal;
 	int firstVal;
+	int secondVal;
 	int firstInteger;
 	int secondInteger;
 	int _return_value;
@@ -1780,13 +1844,13 @@ EXPORT(int) primDigitCompareWith(void) {
 }
 
 
-/*	Answer the result of dividing firstInteger by secondInteger.  Fail if      
-	parameters are not integers or secondInteger is zero. */
+/*	Answer the result of dividing firstInteger by secondInteger.
+	Fail if parameters are not integers, not normalized or secondInteger is zero. */
 
 EXPORT(int) primDigitDivNegative(void) {
-	int firstAsLargeInteger;
 	int firstInteger;
 	int secondAsLargeInteger;
+	int firstAsLargeInteger;
 	int secondInteger;
 	int neg;
 	int _return_value;
@@ -1798,6 +1862,16 @@ EXPORT(int) primDigitDivNegative(void) {
 	interpreterProxy->success(interpreterProxy->isKindOf(interpreterProxy->stackValue(2), "Integer"));
 	firstInteger = interpreterProxy->stackValue(2);
 	if (interpreterProxy->failed()) {
+		return null;
+	}
+	if (!(isNormalized(firstInteger))) {
+		/* missing DebugCode */;
+		interpreterProxy->primitiveFail();
+		return null;
+	}
+	if (!(isNormalized(secondInteger))) {
+		/* missing DebugCode */;
+		interpreterProxy->primitiveFail();
 		return null;
 	}
 	if ((firstInteger & 1)) {
@@ -1831,8 +1905,8 @@ EXPORT(int) primDigitDivNegative(void) {
 	parameters are not integers or secondInteger is zero. */
 
 EXPORT(int) primDigitDivWithNegative(void) {
-	int firstAsLargeInteger;
 	int secondAsLargeInteger;
+	int firstAsLargeInteger;
 	int firstInteger;
 	int secondInteger;
 	int neg;
@@ -1877,9 +1951,9 @@ EXPORT(int) primDigitDivWithNegative(void) {
 /*	 */
 
 EXPORT(int) primDigitMultiplyNegative(void) {
+	int secondLarge;
 	int firstLarge;
 	int firstInteger;
-	int secondLarge;
 	int secondInteger;
 	int neg;
 	int _return_value;
@@ -1919,8 +1993,8 @@ EXPORT(int) primDigitMultiplyNegative(void) {
 /*	 */
 
 EXPORT(int) primDigitMultiplyWithNegative(void) {
-	int firstLarge;
 	int secondLarge;
+	int firstLarge;
 	int firstInteger;
 	int secondInteger;
 	int neg;
@@ -1961,9 +2035,9 @@ EXPORT(int) primDigitMultiplyWithNegative(void) {
 /*	 */
 
 EXPORT(int) primDigitSubtract(void) {
+	int secondLarge;
 	int firstLarge;
 	int firstInteger;
-	int secondLarge;
 	int secondInteger;
 	int _return_value;
 
@@ -2001,8 +2075,8 @@ EXPORT(int) primDigitSubtract(void) {
 /*	 */
 
 EXPORT(int) primDigitSubtractWith(void) {
-	int firstLarge;
 	int secondLarge;
+	int firstLarge;
 	int firstInteger;
 	int secondInteger;
 	int _return_value;
@@ -2041,10 +2115,10 @@ EXPORT(int) primDigitSubtractWith(void) {
 /*	If calling this primitive fails, then C module does not exist. */
 
 EXPORT(int) primGetModuleName(void) {
-	int strOop;
-	char *strPtr;
 	int i;
+	char *strPtr;
 	int strLen;
+	int strOop;
 
 	/* missing DebugCode */;
 	strLen = strlen(moduleName);

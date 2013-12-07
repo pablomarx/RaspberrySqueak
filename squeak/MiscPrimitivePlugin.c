@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on #(4 March 2003 4:22:57 am) */
+/* Automatically generated from Squeak on #(19 March 2005 10:09:01 am) */
 
 #include <math.h>
 #include <stdio.h>
@@ -54,6 +54,8 @@
 #define asciiValue(c) c
 
 
+/*** Constants ***/
+
 /*** Variables ***/
 
 #ifdef SQUEAK_BUILTIN_PLUGIN
@@ -62,9 +64,9 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"MiscPrimitivePlugin 4 March 2003 (i)"
+	"MiscPrimitivePlugin 19 March 2005 (i)"
 #else
-	"MiscPrimitivePlugin 4 March 2003 (e)"
+	"MiscPrimitivePlugin 19 March 2005 (e)"
 #endif
 ;
 
@@ -148,11 +150,11 @@ EXPORT(int) primitiveCompareString(void) {
     unsigned char *string1;
     unsigned char *string2;
     unsigned char *order;
-    int len1;
-    int i;
     int len2;
-    int c1;
+    int len1;
     int c2;
+    int i;
+    int c1;
 
 	rcvr = stackValue(3);
 	string1 = arrayValueOf(stackValue(2));
@@ -237,14 +239,14 @@ EXPORT(int) primitiveCompressToByteArray(void) {
     int rcvr;
     int *bm;
     unsigned char *ba;
+    int k;
     int size;
+    int word;
+    int j;
     int eqBytes;
     int i;
-    int j;
-    int m;
-    int k;
     int lowByte;
-    int word;
+    int m;
 
 	rcvr = stackValue(2);
 	bm = arrayValueOf(stackValue(1));
@@ -311,8 +313,8 @@ EXPORT(int) primitiveConvert8BitSigned(void) {
     int rcvr;
     unsigned char *aByteArray;
     unsigned short *aSoundBuffer;
-    int n;
     int i;
+    int n;
     int s;
 
 	rcvr = stackValue(2);
@@ -359,16 +361,16 @@ EXPORT(int) primitiveDecompressFromByteArray(void) {
     int *bm;
     unsigned char *ba;
     int index;
-    int m;
-    int n;
-    int data;
+    int anInt;
+    int pastEnd;
     int code;
     int end;
-    int pastEnd;
-    int i;
-    int j;
     int k;
-    int anInt;
+    int j;
+    int i;
+    int n;
+    int m;
+    int data;
 
 	rcvr = stackValue(3);
 	bm = arrayValueOf(stackValue(2));
@@ -457,8 +459,8 @@ EXPORT(int) primitiveFindFirstInString(void) {
     unsigned char *aString;
     char *inclusionMap;
     int start;
-    int stringSize;
     int i;
+    int stringSize;
 
 	rcvr = stackValue(3);
 	aString = arrayValueOf(stackValue(2));
@@ -558,8 +560,8 @@ EXPORT(int) primitiveIndexOfAsciiInString(void) {
     int anInteger;
     unsigned char *aString;
     int start;
-    int stringSize;
     int pos;
+    int stringSize;
 
 	rcvr = stackValue(3);
 	anInteger = stackIntegerValue(2);
@@ -588,29 +590,37 @@ EXPORT(int) primitiveIndexOfAsciiInString(void) {
 	return null;
 }
 
+
+/*	Answer the hash of a byte-indexed collection,
+	using speciesHash as the initial value.
+	See SmallInteger>>hashMultiply.
+
+	The primitive should be renamed at a
+	suitable point in the future */
+
 EXPORT(int) primitiveStringHash(void) {
     int rcvr;
-    unsigned char *aString;
+    unsigned char *aByteArray;
     int speciesHash;
-    int stringSize;
-    int hash;
-    int low;
     int pos;
+    int low;
+    int byteArraySize;
+    int hash;
 
 	rcvr = stackValue(2);
-	aString = arrayValueOf(stackValue(1));
-	aString -= 1;
+	aByteArray = arrayValueOf(stackValue(1));
+	aByteArray -= 1;
 	speciesHash = stackIntegerValue(0);
 	if (!(successFlag)) {
 		return null;
 	}
-	stringSize = sizeOfSTArrayFromCPrimitive(aString + 1);
+	byteArraySize = sizeOfSTArrayFromCPrimitive(aByteArray + 1);
 	hash = speciesHash & 268435455;
-	for (pos = 1; pos <= stringSize; pos += 1) {
+	for (pos = 1; pos <= byteArraySize; pos += 1) {
 
 		/* Begin hashMultiply */
 
-		hash += asciiValue(aString[pos]);
+		hash += aByteArray[pos];
 		low = hash & 16383;
 		hash = ((9741 * low) + ((((9741 * (((unsigned) hash >> 14))) + (101 * low)) & 16383) * 16384)) & 268435455;
 	}
