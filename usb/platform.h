@@ -18,7 +18,8 @@
 #include "strings.h"
 #include "printf.h"
 
-#define DEBUG 1
+#define DEBUG 0
+#define NO_LOG 1
 
 void* MemoryReserve(uint32_t length, void* physicalAddress);
 
