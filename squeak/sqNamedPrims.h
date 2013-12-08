@@ -9,6 +9,7 @@ extern sqExport B2DPlugin_exports[];
 extern sqExport BitBltPlugin_exports[];
 extern sqExport FilePlugin_exports[];
 extern sqExport FloatArrayPlugin_exports[];
+extern sqExport FloatMathPlugin_exports[];
 extern sqExport LargeIntegers_exports[];
 extern sqExport Matrix2x3Plugin_exports[];
 extern sqExport MiscPrimitivePlugin_exports[];
@@ -21,6 +22,7 @@ sqExport *pluginExports[] = {
 	BitBltPlugin_exports,
 	FilePlugin_exports,
 	FloatArrayPlugin_exports,
+	FloatMathPlugin_exports,
 	LargeIntegers_exports,
 	Matrix2x3Plugin_exports,
 	MiscPrimitivePlugin_exports,

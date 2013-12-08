@@ -12,3 +12,6 @@ MODULE_SRCS += \
 	$(LOCAL_DIR)/interp.c \
 	$(LOCAL_DIR)/sqNamedPrims.c \
 	$(LOCAL_DIR)/sqVirtualMachine.c \
+
+
+include $(LOCAL_DIR)/FloatMathPlugin/rules.mk
