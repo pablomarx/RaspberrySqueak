@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on an Array(10 April 2008 1:42:57 pm)
+/* Automatically generated from Squeak on an Array(10 November 2008 3:51:28 pm)
 by VMMaker 3.8b6
  */
 
@@ -72,9 +72,9 @@ static double m23ResultX;
 static double m23ResultY;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"Matrix2x3Plugin 10 April 2008 (i)"
+	"Matrix2x3Plugin 10 November 2008 (i)"
 #else
-	"Matrix2x3Plugin 10 April 2008 (e)"
+	"Matrix2x3Plugin 10 November 2008 (e)"
 #endif
 ;
 
@@ -670,5 +670,4 @@ void* Matrix2x3Plugin_exports[][3] = {
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
-
 

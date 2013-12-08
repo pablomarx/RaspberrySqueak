@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on an Array(10 April 2008 1:43 pm)
+/* Automatically generated from Squeak on an Array(10 November 2008 3:51:30 pm)
 by VMMaker 3.8b6
  */
 
@@ -77,9 +77,9 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"SecurityPlugin 10 April 2008 (i)"
+	"SecurityPlugin 10 November 2008 (i)"
 #else
-	"SecurityPlugin 10 April 2008 (e)"
+	"SecurityPlugin 10 November 2008 (e)"
 #endif
 ;
 
@@ -299,5 +299,4 @@ void* SecurityPlugin_exports[][3] = {
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
-
 

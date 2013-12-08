@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on an Array(10 April 2008 1:42:41 pm)
+/* Automatically generated from Squeak on an Array(10 November 2008 3:51:19 pm)
 by VMMaker 3.8b6
  */
 
@@ -270,9 +270,9 @@ static int maskTable[33] = {
 };
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"BitBltPlugin 10 April 2008 (i)"
+	"BitBltPlugin 10 November 2008 (i)"
 #else
-	"BitBltPlugin 10 April 2008 (e)"
+	"BitBltPlugin 10 November 2008 (e)"
 #endif
 ;
 static sqInt nWords;
@@ -5523,5 +5523,4 @@ void* BitBltPlugin_exports[][3] = {
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
-
 

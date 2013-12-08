@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on an Array(10 April 2008 1:42:55 pm)
+/* Automatically generated from Squeak on an Array(10 November 2008 3:51:27 pm)
 by VMMaker 3.8b6
  */
 
@@ -119,9 +119,9 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"LargeIntegers v1.5 10 April 2008 (i)"
+	"LargeIntegers v1.5 10 November 2008 (i)"
 #else
-	"LargeIntegers v1.5 10 April 2008 (e)"
+	"LargeIntegers v1.5 10 November 2008 (e)"
 #endif
 ;
 static const int  orOpIndex = 1;
@@ -2306,5 +2306,4 @@ void* LargeIntegers_exports[][3] = {
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
-
 

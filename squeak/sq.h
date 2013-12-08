@@ -6,7 +6,7 @@
 *   AUTHOR:  
 *   ADDRESS: 
 *   EMAIL:   
-*   RCSID:   $Id: sq.h 1283 2005-12-31 00:51:12Z rowledge $
+*   RCSID:   $Id: sq.h 1856 2008-04-22 16:01:26Z piumarta $
 *
 */
 #include <math.h>
@@ -284,10 +284,11 @@ typedef struct sqDragDropFilesEvent
   int windowIndex;		/* host window structure */
 } sqDragDropFilesEvent;
 
-#define DragEnter	1 /* drag operation from OS entered Squeak window	 */
+#define DragEnter	1 /* drag operation from OS entered Squeak window */
 #define DragMove	2 /* drag operation from OS moved within Squeak window */
-#define DragLeave	3 /* drag operation from OS left Squeak window	 */
-#define DragDrop	4 /* drag operation dropped contents onto Squeak.      */
+#define DragLeave	3 /* drag operation from OS left Squeak window */
+#define DragDrop	4 /* drag operation dropped contents onto Squeak. */
+#define DragRequest	5 /* data request from other app. */
 
 /* menu event */
 typedef struct sqMenuEvent

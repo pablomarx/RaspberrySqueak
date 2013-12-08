@@ -114,6 +114,12 @@ int ioSetCursorWithMask(int cursorBitsIndex, int cursorMaskIndex, int offsetX, i
 	showCursor();
 	return true;
 }
+
+sqInt ioSetCursorARGB(sqInt cursorBitsIndex, sqInt extentX, sqInt extentY, sqInt offsetX, sqInt offsetY) {
+	
+	return true;
+}
+
 	
 int ioSetDisplayMode(int width, int height, int depth, int fullscreenFlag) {
 	printf("%s width=%i, height=%i, depth=%i, fullscreenFlag=%i\n", __PRETTY_FUNCTION__, width, height, depth, fullscreenFlag);

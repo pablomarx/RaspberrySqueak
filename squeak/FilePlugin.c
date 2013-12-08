@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on an Array(10 April 2008 1:42:49 pm)
+/* Automatically generated from Squeak on an Array(10 November 2008 3:51:23 pm)
 by VMMaker 3.8b6
  */
 
@@ -90,9 +90,9 @@ extern
 struct VirtualMachine* interpreterProxy;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"FilePlugin 10 April 2008 (i)"
+	"FilePlugin 10 November 2008 (i)"
 #else
-	"FilePlugin 10 April 2008 (e)"
+	"FilePlugin 10 November 2008 (e)"
 #endif
 ;
 static void * sCCPfn;
@@ -884,5 +884,4 @@ void* FilePlugin_exports[][3] = {
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
-
 

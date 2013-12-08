@@ -1,4 +1,4 @@
-/* Automatically generated from Squeak on an Array(10 April 2008 1:42:36 pm)
+/* Automatically generated from Squeak on an Array(10 November 2008 3:51:16 pm)
 by VMMaker 3.8b6
  */
 
@@ -728,9 +728,9 @@ struct VirtualMachine* interpreterProxy;
 static void * loadBBFn;
 static const char *moduleName =
 #ifdef SQUEAK_BUILTIN_PLUGIN
-	"B2DPlugin 10 April 2008 (i)"
+	"B2DPlugin 10 November 2008 (i)"
 #else
-	"B2DPlugin 10 April 2008 (e)"
+	"B2DPlugin 10 November 2008 (e)"
 #endif
 ;
 static int* objBuffer;
@@ -9967,5 +9967,4 @@ void* B2DPlugin_exports[][3] = {
 
 
 #endif /* ifdef SQ_BUILTIN_PLUGIN */
-
 

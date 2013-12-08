@@ -4,6 +4,7 @@ MODULE_SRCS += \
 	$(LOCAL_DIR)/B2DPlugin.c \
 	$(LOCAL_DIR)/BitBltPlugin.c \
 	$(LOCAL_DIR)/FilePlugin.c \
+	$(LOCAL_DIR)/FloatArrayPlugin.c \
 	$(LOCAL_DIR)/LargeIntegers.c \
 	$(LOCAL_DIR)/Matrix2x3Plugin.c \
 	$(LOCAL_DIR)/MiscPrimitivePlugin.c \
